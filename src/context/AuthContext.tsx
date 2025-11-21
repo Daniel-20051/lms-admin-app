@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isSuperAdmin = user?.role === "super_admin" || user?.role === "admin";
 
 
-  const authApiRef = useRef<AuthApi>();
+  const authApiRef = useRef<AuthApi | null>(null);
   if (!authApiRef.current) {
     authApiRef.current = new AuthApi();
   }
