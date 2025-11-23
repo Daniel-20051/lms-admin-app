@@ -254,3 +254,215 @@ export const deleteCourse = async (courseId: number): Promise<DeleteCourseRespon
         throw err;
     }
 };
+
+// ==================== COURSES API CLASS (for staff/admin course management) ====================
+
+export class CoursesApi {
+  async GetCourses(session: string, semester: string) {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.get(`${BASE_URL}/api/courses?session=${session}&semester=${semester}`, {
+        headers
+      });
+      return response;
+    } catch (err: any) {
+      console.error("Error during getting courses:", err);
+      throw err;
+    }
+  }
+
+  async GetStaffCourses(session: string) {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.get(`${BASE_URL}/api/staff/courses?session=${session}`, {
+        headers
+      });
+      return response;
+    } catch (err: any) {
+      console.error("Error during getting staff courses:", err);
+      throw err;
+    }
+  }
+
+  async GetStaffCoursesbyId(id: string) {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.get(`${BASE_URL}/api/staff/courses/${id}`, {
+        headers
+      });
+      return response;
+    } catch (err: any) {
+      console.error("Error during getting staff course by id:", err);
+      throw err;
+    }
+  }
+
+  async GetCourseModules(courseId: string) {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.get(`${BASE_URL}/api/courses/${courseId}/modules`, {
+        headers
+      });
+      return response;
+    } catch (err: any) {
+      console.error("Error during getting course modules:", err);
+      throw err;
+    }
+  }
+
+  async AddModule(courseId: string, title: string, description: string) {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.post(`${BASE_URL}/api/courses/${courseId}/modules`, {
+        title,
+        description
+      }, {
+        headers
+      });
+      return response;
+    } catch (err: any) {
+      console.error("Error during adding module:", err);
+      throw err;
+    }
+  }
+
+  async DeleteModule(moduleId: string) {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.delete(`${BASE_URL}/api/modules/${moduleId}`, {
+        headers
+      });
+      return response;
+    } catch (err: any) {
+      console.error("Error during deleting module:", err);
+      throw err;
+    }
+  }
+
+  async AddUnit(moduleId: string, data: {title: string, content: string, content_type: string, order: number, status: string}) {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.post(`${BASE_URL}/api/modules/${moduleId}/units`, data, {
+        headers
+      });
+      return response;
+    } catch (err: any) {
+      console.error("Error during adding unit:", err);
+      throw err;
+    }
+  }
+
+  async getUnits(moduleId: string) {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.get(`${BASE_URL}/api/modules/${moduleId}/units`, {
+        headers
+      });
+      return response;
+    } catch (err: any) {
+      console.error("Error during getting units:", err);
+      throw err;
+    }
+  }
+
+  async EditUnit(unitId: string, data: {title: string, content: string, video_url?: string}) {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.put(`${BASE_URL}/api/units/${unitId}`, data, {
+        headers
+      });
+      return response;
+    } catch (err: any) {
+      console.error("Error during editing unit:", err);
+      throw err;
+    }
+  }
+
+  async DeleteUnit(unitId: string) {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.delete(`${BASE_URL}/api/units/${unitId}`, {
+        headers
+      });
+      return response;
+    } catch (err: any) {
+      console.error("Error during deleting unit:", err);
+      throw err;
+    }
+  }
+
+  async UploadUnitVideo(moduleId: string, unitId: string, videoFile: File, onProgress?: (progress: number) => void) {
+    try {
+      const formData = new FormData();
+      formData.append('video', videoFile);
+      const headers = getAuthHeaders();
+      const response = await axios.post(`${BASE_URL}/api/modules/${moduleId}/units/${unitId}/video`, formData, {
+        headers: {
+          ...headers,
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: (progressEvent) => {
+          if (onProgress && progressEvent.total) {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            onProgress(progress);
+          }
+        }
+      });
+      return response;
+    } catch (err: any) {
+      console.error("Error during uploading unit video:", err);
+      throw err;
+    }
+  }
+}
+
+// Export functions for backward compatibility
+export const GetStaffCourses = (session: string) => {
+  const api = new CoursesApi();
+  return api.GetStaffCourses(session);
+};
+
+export const GetStaffCoursesbyId = (id: string) => {
+  const api = new CoursesApi();
+  return api.GetStaffCoursesbyId(id);
+};
+
+export const GetCourseModules = (courseId: string) => {
+  const api = new CoursesApi();
+  return api.GetCourseModules(courseId);
+};
+
+export const AddModule = (courseId: string, title: string, description: string) => {
+  const api = new CoursesApi();
+  return api.AddModule(courseId, title, description);
+};
+
+export const DeleteModule = (moduleId: string) => {
+  const api = new CoursesApi();
+  return api.DeleteModule(moduleId);
+};
+
+export const AddUnit = (moduleId: string, data: {title: string, content: string, content_type: string, order: number, status: string}) => {
+  const api = new CoursesApi();
+  return api.AddUnit(moduleId, data);
+};
+
+export const getUnits = (moduleId: string) => {
+  const api = new CoursesApi();
+  return api.getUnits(moduleId);
+};
+
+export const EditUnit = (unitId: string, data: {title: string, content: string, video_url?: string}) => {
+  const api = new CoursesApi();
+  return api.EditUnit(unitId, data);
+};
+
+export const DeleteUnit = (unitId: string) => {
+  const api = new CoursesApi();
+  return api.DeleteUnit(unitId);
+};
+
+export const UploadUnitVideo = (moduleId: string, unitId: string, videoFile: File, onProgress?: (progress: number) => void) => {
+  const api = new CoursesApi();
+  return api.UploadUnitVideo(moduleId, unitId, videoFile, onProgress);
+};

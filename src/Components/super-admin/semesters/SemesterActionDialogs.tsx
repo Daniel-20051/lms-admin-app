@@ -8,8 +8,6 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/Components/ui/alert-dialog";
-import { deleteSemester } from "@/api/semesters";
-import { toast } from "sonner";
 import type { Semester } from "@/api/semesters";
 
 interface SemesterActionDialogsProps {

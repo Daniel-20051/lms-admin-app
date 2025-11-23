@@ -119,7 +119,7 @@ export default function CoursesTable({
                                     variant={course.owner_type === 'wsp' ? 'default' : 'secondary'}
                                     className={course.owner_type === 'wsp' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-purple-500 hover:bg-purple-600'}
                                 >
-                                    {course.owner_type === 'wsp' ? 'WSP' : course.owner_type === 'sole_tutor' ? 'Sole Tutor' : course.owner_type === 'organization' ? 'Organization' : 'Marketplace'}
+                                    {course.owner_type === 'wsp' ? 'WSP' : 'Marketplace'}
                                 </Badge>
                             </TableCell>
                             <TableCell className="text-right">
