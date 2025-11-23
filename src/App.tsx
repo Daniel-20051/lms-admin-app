@@ -9,13 +9,10 @@ import StudentsPage from "@/pages/super-admin/students/StudentsPage";
 import StaffPage from "@/pages/super-admin/staff/StaffPage";
 import AdminsPage from "@/pages/super-admin/admins/AdminsPage";
 import ActivityLogsPage from "@/pages/super-admin/activity-logs/ActivityLogsPage";
-import CoursesPage from "@/pages/admin/course/CoursesPage";
-import CourseDetailPage from "@/pages/admin/course-details/CourseDetailPage";
-import AdminExamsListPage from "@/pages/admin/exams/AdminExamsListPage";
-import AdminCourseExamsPage from "@/pages/admin/exams/AdminCourseExamsPage";
-import AdminExamDetailsPage from "@/pages/admin/exams/AdminExamDetailsPage";
-import QuestionBankPage from "@/pages/admin/exams/QuestionBankPage";
-import CourseQuizzesPage from "@/pages/admin/quiz/CourseQuizzesPage";
+import ProgramsPage from "@/pages/super-admin/programs/ProgramsPage";
+import CoursesPage from "@/pages/super-admin/courses/CoursesPage";
+import SemestersPage from "@/pages/super-admin/semesters/SemestersPage";
+
 import { Toaster } from "sonner";
 import { useEffect } from "react";
 import socketService from "@/services/Socketservice";
@@ -83,17 +80,11 @@ function AppRouter() {
             <Route path="students" element={<StudentsPage />} />
             <Route path="staff" element={<StaffPage />} />
             <Route path="admins" element={<AdminsPage />} />
+            <Route path="programs" element={<ProgramsPage />} />
+            <Route path="courses" element={<CoursesPage />} />
+            <Route path="semesters" element={<SemestersPage />} />
             <Route path="activity-logs" element={<ActivityLogsPage />} />
 
-            <Route path="courses" element={<CoursesPage />} />
-            <Route path="courses/:courseId" element={<CourseDetailPage />} />
-
-            <Route path="exams" element={<AdminExamsListPage />} />
-            <Route path="exams/question-bank" element={<QuestionBankPage />} />
-            <Route path="exams/:courseId" element={<AdminCourseExamsPage />} />
-            <Route path="exams/:courseId/:examId" element={<AdminExamDetailsPage />} />
-
-            <Route path="quizzes/:courseId" element={<CourseQuizzesPage />} />
           </Route>
         </Route>
         <Route path="*" element={<Navigate to="/super-admin/dashboard" replace />} />

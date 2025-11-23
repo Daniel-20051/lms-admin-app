@@ -1,14 +1,16 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { 
-  LayoutDashboard, 
-  Users, 
-  UserCog, 
+import {
+  LayoutDashboard,
+  Users,
+  UserCog,
   Shield,
   User,
   LogOut,
   ChevronRight,
   BookOpen,
-  FileText
+  FileText,
+  GraduationCap,
+  Calendar
 } from "lucide-react";
 import { Button } from "@/Components/ui/button";
 import { cn } from "@/lib/utils";
@@ -40,9 +42,19 @@ const navigationItems = [
     icon: Shield,
   },
   {
+    title: "Programs",
+    href: "/super-admin/programs",
+    icon: GraduationCap,
+  },
+  {
     title: "Courses",
     href: "/super-admin/courses",
     icon: BookOpen,
+  },
+  {
+    title: "Semesters",
+    href: "/super-admin/semesters",
+    icon: Calendar,
   },
   {
     title: "Exams",
@@ -58,11 +70,11 @@ interface AdminSidebarProps {
   className?: string;
 }
 
-export default function AdminSidebar({ 
-  isMobile = false, 
-  isOpen = false, 
+export default function AdminSidebar({
+  isMobile = false,
+  isOpen = false,
   onClose,
-  className 
+  className
 }: AdminSidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -101,7 +113,7 @@ export default function AdminSidebar({
         {navigationItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname.startsWith(item.href);
-          
+
           return (
             <Button
               key={item.href}

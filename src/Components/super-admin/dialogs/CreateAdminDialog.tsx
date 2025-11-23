@@ -16,17 +16,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/Components/ui/select";
+import { Checkbox } from "@/Components/ui/checkbox";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { AlertCircle, Info } from "lucide-react";
 import { Alert, AlertDescription } from "@/Components/ui/alert";
-import { createAdmin, type CreateAdminData } from "@/api/admin";
+import { createAdmin, type CreateAdminData, type CreateAdminPermissions } from "@/api/admin";
 
 interface CreateAdminDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onAdminCreated?: () => void;
 }
+
+const defaultPermissions: CreateAdminPermissions = {
+  students: {
+    view: false,
+    create: false,
+    edit: false,
+    delete: false,
+  },
+  staff: {
+    view: false,
+    create: false,
+    edit: false,
+    delete: false,
+  },
+  courses: {
+    view: false,
+    create: false,
+    edit: false,
+    delete: false,
+  },
+};
 
 export default function CreateAdminDialog({ open, onOpenChange, onAdminCreated }: CreateAdminDialogProps) {
   const [formData, setFormData] = useState<CreateAdminData>({
@@ -36,6 +58,7 @@ export default function CreateAdminDialog({ open, onOpenChange, onAdminCreated }
     lname: "",
     role: "wsp_admin",
     phone: "",
+    permissions: { ...defaultPermissions },
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -79,6 +102,7 @@ export default function CreateAdminDialog({ open, onOpenChange, onAdminCreated }
           lname: "",
           role: "wsp_admin",
           phone: "",
+          permissions: { ...defaultPermissions },
         });
         onAdminCreated?.();
       }
@@ -93,7 +117,7 @@ export default function CreateAdminDialog({ open, onOpenChange, onAdminCreated }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="sm:max-w-[500px]"
+        className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto"
         onInteractOutside={(e) => {
           if (isLoading) {
             e.preventDefault();
@@ -202,6 +226,303 @@ export default function CreateAdminDialog({ open, onOpenChange, onAdminCreated }
               <p className="text-xs text-muted-foreground">
                 A welcome email with login credentials will be sent to the admin.
               </p>
+            </div>
+            
+            {/* Permissions Matrix */}
+            <div className="space-y-4 pt-4 border-t">
+              <div className="space-y-2">
+                <Label className="text-base font-semibold">Permissions Matrix</Label>
+                <p className="text-xs text-muted-foreground">
+                  Select granular permissions for this admin. Email will be sent automatically upon creation.
+                </p>
+              </div>
+              
+              <div className="space-y-4">
+                {/* Students Permissions */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Students</Label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pl-4">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="students-view"
+                        checked={formData.permissions.students.view}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            permissions: {
+                              ...formData.permissions,
+                              students: {
+                                ...formData.permissions.students,
+                                view: checked === true,
+                              },
+                            },
+                          })
+                        }
+                        disabled={isLoading}
+                      />
+                      <Label htmlFor="students-view" className="text-sm font-normal cursor-pointer">
+                        View
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="students-create"
+                        checked={formData.permissions.students.create}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            permissions: {
+                              ...formData.permissions,
+                              students: {
+                                ...formData.permissions.students,
+                                create: checked === true,
+                              },
+                            },
+                          })
+                        }
+                        disabled={isLoading}
+                      />
+                      <Label htmlFor="students-create" className="text-sm font-normal cursor-pointer">
+                        Create
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="students-edit"
+                        checked={formData.permissions.students.edit}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            permissions: {
+                              ...formData.permissions,
+                              students: {
+                                ...formData.permissions.students,
+                                edit: checked === true,
+                              },
+                            },
+                          })
+                        }
+                        disabled={isLoading}
+                      />
+                      <Label htmlFor="students-edit" className="text-sm font-normal cursor-pointer">
+                        Edit
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="students-delete"
+                        checked={formData.permissions.students.delete}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            permissions: {
+                              ...formData.permissions,
+                              students: {
+                                ...formData.permissions.students,
+                                delete: checked === true,
+                              },
+                            },
+                          })
+                        }
+                        disabled={isLoading}
+                      />
+                      <Label htmlFor="students-delete" className="text-sm font-normal cursor-pointer">
+                        Delete
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Staff Permissions */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Staff</Label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pl-4">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="staff-view"
+                        checked={formData.permissions.staff.view}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            permissions: {
+                              ...formData.permissions,
+                              staff: {
+                                ...formData.permissions.staff,
+                                view: checked === true,
+                              },
+                            },
+                          })
+                        }
+                        disabled={isLoading}
+                      />
+                      <Label htmlFor="staff-view" className="text-sm font-normal cursor-pointer">
+                        View
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="staff-create"
+                        checked={formData.permissions.staff.create}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            permissions: {
+                              ...formData.permissions,
+                              staff: {
+                                ...formData.permissions.staff,
+                                create: checked === true,
+                              },
+                            },
+                          })
+                        }
+                        disabled={isLoading}
+                      />
+                      <Label htmlFor="staff-create" className="text-sm font-normal cursor-pointer">
+                        Create
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="staff-edit"
+                        checked={formData.permissions.staff.edit}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            permissions: {
+                              ...formData.permissions,
+                              staff: {
+                                ...formData.permissions.staff,
+                                edit: checked === true,
+                              },
+                            },
+                          })
+                        }
+                        disabled={isLoading}
+                      />
+                      <Label htmlFor="staff-edit" className="text-sm font-normal cursor-pointer">
+                        Edit
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="staff-delete"
+                        checked={formData.permissions.staff.delete}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            permissions: {
+                              ...formData.permissions,
+                              staff: {
+                                ...formData.permissions.staff,
+                                delete: checked === true,
+                              },
+                            },
+                          })
+                        }
+                        disabled={isLoading}
+                      />
+                      <Label htmlFor="staff-delete" className="text-sm font-normal cursor-pointer">
+                        Delete
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Courses Permissions */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Courses</Label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pl-4">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="courses-view"
+                        checked={formData.permissions.courses.view}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            permissions: {
+                              ...formData.permissions,
+                              courses: {
+                                ...formData.permissions.courses,
+                                view: checked === true,
+                              },
+                            },
+                          })
+                        }
+                        disabled={isLoading}
+                      />
+                      <Label htmlFor="courses-view" className="text-sm font-normal cursor-pointer">
+                        View
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="courses-create"
+                        checked={formData.permissions.courses.create}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            permissions: {
+                              ...formData.permissions,
+                              courses: {
+                                ...formData.permissions.courses,
+                                create: checked === true,
+                              },
+                            },
+                          })
+                        }
+                        disabled={isLoading}
+                      />
+                      <Label htmlFor="courses-create" className="text-sm font-normal cursor-pointer">
+                        Create
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="courses-edit"
+                        checked={formData.permissions.courses.edit}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            permissions: {
+                              ...formData.permissions,
+                              courses: {
+                                ...formData.permissions.courses,
+                                edit: checked === true,
+                              },
+                            },
+                          })
+                        }
+                        disabled={isLoading}
+                      />
+                      <Label htmlFor="courses-edit" className="text-sm font-normal cursor-pointer">
+                        Edit
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="courses-delete"
+                        checked={formData.permissions.courses.delete}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            permissions: {
+                              ...formData.permissions,
+                              courses: {
+                                ...formData.permissions.courses,
+                                delete: checked === true,
+                              },
+                            },
+                          })
+                        }
+                        disabled={isLoading}
+                      />
+                      <Label htmlFor="courses-delete" className="text-sm font-normal cursor-pointer">
+                        Delete
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <DialogFooter>

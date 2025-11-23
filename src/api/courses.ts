@@ -1,246 +1,256 @@
 import axios from 'axios';
 import { BASE_URL, getAuthHeaders, handleApiError } from './base';
 
-export class CoursesApi {
-  async GetCourses(session: string, semester: string) {
-    try {
-      const response = await axios.get(`${BASE_URL}/api/courses/student/${session}/${semester}`, {
-        headers: getAuthHeaders()
-      });
-      
-      return response;
+// ==================== INTERFACES ====================
 
-    } catch (err: any) {
-      return handleApiError(err, "getting courses");
-    }
-  }
-
-  async GetStaffCourses(session: string) {
-    try {
-      const response = await axios.get(`${BASE_URL}/api/courses/staff/${session}`, {
-        headers: getAuthHeaders()
-      });
-      
-      return response;
-
-    } catch (err: any) {
-      return handleApiError(err, "getting staff courses");
-    }
-  }
-
-  async GetStaffCoursesbyId(id: string) {
-    try {
-      const response = await axios.get(`${BASE_URL}/api/courses/single/${id}`, {
-        headers: getAuthHeaders()
-      });
-      
-      return response;
-
-    } catch (err: any) {
-      return handleApiError(err, "getting course by id");
-    }
-  }
-
-  async GetCourseModules(courseId: string) {
-    try {
-      const response = await axios.get(`${BASE_URL}/api/courses/${courseId}/modules`, {
-        headers: getAuthHeaders()
-      });
-      
-      return response;
-
-    } catch (err: any) {
-      return handleApiError(err, "getting course modules");
-    }
-  }
-
-  async AddModule(courseId: string, title: string, description: string) {
-    try {
-      const payload = {
-        course_id: courseId,
-        title: title,
-        description: description,
-        status: "uncompleted"
-      };
-
-      const response = await axios.post(`${BASE_URL}/api/courses/${courseId}/modules`,
-        payload,
-        {
-          headers: getAuthHeaders()
-        }
-      );
-      
-      return response;
-
-    } catch (err: any) {
-      return handleApiError(err, "adding course modules");
-    }
-  }
-
-  async DeleteModule(moduleId: string) {
-    try {
-      const response = await axios.delete(`${BASE_URL}/api/modules/${moduleId}`, {
-        headers: getAuthHeaders()
-      });
-      
-      return response;
-
-    } catch (err: any) {
-      return handleApiError(err, "deleting course modules");
-    }
-  }
-
-  async AddUnit(moduleId: string, data: {title: string, content: string, content_type: string, order: number, status: string}) {
-    try {
-      const payload = {
-        module_id: moduleId,
-        title: data.title,
-        content: data.content,
-        content_type: data.content_type,
-        order: data.order,
-        status: data.status,
-      };
-
-      const response = await axios.post(`${BASE_URL}/api/modules/${moduleId}/units`,
-         payload,
-          {
-            headers: getAuthHeaders()
-          }
-      );
-      
-      return response;
-
-    } catch (err: any) {
-      return handleApiError(err, "adding course units");
-    }
-  }
-
-  async getUnits(moduleId: string) {
-    try {
-      const response = await axios.get(`${BASE_URL}/api/modules/${moduleId}/units`, {
-        headers: getAuthHeaders()
-      });
-      
-      return response;
-
-    } catch (err: any) {
-      return handleApiError(err, "getting course units");
-    }
-  }
-
-  async EditUnit(unitId: string, data: {title: string, content: string, video_url?: string}) {
-    try {
-      const payload: any = {
-        title: data.title,
-        content: data.content,
-      };
-      if (data.video_url !== undefined) {
-        payload.video_url = data.video_url;
-      }
-
-      const response = await axios.patch(`${BASE_URL}/api/units/${unitId}`,
-         payload,
-          {
-            headers: getAuthHeaders()
-          }
-      );
-      
-      return response;
-
-    } catch (err: any) {
-      return handleApiError(err, "editing course units");
-    }
-  }
-
-  async DeleteUnit(unitId: string) {
-    try {
-      const response = await axios.delete(`${BASE_URL}/api/units/${unitId}`, {
-        headers: getAuthHeaders()
-      });
-      
-      return response;
-
-    } catch (err: any) {
-      return handleApiError(err, "deleting course units");
-    }
-  }
-
-  async UploadUnitVideo(moduleId: string, unitId: string, videoFile: File, onProgress?: (progress: number) => void) {
-    try {
-      const formData = new FormData();
-      formData.append('video', videoFile);
-
-      const response = await axios.post(`${BASE_URL}/api/modules/${moduleId}/units/${unitId}/video`,
-          formData,
-          {
-            headers: {
-              ...getAuthHeaders(),
-              'Content-Type': 'multipart/form-data',
-            },
-            onUploadProgress: (progressEvent: any) => {
-              if (progressEvent.total && onProgress) {
-                const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                onProgress(progress);
-              }
-            }
-          } as any
-      );
-      
-      return response;
-
-    } catch (err: any) {
-      return handleApiError(err, "uploading course units video");
-    }
-  }
+export interface Program {
+    id: number;
+    title: string;
 }
 
-// Export standalone functions for backward compatibility
-export async function GetStaffCourses(session: string) {
-  const api = new CoursesApi();
-  return api.GetStaffCourses(session);
+export interface Faculty {
+    id: number;
+    name: string;
 }
 
-export async function GetStaffCoursesbyId(id: string) {
-  const api = new CoursesApi();
-  return api.GetStaffCoursesbyId(id);
+export interface Instructor {
+    id: number;
+    full_name: string;
+    email: string;
 }
 
-export async function GetCourseModules(courseId: string) {
-  const api = new CoursesApi();
-  return api.GetCourseModules(courseId);
+export interface Course {
+    id: number;
+    faculty_id: number;
+    program_id: number;
+    title: string;
+    course_unit: number;
+    price: string;
+    course_type: string;
+    course_level: number;
+    semester: string;
+    user_id: number;
+    course_code: string;
+    token: string;
+    exam_fee: number;
+    currency: string;
+    staff_id: number;
+    owner_type: 'wsp' | 'marketplace';
+    owner_id: number | null;
+    is_marketplace: boolean;
+    marketplace_status: string | null;
+    date: string;
+    program: Program;
+    faculty: Faculty;
+    instructor: Instructor | null;
 }
 
-export async function AddModule(courseId: string, title: string, description: string) {
-  const api = new CoursesApi();
-  return api.AddModule(courseId, title, description);
+export interface PaginationData {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
 }
 
-export async function DeleteModule(moduleId: string) {
-  const api = new CoursesApi();
-  return api.DeleteModule(moduleId);
+export interface GetCoursesParams {
+    page?: number;
+    limit?: number;
+    search?: string;
+    programId?: number;
+    facultyId?: number;
+    staffId?: number;
+    level?: number;
+    semester?: string;
 }
 
-export async function AddUnit(moduleId: string, data: {title: string, content: string, content_type: string, order: number, status: string}) {
-  const api = new CoursesApi();
-  return api.AddUnit(moduleId, data);
+export interface GetCoursesResponse {
+    success: boolean;
+    message: string;
+    data: {
+        courses: Course[];
+        pagination: PaginationData;
+    };
 }
 
-export async function getUnits(moduleId: string) {
-  const api = new CoursesApi();
-  return api.getUnits(moduleId);
+// ==================== API FUNCTIONS ====================
+
+export const getCourses = async (params: GetCoursesParams = {}): Promise<GetCoursesResponse> => {
+    try {
+        const headers = getAuthHeaders();
+        const queryParams = new URLSearchParams();
+
+        if (params.page) queryParams.append('page', params.page.toString());
+        if (params.limit) queryParams.append('limit', params.limit.toString());
+        if (params.search) queryParams.append('search', params.search);
+        if (params.programId) queryParams.append('programId', params.programId.toString());
+        if (params.facultyId) queryParams.append('facultyId', params.facultyId.toString());
+        if (params.staffId) queryParams.append('staffId', params.staffId.toString());
+        if (params.level) queryParams.append('level', params.level.toString());
+        if (params.semester) queryParams.append('semester', params.semester);
+
+        const url = `${BASE_URL}/api/admin/courses${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+
+        const response = await axios.get<GetCoursesResponse>(url, { headers });
+        return response.data;
+    } catch (err) {
+        handleApiError(err, 'getting courses');
+        throw err;
+    }
+};
+
+// Get Single Course
+export interface GetCourseResponse {
+    success: boolean;
+    message: string;
+    data: {
+        course: Course;
+    };
 }
 
-export async function EditUnit(unitId: string, data: {title: string, content: string, video_url?: string}) {
-  const api = new CoursesApi();
-  return api.EditUnit(unitId, data);
+export const getCourse = async (courseId: number): Promise<GetCourseResponse> => {
+    try {
+        const headers = getAuthHeaders();
+        const response = await axios.get<GetCourseResponse>(
+            `${BASE_URL}/api/admin/courses/${courseId}`,
+            { headers }
+        );
+        return response.data;
+    } catch (err) {
+        handleApiError(err, 'getting course details');
+        throw err;
+    }
+};
+
+// Get Courses by Program
+export interface GetCoursesByProgramParams {
+    page?: number;
+    limit?: number;
+    search?: string;
 }
 
-export async function DeleteUnit(unitId: string) {
-  const api = new CoursesApi();
-  return api.DeleteUnit(unitId);
+export const getCoursesByProgram = async (
+    programId: number,
+    params: GetCoursesByProgramParams = {}
+): Promise<GetCoursesResponse> => {
+    try {
+        const headers = getAuthHeaders();
+        const queryParams = new URLSearchParams();
+
+        if (params.page) queryParams.append('page', params.page.toString());
+        if (params.limit) queryParams.append('limit', params.limit.toString());
+        if (params.search) queryParams.append('search', params.search);
+
+        const url = `${BASE_URL}/api/admin/courses/program/${programId}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+
+        const response = await axios.get<GetCoursesResponse>(url, { headers });
+        return response.data;
+    } catch (err) {
+        handleApiError(err, 'getting courses by program');
+        throw err;
+    }
+};
+
+// Create Course
+export interface CreateCourseData {
+    title: string;
+    course_code: string;
+    course_unit: number;
+    price: string;
+    course_type: string;
+    course_level: number;
+    semester: string;
+    staff_id: number;
+    program_id: number;
+    faculty_id: number;
+    currency: string;
+    owner_type: 'wsp' | 'sole_tutor' | 'organization';
+    is_marketplace: boolean;
+    owner_id?: number | null;
 }
 
-export async function UploadUnitVideo(moduleId: string, unitId: string, videoFile: File, onProgress?: (progress: number) => void) {
-  const api = new CoursesApi();
-  return api.UploadUnitVideo(moduleId, unitId, videoFile, onProgress);
+export interface CreateCourseResponse {
+    success: boolean;
+    message: string;
+    data: {
+        course: Course;
+    };
 }
+
+export const createCourse = async (data: CreateCourseData): Promise<CreateCourseResponse> => {
+    try {
+        const headers = getAuthHeaders();
+        const response = await axios.post<CreateCourseResponse>(
+            `${BASE_URL}/api/admin/courses`,
+            data,
+            { headers }
+        );
+        return response.data;
+    } catch (err) {
+        handleApiError(err, 'creating course');
+        throw err;
+    }
+};
+
+// Update Course
+export interface UpdateCourseData {
+    title?: string;
+    course_code?: string;
+    course_unit?: number;
+    price?: string;
+    course_type?: string;
+    course_level?: number;
+    semester?: string;
+    staff_id?: number;
+    program_id?: number;
+    faculty_id?: number;
+    currency?: string;
+    owner_type?: 'wsp' | 'sole_tutor' | 'organization';
+    is_marketplace?: boolean;
+    owner_id?: number | null;
+}
+
+export interface UpdateCourseResponse {
+    success: boolean;
+    message: string;
+    data: {
+        course: Course;
+    };
+}
+
+export const updateCourse = async (
+    courseId: number,
+    data: UpdateCourseData
+): Promise<UpdateCourseResponse> => {
+    try {
+        const headers = getAuthHeaders();
+        const response = await axios.put<UpdateCourseResponse>(
+            `${BASE_URL}/api/admin/courses/${courseId}`,
+            data,
+            { headers }
+        );
+        return response.data;
+    } catch (err) {
+        handleApiError(err, 'updating course');
+        throw err;
+    }
+};
+
+// Delete Course
+export interface DeleteCourseResponse {
+    success: boolean;
+    message: string;
+}
+
+export const deleteCourse = async (courseId: number): Promise<DeleteCourseResponse> => {
+    try {
+        const headers = getAuthHeaders();
+        const response = await axios.delete<DeleteCourseResponse>(
+            `${BASE_URL}/api/admin/courses/${courseId}`,
+            { headers }
+        );
+        return response.data;
+    } catch (err) {
+        handleApiError(err, 'deleting course');
+        throw err;
+    }
+};

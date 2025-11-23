@@ -166,15 +166,15 @@ export const getStudents = async (params: GetStudentsParams = {}): Promise<GetSt
   try {
     const headers = getAuthHeaders();
     const queryParams = new URLSearchParams();
-    
+
     if (params.page) queryParams.append('page', params.page.toString());
     if (params.limit) queryParams.append('limit', params.limit.toString());
     if (params.search) queryParams.append('search', params.search);
     if (params.level) queryParams.append('level', params.level.toString());
     if (params.status) queryParams.append('status', params.status);
-    
+
     const url = `${BASE_URL}/api/admin/students${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-    
+
     const response = await axios.get<GetStudentsResponse>(url, { headers });
     return response.data;
   } catch (err) {
@@ -230,6 +230,116 @@ export const getStudentStatistics = async (): Promise<GetStudentStatisticsRespon
     return response.data;
   } catch (err) {
     handleApiError(err, 'getting student statistics');
+    throw err;
+  }
+};
+
+// Program Statistics
+export interface ProgramStatisticsByFaculty {
+  faculty_id: number;
+  count: string;
+  faculty: {
+    name: string;
+  };
+}
+
+export interface ProgramStatisticsTopProgram {
+  id: number;
+  title: string;
+  course_count: string;
+}
+
+export interface ProgramStatisticsRaw {
+  total: number;
+  active: number;
+  inactive: number;
+  byFaculty: ProgramStatisticsByFaculty[];
+  topProgramsByCourses: ProgramStatisticsTopProgram[];
+}
+
+export interface ProgramStatistics {
+  totalPrograms: number;
+  activePrograms: number;
+  inactivePrograms: number;
+  programsByFaculty: {
+    [key: string]: number;
+  };
+  topProgramsByCourses: Array<{
+    id: number;
+    title: string;
+    courseCount: number;
+  }>;
+}
+
+export interface GetProgramStatisticsResponse {
+  success: boolean;
+  message: string;
+  data: ProgramStatisticsRaw;
+}
+
+export const getProgramStatistics = async (): Promise<GetProgramStatisticsResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.get<GetProgramStatisticsResponse>(
+      `${BASE_URL}/api/admin/programs/stats`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'getting program statistics');
+    throw err;
+  }
+};
+
+// Course Statistics
+export interface CourseStatisticsByProgram {
+  program_id: number;
+  count: string;
+  program: {
+    title: string;
+  } | null;
+}
+
+export interface CourseStatisticsByFaculty {
+  faculty_id: number;
+  count: string;
+  faculty: {
+    name: string;
+  } | null;
+}
+
+export interface CourseStatisticsRaw {
+  total: number;
+  byProgram: CourseStatisticsByProgram[];
+  byFaculty: CourseStatisticsByFaculty[];
+}
+
+export interface CourseStatistics {
+  totalCourses: number;
+  coursesByProgram: {
+    [key: string]: number;
+  };
+  coursesByFaculty: {
+    [key: string]: number;
+  };
+}
+
+export interface GetCourseStatisticsResponse {
+  success: boolean;
+  message: string;
+  data: CourseStatisticsRaw;
+}
+
+export const getCourseStatistics = async (): Promise<GetCourseStatisticsResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.get<GetCourseStatisticsResponse>(
+      `${BASE_URL}/api/admin/courses/stats`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'getting course statistics');
     throw err;
   }
 };
@@ -624,6 +734,27 @@ export const getAdmins = async (): Promise<GetAdminsResponse> => {
 };
 
 // Create Admin
+export interface CreateAdminPermissions {
+  students: {
+    view: boolean;
+    create: boolean;
+    edit: boolean;
+    delete: boolean;
+  };
+  staff: {
+    view: boolean;
+    create: boolean;
+    edit: boolean;
+    delete: boolean;
+  };
+  courses: {
+    view: boolean;
+    create: boolean;
+    edit: boolean;
+    delete: boolean;
+  };
+}
+
 export interface CreateAdminData {
   email: string;
   password: string;
@@ -631,6 +762,7 @@ export interface CreateAdminData {
   lname: string;
   role: "super_admin" | "wsp_admin";
   phone?: string;
+  permissions: CreateAdminPermissions;
 }
 
 export interface CreateAdminResponse {
@@ -759,14 +891,14 @@ export const getActivityLogs = async (params: GetActivityLogsParams = {}): Promi
   try {
     const headers = getAuthHeaders();
     const queryParams = new URLSearchParams();
-    
+
     if (params.page) queryParams.append('page', params.page.toString());
     if (params.limit) queryParams.append('limit', params.limit.toString());
     if (params.action) queryParams.append('action', params.action);
     if (params.admin_id) queryParams.append('admin_id', params.admin_id.toString());
-    
+
     const url = `${BASE_URL}/api/admin/activity-logs${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-    
+
     const response = await axios.get<GetActivityLogsResponse>(url, { headers });
     return response.data;
   } catch (err) {

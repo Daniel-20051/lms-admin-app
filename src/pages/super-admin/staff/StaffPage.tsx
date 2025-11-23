@@ -5,7 +5,7 @@ import { Plus, Search } from "lucide-react";
 import { useStaffManagement } from "@/hooks/useStaffManagement";
 import StaffStatistics from "@/Components/super-admin/staff/StaffStatistics";
 import StaffTable from "@/Components/super-admin/staff/StaffTable";
-import StudentsPagination from "@/Components/super-admin/students/StudentsPagination";
+import StaffPagination from "@/Components/super-admin/staff/StaffPagination";
 import StaffActionDialogs from "@/Components/super-admin/staff/StaffActionDialogs";
 import EditStaffDialog from "@/Components/super-admin/staff/EditStaffDialog";
 import CreateStaffDialog from "@/Components/super-admin/dialogs/CreateStaffDialog";
@@ -95,7 +95,7 @@ export default function StaffPage() {
 
           {/* Pagination */}
           {!loading && staff.length > 0 && (
-            <StudentsPagination
+            <StaffPagination
               currentPage={currentPage}
               pagination={pagination}
               onPreviousPage={handlePreviousPage}

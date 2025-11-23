@@ -47,7 +47,14 @@ export default function ViewPermissionsDialog({
 
   if (!admin) return null;
 
-  const permissions: AdminPermissions = admin.permissions;
+  const permissions: AdminPermissions = admin.permissions || {
+    staff: {},
+    admins: {},
+    system: {},
+    content: {},
+    courses: {},
+    students: {},
+  };
 
   const PermissionItem = ({
     label,
@@ -77,24 +84,50 @@ export default function ViewPermissionsDialog({
     permissions,
   }: {
     title: string;
-    permissions: Record<string, boolean>;
-  }) => (
-    <div className="space-y-3">
-      <h4 className="font-semibold text-base">{title}</h4>
-      <div className="space-y-1">
-        {Object.entries(permissions).map(([key, value]) => (
-          <PermissionItem
-            key={key}
-            label={key
-              .split("_")
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(" ")}
-            value={value}
-          />
-        ))}
+    permissions: Record<string, boolean> | null | undefined;
+  }) => {
+    // Guard against null/undefined permissions
+    if (!permissions || typeof permissions !== 'object') {
+      return (
+        <div className="space-y-3">
+          <h4 className="font-semibold text-base">{title}</h4>
+          <div className="space-y-1">
+            <p className="text-sm text-muted-foreground">No permissions data available</p>
+          </div>
+        </div>
+      );
+    }
+
+    const entries = Object.entries(permissions);
+    if (entries.length === 0) {
+      return (
+        <div className="space-y-3">
+          <h4 className="font-semibold text-base">{title}</h4>
+          <div className="space-y-1">
+            <p className="text-sm text-muted-foreground">No permissions configured</p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-3">
+        <h4 className="font-semibold text-base">{title}</h4>
+        <div className="space-y-1">
+          {entries.map(([key, value]) => (
+            <PermissionItem
+              key={key}
+              label={key
+                .split("_")
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" ")}
+              value={value}
+            />
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -110,37 +143,37 @@ export default function ViewPermissionsDialog({
             {/* Staff Permissions */}
             <PermissionSection
               title="Staff Management"
-              permissions={permissions.staff}
+              permissions={permissions.staff || {}}
             />
 
             {/* Admin Permissions */}
             <PermissionSection
               title="Admin Management"
-              permissions={permissions.admins}
+              permissions={permissions.admins || {}}
             />
 
             {/* System Permissions */}
             <PermissionSection
               title="System Access"
-              permissions={permissions.system}
+              permissions={permissions.system || {}}
             />
 
             {/* Content Permissions */}
             <PermissionSection
               title="Content Management"
-              permissions={permissions.content}
+              permissions={permissions.content || {}}
             />
 
             {/* Course Permissions */}
             <PermissionSection
               title="Course Management"
-              permissions={permissions.courses}
+              permissions={permissions.courses || {}}
             />
 
             {/* Student Permissions */}
             <PermissionSection
               title="Student Management"
-              permissions={permissions.students}
+              permissions={permissions.students || {}}
             />
           </div>
         </div>
