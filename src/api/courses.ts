@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosProgressEvent, AxiosRequestConfig } from 'axios';
 import { BASE_URL, getAuthHeaders, handleApiError } from './base';
 
 // ==================== INTERFACES ====================
@@ -396,18 +396,19 @@ export class CoursesApi {
       const formData = new FormData();
       formData.append('video', videoFile);
       const headers = getAuthHeaders();
-      const response = await axios.post(`${BASE_URL}/api/modules/${moduleId}/units/${unitId}/video`, formData, {
+      const config: AxiosRequestConfig = {
         headers: {
           ...headers,
           'Content-Type': 'multipart/form-data'
         },
-        onUploadProgress: (progressEvent) => {
+        onUploadProgress: (progressEvent: AxiosProgressEvent) => {
           if (onProgress && progressEvent.total) {
             const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             onProgress(progress);
           }
         }
-      });
+      };
+      const response = await axios.post(`${BASE_URL}/api/modules/${moduleId}/units/${unitId}/video`, formData, config);
       return response;
     } catch (err: any) {
       console.error("Error during uploading unit video:", err);

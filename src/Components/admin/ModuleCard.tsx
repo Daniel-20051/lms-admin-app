@@ -24,7 +24,7 @@ const ModuleCard = ({
   loadingUnits,
   onToggleExpand,
   onDeleteModule,
-  onAddUnit,
+  onAddUnit: _onAddUnit,
   onOpenQuizDialog,
   renderUnits,
   renderQuizzes,
