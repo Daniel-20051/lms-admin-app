@@ -61,6 +61,7 @@ export interface GetCoursesParams {
     staffId?: number;
     level?: number;
     semester?: string;
+    academic_year?: string;
 }
 
 export interface GetCoursesResponse {
@@ -87,6 +88,7 @@ export const getCourses = async (params: GetCoursesParams = {}): Promise<GetCour
         if (params.staffId) queryParams.append('staffId', params.staffId.toString());
         if (params.level) queryParams.append('level', params.level.toString());
         if (params.semester) queryParams.append('semester', params.semester);
+        if (params.academic_year) queryParams.append('academic_year', params.academic_year);
 
         const url = `${BASE_URL}/api/admin/courses${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
 

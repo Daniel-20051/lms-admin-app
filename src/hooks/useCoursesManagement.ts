@@ -19,6 +19,7 @@ export const useCoursesManagement = () => {
     const [staffFilter, setStaffFilter] = useState<number | null>(null);
     const [levelFilter, setLevelFilter] = useState<number | null>(null);
     const [semesterFilter, setSemesterFilter] = useState<string | null>(null);
+    const [academicYearFilter, setAcademicYearFilter] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
 
     // Loading states
@@ -66,6 +67,10 @@ export const useCoursesManagement = () => {
                 params.semester = semesterFilter;
             }
 
+            if (academicYearFilter) {
+                params.academic_year = academicYearFilter;
+            }
+
             const response = await getCourses(params);
             setCourses(response.data.courses);
             setPagination(response.data.pagination);
@@ -82,7 +87,7 @@ export const useCoursesManagement = () => {
         } finally {
             setLoading(false);
         }
-    }, [currentPage, searchTerm, programFilter, facultyFilter, staffFilter, levelFilter, semesterFilter]);
+    }, [currentPage, searchTerm, programFilter, facultyFilter, staffFilter, levelFilter, semesterFilter, academicYearFilter]);
 
     // Fetch courses on mount and when filters change
     useEffect(() => {
@@ -94,7 +99,7 @@ export const useCoursesManagement = () => {
         if (currentPage !== 1) {
             setCurrentPage(1);
         }
-    }, [searchTerm, programFilter, facultyFilter, staffFilter, levelFilter, semesterFilter]);
+    }, [searchTerm, programFilter, facultyFilter, staffFilter, levelFilter, semesterFilter, academicYearFilter]);
 
     // Pagination handlers
     const handleNextPage = () => {
@@ -154,6 +159,8 @@ export const useCoursesManagement = () => {
         setLevelFilter,
         semesterFilter,
         setSemesterFilter,
+        academicYearFilter,
+        setAcademicYearFilter,
         currentPage,
 
         // Selected items

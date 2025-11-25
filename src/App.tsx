@@ -12,6 +12,13 @@ import ActivityLogsPage from "@/pages/super-admin/activity-logs/ActivityLogsPage
 import ProgramsPage from "@/pages/super-admin/programs/ProgramsPage";
 import CoursesPage from "@/pages/super-admin/courses/CoursesPage";
 import SemestersPage from "@/pages/super-admin/semesters/SemestersPage";
+import FacultiesPage from "@/pages/super-admin/faculties/FacultiesPage";
+import SettingsPage from "@/pages/super-admin/settings/SettingsPage";
+import NoticesPage from "@/pages/super-admin/notices/NoticesPage";
+import PaymentsPage from "@/pages/super-admin/payments/PaymentsPage";
+import TutorsPage from "@/pages/super-admin/tutors/TutorsPage";
+import RevenuePage from "@/pages/super-admin/revenue/RevenuePage";
+import TutorRevenuePage from "@/pages/super-admin/revenue/TutorRevenuePage";
 
 import { Toaster } from "sonner";
 import { useEffect } from "react";
@@ -83,7 +90,14 @@ function AppRouter() {
             <Route path="programs" element={<ProgramsPage />} />
             <Route path="courses" element={<CoursesPage />} />
             <Route path="semesters" element={<SemestersPage />} />
+            <Route path="faculties" element={<FacultiesPage />} />
+            <Route path="notices" element={<NoticesPage />} />
+            <Route path="payments" element={<PaymentsPage />} />
+            <Route path="tutors" element={<TutorsPage />} />
+            <Route path="revenue" element={<RevenuePage />} />
+            <Route path="revenue/tutor/:ownerType/:ownerId" element={<TutorRevenuePage />} />
             <Route path="activity-logs" element={<ActivityLogsPage />} />
+            <Route path="settings" element={<SettingsPage />} />
 
           </Route>
         </Route>

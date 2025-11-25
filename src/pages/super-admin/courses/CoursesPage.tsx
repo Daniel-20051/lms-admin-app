@@ -16,10 +16,8 @@ export default function CoursesPage() {
         pagination,
         loading,
         searchTerm,
-        programFilter,
-        facultyFilter,
-        levelFilter,
         semesterFilter,
+        academicYearFilter,
         currentPage,
         selectedCourseId,
         selectedCourse,
@@ -29,10 +27,8 @@ export default function CoursesPage() {
         showDeleteDialog,
         actionLoading,
         setSearchTerm,
-        setProgramFilter,
-        setFacultyFilter,
-        setLevelFilter,
         setSemesterFilter,
+        setAcademicYearFilter,
         setSelectedCourseId,
         setSelectedCourse,
         setShowViewDialog,
@@ -74,14 +70,10 @@ export default function CoursesPage() {
                     <CoursesFilters
                         searchTerm={searchTerm}
                         onSearchChange={setSearchTerm}
-                        programFilter={programFilter}
-                        onProgramChange={setProgramFilter}
-                        facultyFilter={facultyFilter}
-                        onFacultyChange={setFacultyFilter}
-                        levelFilter={levelFilter}
-                        onLevelChange={setLevelFilter}
                         semesterFilter={semesterFilter}
                         onSemesterChange={setSemesterFilter}
+                        academicYearFilter={academicYearFilter}
+                        onAcademicYearChange={setAcademicYearFilter}
                     />
 
                     {/* Table */}

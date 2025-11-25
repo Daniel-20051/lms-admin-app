@@ -9,9 +9,26 @@ import {
 import { Badge } from "@/Components/ui/badge";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { Card, CardContent } from "@/Components/ui/card";
-import { Mail, Phone, GraduationCap, BookOpen, Calendar, User, UserCheck, UserX, RefreshCw } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/Components/ui/tabs";
+import { 
+  Mail, 
+  Phone, 
+  GraduationCap, 
+  BookOpen, 
+  Calendar, 
+  User, 
+  UserCheck, 
+  UserX, 
+  RefreshCw,
+  FileText,
+  Wallet,
+  CreditCard,
+  Award,
+  MapPin,
+  Building2
+} from "lucide-react";
 import { Button } from "@/Components/ui/button";
-import { getStudent, type StudentDetails } from "@/api/admin";
+import { getStudentFullDetails, type StudentFullDetails } from "@/api/admin";
 import { toast } from "sonner";
 
 interface ViewStudentDialogProps {
@@ -25,14 +42,14 @@ export default function ViewStudentDialog({
   onOpenChange,
   studentId,
 }: ViewStudentDialogProps) {
-  const [student, setStudent] = useState<StudentDetails | null>(null);
+  const [studentData, setStudentData] = useState<StudentFullDetails | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (open && studentId) {
       // Reset states first
-      setStudent(null);
+      setStudentData(null);
       setError(null);
       setLoading(false);
       
@@ -51,7 +68,7 @@ export default function ViewStudentDialog({
     
     return () => {
       // Cleanup on unmount
-      setStudent(null);
+      setStudentData(null);
       setError(null);
       setLoading(false);
       // Force restore pointer events and scroll
@@ -66,9 +83,9 @@ export default function ViewStudentDialog({
     try {
       setLoading(true);
       setError(null);
-      const response = await getStudent(studentId);
+      const response = await getStudentFullDetails(studentId);
       if (response.success) {
-        setStudent(response.data.student);
+        setStudentData(response.data);
       }
     } catch (error: any) {
       console.error("Error fetching student details:", error);
@@ -99,10 +116,34 @@ export default function ViewStudentDialog({
     return <Badge variant="outline">{status}</Badge>;
   };
 
+  const formatCurrency = (amount: number | string | null | undefined, currency: string | null = "NGN") => {
+    if (amount === null || amount === undefined) return "N/A";
+    const numAmount = typeof amount === "string" ? parseFloat(amount) : amount;
+    if (isNaN(numAmount)) return "N/A";
+    const currencyCode = currency || "NGN";
+    try {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: currencyCode,
+      }).format(numAmount);
+    } catch (error) {
+      // Fallback if currency code is invalid
+      return `${currencyCode} ${numAmount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="max-w-3xl max-h-[90vh] overflow-y-auto"
+        className="max-w-5xl max-h-[90vh] overflow-y-auto"
         onInteractOutside={(e) => {
           // Prevent closing while loading
           if (loading) {
@@ -111,9 +152,13 @@ export default function ViewStudentDialog({
         }}
       >
         <DialogHeader>
-          <DialogTitle>Student Details</DialogTitle>
+          <DialogTitle>
+            {studentData?.personalInformation 
+              ? `Student Profile: ${studentData.personalInformation.fname} ${studentData.personalInformation.mname || ''} ${studentData.personalInformation.lname}`.trim()
+              : "Student Details"}
+          </DialogTitle>
           <DialogDescription>
-            View detailed information about this student
+            Comprehensive student information and academic records
           </DialogDescription>
         </DialogHeader>
 
@@ -123,138 +168,564 @@ export default function ViewStudentDialog({
             <Skeleton className="h-20 w-full" />
             <Skeleton className="h-20 w-full" />
           </div>
-        ) : student ? (
-          <div className="grid gap-4 py-4">
-            {/* Personal Information */}
-            <Card>
-              <CardContent className="pt-6 space-y-4">
-                <div className="flex items-center gap-2 mb-4">
-                  <User className="h-5 w-5 text-muted-foreground" />
-                  <h3 className="font-semibold">Personal Information</h3>
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      Full Name
-                    </label>
-                    <p className="text-base font-medium mt-1">
-                      {student.fname} {student.lname}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      Status
-                    </label>
-                    <div className="mt-1">{getStatusBadge(student.admin_status)}</div>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      Email
-                    </label>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Mail className="h-4 w-4 text-muted-foreground" />
-                      <p className="text-sm">{student.email}</p>
-                    </div>
-                  </div>
-                  {student.phone && (
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">
-                        Phone
-                      </label>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Phone className="h-4 w-4 text-muted-foreground" />
-                        <p className="text-sm">{student.phone}</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+        ) : studentData ? (
+          <Tabs defaultValue="personal" className="w-full">
+            <TabsList className="grid w-full grid-cols-6 mb-4">
+              <TabsTrigger value="personal" className="flex items-center gap-1 text-xs">
+                <User className="h-3 w-3" />
+                Personal
+              </TabsTrigger>
+              <TabsTrigger value="registrations" className="flex items-center gap-1 text-xs">
+                <FileText className="h-3 w-3" />
+                Registrations
+              </TabsTrigger>
+              <TabsTrigger value="courses" className="flex items-center gap-1 text-xs">
+                <BookOpen className="h-3 w-3" />
+                Courses
+              </TabsTrigger>
+              <TabsTrigger value="exams" className="flex items-center gap-1 text-xs">
+                <Award className="h-3 w-3" />
+                Exams
+              </TabsTrigger>
+              <TabsTrigger value="wallet" className="flex items-center gap-1 text-xs">
+                <Wallet className="h-3 w-3" />
+                Wallet
+              </TabsTrigger>
+              <TabsTrigger value="payments" className="flex items-center gap-1 text-xs">
+                <CreditCard className="h-3 w-3" />
+                Payments
+              </TabsTrigger>
+            </TabsList>
 
-            {/* Academic Information */}
-            <Card>
-              <CardContent className="pt-6 space-y-4">
-                <div className="flex items-center gap-2 mb-4">
-                  <GraduationCap className="h-5 w-5 text-muted-foreground" />
-                  <h3 className="font-semibold">Academic Information</h3>
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      Matric Number
-                    </label>
-                    {student.matric_number ? (
-                      <code className="text-sm bg-muted px-2 py-1 rounded block mt-1 w-fit">
-                        {student.matric_number}
-                      </code>
-                    ) : (
-                      <p className="text-sm text-muted-foreground italic mt-1">
-                        Not assigned
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      Level
-                    </label>
-                    <p className="text-base font-medium mt-1">{student.level} Level</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      Program
-                    </label>
-                    <p className="text-sm mt-1">
-                      {student.program?.program_name || `Program ${student.program_id}`}
-                    </p>
-                  </div>
-                  {student.created_at && (
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">
-                        Enrolled Since
-                      </label>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                        <p className="text-sm">
-                          {new Date(student.created_at).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Enrolled Courses */}
-            {student.enrolledCourses && student.enrolledCourses.length > 0 && (
+            {/* Personal Information Tab */}
+            <TabsContent value="personal" className="space-y-4">
               <Card>
-                <CardContent className="pt-6">
+                <CardContent className="pt-6 space-y-4">
                   <div className="flex items-center gap-2 mb-4">
-                    <BookOpen className="h-5 w-5 text-muted-foreground" />
-                    <h3 className="font-semibold">
-                      Enrolled Courses ({student.enrolledCourses.length})
-                    </h3>
+                    <User className="h-5 w-5 text-muted-foreground" />
+                    <h3 className="font-semibold">Personal Information</h3>
                   </div>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {student.enrolledCourses.map((course) => (
-                      <div
-                        key={course.course_id}
-                        className="border rounded-lg p-3 bg-muted/50"
-                      >
-                        <p className="font-medium text-sm">{course.course_name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          Course ID: {course.course_id}
-                        </p>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Full Name</label>
+                      <p className="text-base font-medium mt-1">
+                        {studentData.personalInformation.fname} {studentData.personalInformation.mname || ''} {studentData.personalInformation.lname}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Status</label>
+                      <div className="mt-1">{getStatusBadge(studentData.personalInformation.admin_status)}</div>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Email</label>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Mail className="h-4 w-4 text-muted-foreground" />
+                        <p className="text-sm">{studentData.personalInformation.email}</p>
                       </div>
-                    ))}
+                    </div>
+                    {studentData.personalInformation.phone && (
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">Phone</label>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Phone className="h-4 w-4 text-muted-foreground" />
+                          <p className="text-sm">{studentData.personalInformation.phone}</p>
+                        </div>
+                      </div>
+                    )}
+                    {studentData.personalInformation.gender && (
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">Gender</label>
+                        <p className="text-sm mt-1">{studentData.personalInformation.gender}</p>
+                      </div>
+                    )}
+                    {studentData.personalInformation.dob && (
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">Date of Birth</label>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Calendar className="h-4 w-4 text-muted-foreground" />
+                          <p className="text-sm">{formatDate(studentData.personalInformation.dob)}</p>
+                        </div>
+                      </div>
+                    )}
+                    {studentData.personalInformation.address && (
+                      <div className="sm:col-span-2">
+                        <label className="text-sm font-medium text-muted-foreground">Address</label>
+                        <div className="flex items-center gap-2 mt-1">
+                          <MapPin className="h-4 w-4 text-muted-foreground" />
+                          <p className="text-sm">{studentData.personalInformation.address}</p>
+                        </div>
+                      </div>
+                    )}
+                    {studentData.personalInformation.state_origin && (
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">State of Origin</label>
+                        <p className="text-sm mt-1">{studentData.personalInformation.state_origin}</p>
+                      </div>
+                    )}
+                    {studentData.personalInformation.country && (
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">Country</label>
+                        <p className="text-sm mt-1">{studentData.personalInformation.country}</p>
+                      </div>
+                    )}
+                    {studentData.personalInformation.study_mode && (
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">Study Mode</label>
+                        <p className="text-sm mt-1">{studentData.personalInformation.study_mode}</p>
+                      </div>
+                    )}
+                    {studentData.personalInformation.application_code && (
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">Application Code</label>
+                        <code className="text-sm bg-muted px-2 py-1 rounded block mt-1 w-fit">
+                          {studentData.personalInformation.application_code}
+                        </code>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
-            )}
-          </div>
+
+              {/* Faculty & Program Information */}
+              <Card>
+                <CardContent className="pt-6 space-y-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <GraduationCap className="h-5 w-5 text-muted-foreground" />
+                    <h3 className="font-semibold">Academic Information</h3>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Matric Number</label>
+                      {studentData.personalInformation.matric_number ? (
+                        <code className="text-sm bg-muted px-2 py-1 rounded block mt-1 w-fit">
+                          {studentData.personalInformation.matric_number}
+                        </code>
+                      ) : (
+                        <p className="text-sm text-muted-foreground italic mt-1">Not assigned</p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Level</label>
+                      <p className="text-base font-medium mt-1">{studentData.personalInformation.level} Level</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Faculty</label>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
+                        <p className="text-sm">{studentData.faculty.name}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Program</label>
+                      <p className="text-sm mt-1">{studentData.program.title}</p>
+                    </div>
+                    {studentData.personalInformation.date && (
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">Enrolled Since</label>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Calendar className="h-4 w-4 text-muted-foreground" />
+                          <p className="text-sm">{formatDate(studentData.personalInformation.date)}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Registrations Tab */}
+            <TabsContent value="registrations" className="space-y-4">
+              {studentData.registrations && studentData.registrations.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-2 font-medium">Academic Year</th>
+                        <th className="text-left p-2 font-medium">Semester</th>
+                        <th className="text-left p-2 font-medium">Registration Date</th>
+                        <th className="text-center p-2 font-medium">Status</th>
+                        <th className="text-center p-2 font-medium">Courses</th>
+                        <th className="text-right p-2 font-medium">School Fees</th>
+                        <th className="text-center p-2 font-medium">Fees Status</th>
+                        <th className="text-left p-2 font-medium">Teller No</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {studentData.registrations.map((registration, index) => (
+                        <tr key={index} className="border-b hover:bg-muted/50">
+                          <td className="p-2 font-medium">{registration.academic_year}</td>
+                          <td className="p-2">{registration.semester}</td>
+                          <td className="p-2 text-xs">{formatDate(registration.registration_date)}</td>
+                          <td className="p-2 text-center">
+                            <Badge variant={registration.registration_status === "registered" ? "default" : "secondary"} className="text-xs">
+                              {registration.registration_status}
+                            </Badge>
+                          </td>
+                          <td className="p-2 text-center">{registration.course_count}</td>
+                          <td className="p-2 text-right font-medium">
+                            {registration.school_fees ? (
+                              formatCurrency(registration.school_fees.amount, registration.school_fees.currency)
+                            ) : (
+                              "-"
+                            )}
+                          </td>
+                          <td className="p-2 text-center">
+                            {registration.school_fees ? (
+                              <Badge variant={registration.school_fees.status === "Paid" ? "default" : "secondary"} className="text-xs">
+                                {registration.school_fees.status}
+                              </Badge>
+                            ) : (
+                              "-"
+                            )}
+                          </td>
+                          <td className="p-2 text-xs">
+                            {registration.school_fees?.teller_no || "-"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-muted-foreground">No registrations found</p>
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Courses Tab */}
+            <TabsContent value="courses" className="space-y-4">
+              {studentData.courses && studentData.courses.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-2 font-medium">Course</th>
+                        <th className="text-left p-2 font-medium">Code</th>
+                        <th className="text-center p-2 font-medium">Type</th>
+                        <th className="text-center p-2 font-medium">Unit</th>
+                        <th className="text-center p-2 font-medium">Level</th>
+                        <th className="text-left p-2 font-medium">Instructor</th>
+                        <th className="text-left p-2 font-medium">Registration</th>
+                        <th className="text-center p-2 font-medium">1st CA</th>
+                        <th className="text-center p-2 font-medium">2nd CA</th>
+                        <th className="text-center p-2 font-medium">3rd CA</th>
+                        <th className="text-center p-2 font-medium">Exam</th>
+                        <th className="text-center p-2 font-medium">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {studentData.courses.map((courseItem, index) => (
+                        <tr key={index} className="border-b hover:bg-muted/50">
+                          <td className="p-2">
+                            <div className="font-medium">{courseItem.course.title}</div>
+                          </td>
+                          <td className="p-2">
+                            <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{courseItem.course.course_code}</code>
+                          </td>
+                          <td className="p-2 text-center">
+                            <Badge variant="outline" className="text-xs">{courseItem.course.course_type}</Badge>
+                          </td>
+                          <td className="p-2 text-center">{courseItem.course.course_unit}</td>
+                          <td className="p-2 text-center">Level {courseItem.course.course_level}</td>
+                          <td className="p-2">
+                            {courseItem.course.instructor ? (
+                              <span className="text-xs">{courseItem.course.instructor.full_name}</span>
+                            ) : (
+                              <span className="text-xs text-muted-foreground">N/A</span>
+                            )}
+                          </td>
+                          <td className="p-2">
+                            <span className="text-xs">
+                              {courseItem.registration.academic_year} - {courseItem.registration.semester}
+                            </span>
+                          </td>
+                          <td className="p-2 text-center font-medium">
+                            {courseItem.results ? courseItem.results.first_ca : "-"}
+                          </td>
+                          <td className="p-2 text-center font-medium">
+                            {courseItem.results ? courseItem.results.second_ca : "-"}
+                          </td>
+                          <td className="p-2 text-center font-medium">
+                            {courseItem.results ? courseItem.results.third_ca : "-"}
+                          </td>
+                          <td className="p-2 text-center font-medium">
+                            {courseItem.results ? courseItem.results.exam_score : "-"}
+                          </td>
+                          <td className="p-2 text-center font-bold">
+                            {courseItem.results ? courseItem.results.total_score : "-"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-muted-foreground">No courses found</p>
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Exams Tab */}
+            <TabsContent value="exams" className="space-y-4">
+              {studentData.exams && studentData.exams.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-2 font-medium">Exam Title</th>
+                        <th className="text-left p-2 font-medium">Course</th>
+                        <th className="text-center p-2 font-medium">Attempt</th>
+                        <th className="text-center p-2 font-medium">Status</th>
+                        <th className="text-center p-2 font-medium">Score</th>
+                        <th className="text-left p-2 font-medium">Started</th>
+                        <th className="text-left p-2 font-medium">Submitted</th>
+                        <th className="text-left p-2 font-medium">Graded</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {studentData.exams.map((exam) => (
+                        <tr key={exam.id} className="border-b hover:bg-muted/50">
+                          <td className="p-2">
+                            <div className="font-medium">{exam.exam.title}</div>
+                          </td>
+                          <td className="p-2">
+                            <div className="text-xs">
+                              {exam.exam.course.title} ({exam.exam.course.course_code})
+                            </div>
+                          </td>
+                          <td className="p-2 text-center">#{exam.attempt_no}</td>
+                          <td className="p-2 text-center">
+                            <Badge variant={exam.status === "graded" ? "default" : "secondary"} className="text-xs">
+                              {exam.status}
+                            </Badge>
+                          </td>
+                          <td className="p-2 text-center font-medium">
+                            {exam.total_score} / {exam.max_score}
+                          </td>
+                          <td className="p-2 text-xs">
+                            {exam.started_at ? formatDate(exam.started_at) : "-"}
+                          </td>
+                          <td className="p-2 text-xs">
+                            {exam.submitted_at ? formatDate(exam.submitted_at) : "-"}
+                          </td>
+                          <td className="p-2 text-xs">
+                            {exam.graded_at ? formatDate(exam.graded_at) : "-"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Award className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-muted-foreground">No exam records found</p>
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Wallet Tab */}
+            <TabsContent value="wallet" className="space-y-4">
+              {studentData.wallet ? (
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Wallet className="h-5 w-5 text-muted-foreground" />
+                      <h3 className="font-semibold">Wallet Balance</h3>
+                    </div>
+                    <div className="mb-6">
+                      <p className="text-3xl font-bold">
+                        {formatCurrency(studentData.wallet.balance, studentData.wallet.currency)}
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">Current Balance</p>
+                    </div>
+                    {studentData.wallet.summary && (
+                      <div className="grid gap-4 sm:grid-cols-3 mb-6 border-t pt-4">
+                        <div>
+                          <label className="text-sm font-medium text-muted-foreground">Total Credits</label>
+                          <p className="text-lg font-medium text-green-600 mt-1">
+                            {formatCurrency(studentData.wallet.summary.total_credits, studentData.wallet.currency)}
+                          </p>
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium text-muted-foreground">Total Debits</label>
+                          <p className="text-lg font-medium text-red-600 mt-1">
+                            {formatCurrency(studentData.wallet.summary.total_debits, studentData.wallet.currency)}
+                          </p>
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium text-muted-foreground">Net Balance</label>
+                          <p className="text-lg font-medium mt-1">
+                            {formatCurrency(studentData.wallet.summary.net_balance, studentData.wallet.currency)}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    {studentData.wallet.transactions && studentData.wallet.transactions.length > 0 ? (
+                      <div>
+                        <h4 className="font-medium mb-3">Transaction History</h4>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b">
+                                <th className="text-left p-2 font-medium">Date</th>
+                                <th className="text-left p-2 font-medium">Service</th>
+                                <th className="text-right p-2 font-medium">Amount</th>
+                                <th className="text-right p-2 font-medium">Balance</th>
+                                <th className="text-center p-2 font-medium">Type</th>
+                                <th className="text-left p-2 font-medium">Ref</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {studentData.wallet.transactions.map((transaction) => (
+                                <tr key={transaction.id} className="border-b hover:bg-muted/50">
+                                  <td className="p-2 text-xs">{formatDate(transaction.date)}</td>
+                                  <td className="p-2">{transaction.service_name || "N/A"}</td>
+                                  <td className="p-2 text-right font-medium">
+                                    {formatCurrency(transaction.amount, transaction.currency || studentData.wallet.currency)}
+                                  </td>
+                                  <td className="p-2 text-right">
+                                    {formatCurrency(transaction.balance, transaction.currency || studentData.wallet.currency)}
+                                  </td>
+                                  <td className="p-2 text-center">
+                                    <Badge variant={transaction.type === "Credit" ? "default" : "secondary"} className="text-xs">
+                                      {transaction.type}
+                                    </Badge>
+                                  </td>
+                                  <td className="p-2 text-xs">{transaction.ref || "-"}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">No transactions found</p>
+                    )}
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="text-center py-8">
+                  <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-muted-foreground">No wallet data available</p>
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Payments Tab */}
+            <TabsContent value="payments" className="space-y-4">
+              {studentData.payments ? (
+                <>
+                  {/* School Fees */}
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="flex items-center gap-2 mb-4">
+                        <GraduationCap className="h-5 w-5 text-muted-foreground" />
+                        <h3 className="font-semibold">School Fees</h3>
+                      </div>
+                      {(studentData.payments.schoolFees?.currentSemester || (studentData.payments.schoolFees?.history && studentData.payments.schoolFees.history.length > 0)) ? (
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b">
+                                <th className="text-left p-2 font-medium">Date</th>
+                                <th className="text-left p-2 font-medium">Academic Year</th>
+                                <th className="text-left p-2 font-medium">Semester</th>
+                                <th className="text-right p-2 font-medium">Amount</th>
+                                <th className="text-center p-2 font-medium">Status</th>
+                                <th className="text-left p-2 font-medium">Teller No</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {studentData.payments.schoolFees?.currentSemester && (
+                                <tr className="border-b hover:bg-muted/50 bg-muted/30">
+                                  <td className="p-2 font-medium">{formatDate(studentData.payments.schoolFees.currentSemester.date)}</td>
+                                  <td className="p-2 font-medium">{studentData.payments.schoolFees.currentSemester.academic_year}</td>
+                                  <td className="p-2 font-medium">{studentData.payments.schoolFees.currentSemester.semester}</td>
+                                  <td className="p-2 text-right font-medium">
+                                    {formatCurrency(studentData.payments.schoolFees.currentSemester.amount, "NGN")}
+                                  </td>
+                                  <td className="p-2 text-center">
+                                    <Badge variant={studentData.payments.schoolFees.currentSemester.paid ? "default" : "secondary"}>
+                                      {studentData.payments.schoolFees.currentSemester.status}
+                                    </Badge>
+                                  </td>
+                                  <td className="p-2 text-xs">-</td>
+                                </tr>
+                              )}
+                              {studentData.payments.schoolFees?.history && studentData.payments.schoolFees.history.map((payment) => (
+                                <tr key={payment.id} className="border-b hover:bg-muted/50">
+                                  <td className="p-2">{formatDate(payment.date)}</td>
+                                  <td className="p-2">{payment.academic_year}</td>
+                                  <td className="p-2">{payment.semester}</td>
+                                  <td className="p-2 text-right font-medium">
+                                    {formatCurrency(payment.amount, payment.currency)}
+                                  </td>
+                                  <td className="p-2 text-center">
+                                    <Badge variant={payment.status === "Paid" ? "default" : "secondary"}>
+                                      {payment.status}
+                                    </Badge>
+                                  </td>
+                                  <td className="p-2 text-xs">{payment.teller_no || "-"}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">No payment history found</p>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Course Orders */}
+                  {studentData.payments.courseOrders && studentData.payments.courseOrders.length > 0 && (
+                    <Card>
+                      <CardContent className="pt-6">
+                        <div className="flex items-center gap-2 mb-4">
+                          <BookOpen className="h-5 w-5 text-muted-foreground" />
+                          <h3 className="font-semibold">Course Orders</h3>
+                        </div>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b">
+                                <th className="text-left p-2 font-medium">Date</th>
+                                <th className="text-left p-2 font-medium">Academic Year</th>
+                                <th className="text-left p-2 font-medium">Semester</th>
+                                <th className="text-right p-2 font-medium">Amount</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {studentData.payments.courseOrders.map((order) => (
+                                <tr key={order.id} className="border-b hover:bg-muted/50">
+                                  <td className="p-2">{formatDate(order.date)}</td>
+                                  <td className="p-2">{order.academic_year}</td>
+                                  <td className="p-2">{order.semester}</td>
+                                  <td className="p-2 text-right font-medium">
+                                    {order.amount ? formatCurrency(order.amount, order.currency || "NGN") : "N/A"}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </>
+              ) : (
+                <div className="text-center py-8">
+                  <CreditCard className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-muted-foreground">No payment data available</p>
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         ) : error ? (
           <div className="py-8 text-center">
             <p className="text-destructive font-medium mb-2">Failed to fetch student details</p>

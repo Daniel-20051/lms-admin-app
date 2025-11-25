@@ -5,31 +5,36 @@ import { Search } from "lucide-react";
 interface CoursesFiltersProps {
     searchTerm: string;
     onSearchChange: (value: string) => void;
-    programFilter: number | null;
-    onProgramChange: (value: number | null) => void;
-    facultyFilter: number | null;
-    onFacultyChange: (value: number | null) => void;
-    levelFilter: number | null;
-    onLevelChange: (value: number | null) => void;
     semesterFilter: string | null;
     onSemesterChange: (value: string | null) => void;
+    academicYearFilter: string | null;
+    onAcademicYearChange: (value: string | null) => void;
 }
 
 // Mock data - you may want to fetch these from an API
-const LEVELS = [100, 200, 300, 400, 500];
 const SEMESTERS = ['1ST', '2ND'];
+
+// Generate academic years (e.g., 2020/2021, 2021/2022, etc.)
+const generateAcademicYears = () => {
+    const currentYear = new Date().getFullYear();
+    const years: string[] = [];
+    // Generate years from 5 years ago to 2 years ahead
+    for (let i = -5; i <= 2; i++) {
+        const year = currentYear + i;
+        years.push(`${year}/${year + 1}`);
+    }
+    return years.reverse(); // Most recent first
+};
+
+const ACADEMIC_YEARS = generateAcademicYears();
 
 export default function CoursesFilters({
     searchTerm,
     onSearchChange,
-    programFilter,
-    onProgramChange,
-    facultyFilter,
-    onFacultyChange,
-    levelFilter,
-    onLevelChange,
     semesterFilter,
     onSemesterChange,
+    academicYearFilter,
+    onAcademicYearChange,
 }: CoursesFiltersProps) {
     return (
         <div className="flex flex-col gap-4 mb-6">
@@ -46,47 +51,19 @@ export default function CoursesFilters({
 
             {/* Filters Row */}
             <div className="flex flex-col sm:flex-row gap-4">
-                {/* Program Filter - will be populated dynamically */}
+                {/* Academic Year Filter */}
                 <Select 
-                    value={programFilter?.toString() || 'all'} 
-                    onValueChange={(value) => onProgramChange(value === 'all' ? null : parseInt(value))}
+                    value={academicYearFilter || 'all'} 
+                    onValueChange={(value) => onAcademicYearChange(value === 'all' ? null : value)}
                 >
                     <SelectTrigger className="w-full sm:w-[180px]">
-                        <SelectValue placeholder="All Programs" />
+                        <SelectValue placeholder="All Academic Years" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="all">All Programs</SelectItem>
-                        {/* Programs will be populated from API */}
-                    </SelectContent>
-                </Select>
-
-                {/* Faculty Filter - will be populated dynamically */}
-                <Select 
-                    value={facultyFilter?.toString() || 'all'} 
-                    onValueChange={(value) => onFacultyChange(value === 'all' ? null : parseInt(value))}
-                >
-                    <SelectTrigger className="w-full sm:w-[180px]">
-                        <SelectValue placeholder="All Faculties" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">All Faculties</SelectItem>
-                        {/* Faculties will be populated from API */}
-                    </SelectContent>
-                </Select>
-
-                {/* Level Filter */}
-                <Select 
-                    value={levelFilter?.toString() || 'all'} 
-                    onValueChange={(value) => onLevelChange(value === 'all' ? null : parseInt(value))}
-                >
-                    <SelectTrigger className="w-full sm:w-[180px]">
-                        <SelectValue placeholder="All Levels" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">All Levels</SelectItem>
-                        {LEVELS.map((level) => (
-                            <SelectItem key={level} value={level.toString()}>
-                                Level {level}
+                        <SelectItem value="all">All Academic Years</SelectItem>
+                        {ACADEMIC_YEARS.map((year) => (
+                            <SelectItem key={year} value={year}>
+                                {year}
                             </SelectItem>
                         ))}
                     </SelectContent>

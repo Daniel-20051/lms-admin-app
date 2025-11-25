@@ -10,7 +10,13 @@ import {
   BookOpen,
   FileText,
   GraduationCap,
-  Calendar
+  Calendar,
+  Building2,
+  Settings,
+  Bell,
+  CreditCard,
+  School,
+  TrendingUp
 } from "lucide-react";
 import { Button } from "@/Components/ui/button";
 import { cn } from "@/lib/utils";
@@ -42,6 +48,11 @@ const navigationItems = [
     icon: Shield,
   },
   {
+    title: "Faculties",
+    href: "/super-admin/faculties",
+    icon: Building2,
+  },
+  {
     title: "Programs",
     href: "/super-admin/programs",
     icon: GraduationCap,
@@ -60,6 +71,26 @@ const navigationItems = [
     title: "Exams",
     href: "/super-admin/exams",
     icon: FileText,
+  },
+  {
+    title: "Notices",
+    href: "/super-admin/notices",
+    icon: Bell,
+  },
+  {
+    title: "Payments",
+    href: "/super-admin/payments",
+    icon: CreditCard,
+  },
+  {
+    title: "Tutor Management",
+    href: "/super-admin/tutors",
+    icon: School,
+  },
+  {
+    title: "Revenue Management",
+    href: "/super-admin/revenue",
+    icon: TrendingUp,
   },
 ];
 
@@ -133,6 +164,18 @@ export default function AdminSidebar({
       </nav>
 
       <div className="p-4 border-t border-border space-y-2">
+        <Button
+          variant={location.pathname === "/super-admin/settings" ? "secondary" : "ghost"}
+          className={cn(
+            "w-full justify-start gap-3",
+            location.pathname === "/super-admin/settings" && "bg-primary/10 text-primary hover:bg-primary/20"
+          )}
+          onClick={() => handleNavigation("/super-admin/settings")}
+        >
+          <Settings className="h-5 w-5" />
+          System Settings
+          {location.pathname === "/super-admin/settings" && <ChevronRight className="ml-auto h-4 w-4" />}
+        </Button>
         <Button
           variant={location.pathname === "/super-admin/profile" ? "secondary" : "ghost"}
           className={cn(
