@@ -362,90 +362,94 @@ export default function ProfilePage() {
           <CardDescription>Your access rights and capabilities</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {/* Students Permissions */}
-            <div className="space-y-3">
-              <h3 className="font-semibold flex items-center gap-2">
-                <User className="h-4 w-4" />
-                Students
-              </h3>
-              <div className="space-y-2 pl-6">
-                <PermissionItem label="View" enabled={profile.permissions.students.view} />
-                <PermissionItem label="Create" enabled={profile.permissions.students.create} />
-                <PermissionItem label="Edit" enabled={profile.permissions.students.edit} />
-                <PermissionItem label="Delete" enabled={profile.permissions.students.delete} />
+          {!profile.permissions ? (
+            <p className="text-muted-foreground">No permissions data available</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              {/* Students Permissions */}
+              <div className="space-y-3">
+                <h3 className="font-semibold flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  Students
+                </h3>
+                <div className="space-y-2 pl-6">
+                  <PermissionItem label="View" enabled={profile.permissions.students?.view ?? false} />
+                  <PermissionItem label="Create" enabled={profile.permissions.students?.create ?? false} />
+                  <PermissionItem label="Edit" enabled={profile.permissions.students?.edit ?? false} />
+                  <PermissionItem label="Delete" enabled={profile.permissions.students?.delete ?? false} />
+                </div>
               </div>
-            </div>
 
-            {/* Staff Permissions */}
-            <div className="space-y-3">
-              <h3 className="font-semibold flex items-center gap-2">
-                <UserCog className="h-4 w-4" />
-                Staff
-              </h3>
-              <div className="space-y-2 pl-6">
-                <PermissionItem label="View" enabled={profile.permissions.staff.view} />
-                <PermissionItem label="Create" enabled={profile.permissions.staff.create} />
-                <PermissionItem label="Edit" enabled={profile.permissions.staff.edit} />
-                <PermissionItem label="Delete" enabled={profile.permissions.staff.delete} />
+              {/* Staff Permissions */}
+              <div className="space-y-3">
+                <h3 className="font-semibold flex items-center gap-2">
+                  <UserCog className="h-4 w-4" />
+                  Staff
+                </h3>
+                <div className="space-y-2 pl-6">
+                  <PermissionItem label="View" enabled={profile.permissions.staff?.view ?? false} />
+                  <PermissionItem label="Create" enabled={profile.permissions.staff?.create ?? false} />
+                  <PermissionItem label="Edit" enabled={profile.permissions.staff?.edit ?? false} />
+                  <PermissionItem label="Delete" enabled={profile.permissions.staff?.delete ?? false} />
+                </div>
               </div>
-            </div>
 
-            {/* Admins Permissions */}
-            <div className="space-y-3">
-              <h3 className="font-semibold flex items-center gap-2">
-                <Shield className="h-4 w-4" />
-                Admins
-              </h3>
-              <div className="space-y-2 pl-6">
-                <PermissionItem label="View" enabled={profile.permissions.admins.view} />
-                <PermissionItem label="Create" enabled={profile.permissions.admins.create} />
-                <PermissionItem label="Edit" enabled={profile.permissions.admins.edit} />
-                <PermissionItem label="Delete" enabled={profile.permissions.admins.delete} />
+              {/* Admins Permissions */}
+              <div className="space-y-3">
+                <h3 className="font-semibold flex items-center gap-2">
+                  <Shield className="h-4 w-4" />
+                  Admins
+                </h3>
+                <div className="space-y-2 pl-6">
+                  <PermissionItem label="View" enabled={profile.permissions.admins?.view ?? false} />
+                  <PermissionItem label="Create" enabled={profile.permissions.admins?.create ?? false} />
+                  <PermissionItem label="Edit" enabled={profile.permissions.admins?.edit ?? false} />
+                  <PermissionItem label="Delete" enabled={profile.permissions.admins?.delete ?? false} />
+                </div>
               </div>
-            </div>
 
-            {/* Courses Permissions */}
-            <div className="space-y-3">
-              <h3 className="font-semibold flex items-center gap-2">
-                <BookOpen className="h-4 w-4" />
-                Courses
-              </h3>
-              <div className="space-y-2 pl-6">
-                <PermissionItem label="View" enabled={profile.permissions.courses.view} />
-                <PermissionItem label="Create" enabled={profile.permissions.courses.create} />
-                <PermissionItem label="Edit" enabled={profile.permissions.courses.edit} />
-                <PermissionItem label="Delete" enabled={profile.permissions.courses.delete} />
+              {/* Courses Permissions */}
+              <div className="space-y-3">
+                <h3 className="font-semibold flex items-center gap-2">
+                  <BookOpen className="h-4 w-4" />
+                  Courses
+                </h3>
+                <div className="space-y-2 pl-6">
+                  <PermissionItem label="View" enabled={profile.permissions.courses?.view ?? false} />
+                  <PermissionItem label="Create" enabled={profile.permissions.courses?.create ?? false} />
+                  <PermissionItem label="Edit" enabled={profile.permissions.courses?.edit ?? false} />
+                  <PermissionItem label="Delete" enabled={profile.permissions.courses?.delete ?? false} />
+                </div>
               </div>
-            </div>
 
-            {/* Content Permissions */}
-            <div className="space-y-3">
-              <h3 className="font-semibold flex items-center gap-2">
-                <FileText className="h-4 w-4" />
-                Content
-              </h3>
-              <div className="space-y-2 pl-6">
-                <PermissionItem label="Modules" enabled={profile.permissions.content.modules} />
-                <PermissionItem label="Units" enabled={profile.permissions.content.units} />
-                <PermissionItem label="Quizzes" enabled={profile.permissions.content.quizzes} />
-                <PermissionItem label="Exams" enabled={profile.permissions.content.exams} />
+              {/* Content Permissions */}
+              <div className="space-y-3">
+                <h3 className="font-semibold flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Content
+                </h3>
+                <div className="space-y-2 pl-6">
+                  <PermissionItem label="Modules" enabled={profile.permissions.content?.modules ?? false} />
+                  <PermissionItem label="Units" enabled={profile.permissions.content?.units ?? false} />
+                  <PermissionItem label="Quizzes" enabled={profile.permissions.content?.quizzes ?? false} />
+                  <PermissionItem label="Exams" enabled={profile.permissions.content?.exams ?? false} />
+                </div>
               </div>
-            </div>
 
-            {/* System Permissions */}
-            <div className="space-y-3">
-              <h3 className="font-semibold flex items-center gap-2">
-                <Settings className="h-4 w-4" />
-                System
-              </h3>
-              <div className="space-y-2 pl-6">
-                <PermissionItem label="Settings" enabled={profile.permissions.system.settings} />
-                <PermissionItem label="Analytics" enabled={profile.permissions.system.analytics} />
-                <PermissionItem label="Logs" enabled={profile.permissions.system.logs} />
+              {/* System Permissions */}
+              <div className="space-y-3">
+                <h3 className="font-semibold flex items-center gap-2">
+                  <Settings className="h-4 w-4" />
+                  System
+                </h3>
+                <div className="space-y-2 pl-6">
+                  <PermissionItem label="Settings" enabled={profile.permissions.system?.settings ?? false} />
+                  <PermissionItem label="Analytics" enabled={profile.permissions.system?.analytics ?? false} />
+                  <PermissionItem label="Logs" enabled={profile.permissions.system?.logs ?? false} />
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </CardContent>
       </Card>
     </div>
