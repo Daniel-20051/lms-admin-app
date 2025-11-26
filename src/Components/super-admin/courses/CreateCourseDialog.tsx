@@ -43,7 +43,7 @@ const LEVELS = [100, 200, 300, 400, 500];
 const SEMESTERS = ['1ST', '2ND'];
 const CURRENCIES = ['NGN', 'USD', 'EUR', 'GBP'];
 const OWNER_TYPES = [
-    { value: 'wsp', label: 'WSP' },
+    { value: 'wpu', label: 'WPU' },
     { value: 'sole_tutor', label: 'Sole Tutor' },
     { value: 'organization', label: 'Organization' },
 ];
@@ -70,7 +70,7 @@ export default function CreateCourseDialog({
         program_id: 0,
         faculty_id: 0,
         currency: 'NGN',
-        owner_type: 'wsp',
+        owner_type: 'wpu',
         is_marketplace: false,
         owner_id: null,
     });
@@ -131,7 +131,7 @@ export default function CreateCourseDialog({
                 program_id: 0,
                 faculty_id: 0,
                 currency: 'NGN',
-                owner_type: 'wsp',
+                owner_type: 'wpu',
                 is_marketplace: false,
                 owner_id: null,
             });
@@ -508,7 +508,7 @@ export default function CreateCourseDialog({
                                     </Label>
                                     <Select
                                         value={formData.owner_type}
-                                        onValueChange={(value: 'wsp' | 'sole_tutor' | 'organization') => 
+                                        onValueChange={(value: 'wpu' | 'sole_tutor' | 'organization') => 
                                             setFormData({ ...formData, owner_type: value })
                                         }
                                     >

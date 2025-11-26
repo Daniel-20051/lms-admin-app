@@ -173,7 +173,7 @@ export default function TutorRevenuePage() {
               </div>
             )}
             <p className="text-xs text-muted-foreground mt-1">
-              WSP commission
+              WPU commission
             </p>
           </CardContent>
         </Card>
@@ -292,7 +292,7 @@ export default function TutorRevenuePage() {
                           {formatCurrency(transaction.course_price, transaction.currency)}
                         </td>
                         <td className="p-2 text-right">
-                          {formatCurrency(transaction.wsp_commission, transaction.currency)}
+                          {formatCurrency(transaction.wpu_commission, transaction.currency)}
                         </td>
                         <td className="p-2 text-right font-medium text-green-600">
                           {formatCurrency(transaction.tutor_earnings, transaction.currency)}

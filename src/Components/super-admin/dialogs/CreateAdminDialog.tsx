@@ -56,7 +56,7 @@ export default function CreateAdminDialog({ open, onOpenChange, onAdminCreated }
     password: "",
     fname: "",
     lname: "",
-    role: "wsp_admin",
+    role: "wpu_admin",
     phone: "",
     permissions: { ...defaultPermissions },
   });
@@ -100,7 +100,7 @@ export default function CreateAdminDialog({ open, onOpenChange, onAdminCreated }
           password: "",
           fname: "",
           lname: "",
-          role: "wsp_admin",
+          role: "wpu_admin",
           phone: "",
           permissions: { ...defaultPermissions },
         });
@@ -183,7 +183,7 @@ export default function CreateAdminDialog({ open, onOpenChange, onAdminCreated }
               <Label htmlFor="role">Role *</Label>
               <Select 
                 value={formData.role} 
-                onValueChange={(value: "super_admin" | "wsp_admin") => setFormData({ ...formData, role: value })}
+                onValueChange={(value: "super_admin" | "wpu_admin") => setFormData({ ...formData, role: value })}
                 disabled={isLoading}
               >
                 <SelectTrigger>
@@ -191,14 +191,14 @@ export default function CreateAdminDialog({ open, onOpenChange, onAdminCreated }
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="super_admin">Super Admin - Full control</SelectItem>
-                  <SelectItem value="wsp_admin">WSP Admin - Content management only</SelectItem>
+                  <SelectItem value="wpu_admin">WPU Admin - Content management only</SelectItem>
                 </SelectContent>
               </Select>
               <div className="flex items-start gap-2 text-xs text-muted-foreground mt-1">
                 <Info className="h-3 w-3 mt-0.5" />
                 <div>
                   <p><strong>Super Admin:</strong> Full system access and control</p>
-                  <p><strong>WSP Admin:</strong> Content management and limited access</p>
+                  <p><strong>WPU Admin:</strong> Content management and limited access</p>
                 </div>
               </div>
             </div>

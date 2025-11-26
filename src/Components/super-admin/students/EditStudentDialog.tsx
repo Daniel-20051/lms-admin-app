@@ -222,7 +222,7 @@ export default function EditStudentDialog({
                   name="matric_number"
                   value={formData.matric_number}
                   onChange={handleInputChange}
-                  placeholder="e.g., WSP/2024/001"
+                  placeholder="e.g., WPU/2024/001"
                   disabled={saving}
                 />
               </div>

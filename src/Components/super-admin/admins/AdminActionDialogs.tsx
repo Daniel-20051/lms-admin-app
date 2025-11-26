@@ -75,7 +75,7 @@ export default function AdminActionDialogs({
                 </span>
               ) : isSuperAdmin ? (
                 <span className="text-orange-600 font-medium">
-                  Warning: You cannot deactivate other Super Admins. Only WSP Admins can be deactivated.
+                  Warning: You cannot deactivate other Super Admins. Only WPU Admins can be deactivated.
                 </span>
               ) : (
                 <>

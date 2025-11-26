@@ -307,7 +307,7 @@ export default function TransactionsPage() {
                           {formatCurrency(transaction.course_price, transaction.currency)}
                         </td>
                         <td className="p-2 text-right">
-                          {formatCurrency(transaction.wsp_commission, transaction.currency)}
+                          {formatCurrency(transaction.wpu_commission, transaction.currency)}
                           <div className="text-xs text-muted-foreground">
                             ({transaction.commission_rate}%)
                           </div>

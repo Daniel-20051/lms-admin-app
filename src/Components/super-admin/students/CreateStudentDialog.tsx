@@ -188,7 +188,7 @@ export default function CreateStudentDialog({
                 name="matric_number"
                 value={formData.matric_number}
                 onChange={handleInputChange}
-                placeholder="e.g., WSP/2024/999"
+                placeholder="e.g., WPU/2024/999"
                 disabled={creating}
               />
               <p className="text-xs text-muted-foreground">

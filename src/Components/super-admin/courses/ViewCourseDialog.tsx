@@ -157,10 +157,10 @@ export default function ViewCourseDialog({
                                     <div className="text-sm font-medium text-muted-foreground">Owner Type:</div>
                                     <div className="col-span-2">
                                         <Badge 
-                                            variant={course.owner_type === 'wsp' ? 'default' : 'secondary'}
-                                            className={course.owner_type === 'wsp' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-purple-500 hover:bg-purple-600'}
+                                            variant={course.owner_type === 'wpu' ? 'default' : 'secondary'}
+                                            className={course.owner_type === 'wpu' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-purple-500 hover:bg-purple-600'}
                                         >
-                                            {course.owner_type === 'wsp' ? 'WSP' : 'Marketplace'}
+                                            {course.owner_type === 'wpu' ? 'WPU' : 'Marketplace'}
                                         </Badge>
                                     </div>
                                 </div>
@@ -191,7 +191,7 @@ export default function ViewCourseDialog({
                                 <Separator />
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="text-sm font-medium text-muted-foreground">Token:</div>
-                                    <div className="col-span-2 text-sm font-mono text-xs break-all">{course.token}</div>
+                                    <div className="col-span-2 text-sm font-mono break-all">{course.token}</div>
                                 </div>
                             </div>
                         </div>

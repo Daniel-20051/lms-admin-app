@@ -12,16 +12,16 @@ import {
   Calendar
 } from "lucide-react";
 import {
-  getWSPRevenueStats,
-  type GetWSPRevenueStatsParams,
-  type WSPRevenueStats
+  getWPURevenueStats,
+  type GetWPURevenueStatsParams,
+  type WPURevenueStats
 } from "@/api/admin";
 import { toast } from "sonner";
 
 export default function RevenueStatsPage() {
-  const [stats, setStats] = useState<WSPRevenueStats | null>(null);
+  const [stats, setStats] = useState<WPURevenueStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<GetWSPRevenueStatsParams>({});
+  const [filters, setFilters] = useState<GetWPURevenueStatsParams>({});
 
   useEffect(() => {
     fetchStats();
@@ -30,7 +30,7 @@ export default function RevenueStatsPage() {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const response = await getWSPRevenueStats(filters);
+      const response = await getWPURevenueStats(filters);
       if (response.success) {
         setStats(response.data);
       }
@@ -58,7 +58,7 @@ export default function RevenueStatsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">WSP Revenue Statistics</h1>
+          <h1 className="text-3xl font-bold">WPU Revenue Statistics</h1>
           <p className="text-muted-foreground">Overview of marketplace revenue and commissions</p>
         </div>
         <div className="flex gap-2">
@@ -104,7 +104,7 @@ export default function RevenueStatsPage() {
               </div>
             )}
             <p className="text-xs text-muted-foreground mt-1">
-              WSP earnings
+              WPU earnings
             </p>
           </CardContent>
         </Card>

@@ -1022,7 +1022,7 @@ export interface CreateAdminData {
   password: string;
   fname: string;
   lname: string;
-  role: "super_admin" | "wsp_admin";
+  role: "super_admin" | "wpu_admin";
   phone?: string;
   permissions: CreateAdminPermissions;
 }
@@ -2259,7 +2259,7 @@ export interface MarketplaceTransaction {
   course_price: number;
   currency: string;
   commission_rate: number;
-  wsp_commission: number;
+  wpu_commission: number;
   tutor_earnings: number;
   payment_status: "pending" | "completed" | "failed" | "refunded";
   course: {
@@ -2273,7 +2273,7 @@ export interface MarketplaceTransaction {
     lname: string;
     email: string;
   };
-  wspCommission: {
+  wpuCommission: {
     id: number;
     amount: number;
     status: string;
@@ -2324,7 +2324,7 @@ export const getMarketplaceTransactions = async (
   }
 };
 
-export interface WSPRevenueStats {
+export interface WPURevenueStats {
   totalCommission: number;
   totalRevenue: number;
   totalTransactions: number;
@@ -2344,20 +2344,20 @@ export interface WSPRevenueStats {
   }>;
 }
 
-export interface GetWSPRevenueStatsParams {
+export interface GetWPURevenueStatsParams {
   start_date?: string;
   end_date?: string;
 }
 
-export interface GetWSPRevenueStatsResponse {
+export interface GetWPURevenueStatsResponse {
   success: boolean;
   message: string;
-  data: WSPRevenueStats;
+  data: WPURevenueStats;
 }
 
-export const getWSPRevenueStats = async (
-  params: GetWSPRevenueStatsParams = {}
-): Promise<GetWSPRevenueStatsResponse> => {
+export const getWPURevenueStats = async (
+  params: GetWPURevenueStatsParams = {}
+): Promise<GetWPURevenueStatsResponse> => {
   try {
     const headers = getAuthHeaders();
     const queryParams = new URLSearchParams();
@@ -2365,12 +2365,12 @@ export const getWSPRevenueStats = async (
     if (params.start_date) queryParams.append('start_date', params.start_date);
     if (params.end_date) queryParams.append('end_date', params.end_date);
 
-    const url = `${BASE_URL}/api/admin/revenue/wsp-stats${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    const url = `${BASE_URL}/api/admin/revenue/wpu-stats${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
 
-    const response = await axios.get<GetWSPRevenueStatsResponse>(url, { headers });
+    const response = await axios.get<GetWPURevenueStatsResponse>(url, { headers });
     return response.data;
   } catch (err) {
-    handleApiError(err, 'getting WSP revenue statistics');
+    handleApiError(err, 'getting WPU revenue statistics');
     throw err;
   }
 };
