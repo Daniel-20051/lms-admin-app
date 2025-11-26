@@ -35,7 +35,7 @@ export interface Course {
     exam_fee: number;
     currency: string;
     staff_id: number;
-    owner_type: 'wsp' | 'marketplace';
+    owner_type: 'wpu' |'marketplace';
     owner_id: number | null;
     is_marketplace: boolean;
     marketplace_status: string | null;
@@ -165,7 +165,7 @@ export interface CreateCourseData {
     program_id: number;
     faculty_id: number;
     currency: string;
-    owner_type: 'wsp' | 'sole_tutor' | 'organization';
+    owner_type: 'wpu' | 'sole_tutor' | 'organization';
     is_marketplace: boolean;
     owner_id?: number | null;
 }
@@ -206,7 +206,7 @@ export interface UpdateCourseData {
     program_id?: number;
     faculty_id?: number;
     currency?: string;
-    owner_type?: 'wsp' | 'sole_tutor' | 'organization';
+    owner_type?: 'wpu' | 'sole_tutor' | 'organization';
     is_marketplace?: boolean;
     owner_id?: number | null;
 }

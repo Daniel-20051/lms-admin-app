@@ -115,12 +115,33 @@ export default function CoursesTable({
                                 <div className="text-sm">{formatCurrency(course.price, course.currency)}</div>
                             </TableCell>
                             <TableCell>
-                                <Badge 
-                                    variant={course.owner_type === 'wsp' ? 'default' : 'secondary'}
-                                    className={course.owner_type === 'wsp' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-purple-500 hover:bg-purple-600'}
-                                >
-                                    {course.owner_type === 'wsp' ? 'WSP' : 'Marketplace'}
-                                </Badge>
+                                {(() => {
+                                    const getOwnerTypeDisplay = () => {
+                                        if (course.owner_type === 'wpu') {
+                                            return { label: 'WPU', variant: 'default' as const, className: 'bg-blue-500 hover:bg-blue-600' };
+                                        }
+                                        if (course.owner_type === 'marketplace' || course.is_marketplace) {
+                                            return { label: 'Marketplace', variant: 'secondary' as const, className: 'bg-purple-500 hover:bg-purple-600' };
+                                        }
+                                        if (course.owner_type === 'sole_tutor') {
+                                            return { label: 'Sole Tutor', variant: 'secondary' as const, className: 'bg-green-500 hover:bg-green-600' };
+                                        }
+                                        if (course.owner_type === 'organization') {
+                                            return { label: 'Organization', variant: 'secondary' as const, className: 'bg-orange-500 hover:bg-orange-600' };
+                                        }
+                                        return { label: course.owner_type || 'Unknown', variant: 'secondary' as const, className: 'bg-gray-500 hover:bg-gray-600' };
+                                    };
+                                    
+                                    const display = getOwnerTypeDisplay();
+                                    return (
+                                        <Badge 
+                                            variant={display.variant}
+                                            className={display.className}
+                                        >
+                                            {display.label}
+                                        </Badge>
+                                    );
+                                })()}
                             </TableCell>
                             <TableCell className="text-right">
                                 <DropdownMenu>
