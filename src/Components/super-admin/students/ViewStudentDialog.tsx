@@ -30,6 +30,8 @@ import {
 import { Button } from "@/Components/ui/button";
 import { getStudentFullDetails, type StudentFullDetails } from "@/api/admin";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
+import ManageWalletDialog from "./ManageWalletDialog";
 
 interface ViewStudentDialogProps {
   open: boolean;
@@ -42,9 +44,11 @@ export default function ViewStudentDialog({
   onOpenChange,
   studentId,
 }: ViewStudentDialogProps) {
+  const { isSuperAdmin } = useAuth();
   const [studentData, setStudentData] = useState<StudentFullDetails | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [manageWalletOpen, setManageWalletOpen] = useState(false);
 
   useEffect(() => {
     if (open && studentId) {
@@ -397,69 +401,86 @@ export default function ViewStudentDialog({
             {/* Courses Tab */}
             <TabsContent value="courses" className="space-y-4">
               {studentData.courses && studentData.courses.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left p-2 font-medium">Course</th>
-                        <th className="text-left p-2 font-medium">Code</th>
-                        <th className="text-center p-2 font-medium">Type</th>
-                        <th className="text-center p-2 font-medium">Unit</th>
-                        <th className="text-center p-2 font-medium">Level</th>
-                        <th className="text-left p-2 font-medium">Instructor</th>
-                        <th className="text-left p-2 font-medium">Registration</th>
-                        <th className="text-center p-2 font-medium">1st CA</th>
-                        <th className="text-center p-2 font-medium">2nd CA</th>
-                        <th className="text-center p-2 font-medium">3rd CA</th>
-                        <th className="text-center p-2 font-medium">Exam</th>
-                        <th className="text-center p-2 font-medium">Total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {studentData.courses.map((courseItem, index) => (
-                        <tr key={index} className="border-b hover:bg-muted/50">
-                          <td className="p-2">
-                            <div className="font-medium">{courseItem.course.title}</div>
-                          </td>
-                          <td className="p-2">
-                            <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{courseItem.course.course_code}</code>
-                          </td>
-                          <td className="p-2 text-center">
-                            <Badge variant="outline" className="text-xs">{courseItem.course.course_type}</Badge>
-                          </td>
-                          <td className="p-2 text-center">{courseItem.course.course_unit}</td>
-                          <td className="p-2 text-center">Level {courseItem.course.course_level}</td>
-                          <td className="p-2">
-                            {courseItem.course.instructor ? (
-                              <span className="text-xs">{courseItem.course.instructor.full_name}</span>
-                            ) : (
-                              <span className="text-xs text-muted-foreground">N/A</span>
-                            )}
-                          </td>
-                          <td className="p-2">
-                            <span className="text-xs">
-                              {courseItem.registration.academic_year} - {courseItem.registration.semester}
-                            </span>
-                          </td>
-                          <td className="p-2 text-center font-medium">
-                            {courseItem.results ? courseItem.results.first_ca : "-"}
-                          </td>
-                          <td className="p-2 text-center font-medium">
-                            {courseItem.results ? courseItem.results.second_ca : "-"}
-                          </td>
-                          <td className="p-2 text-center font-medium">
-                            {courseItem.results ? courseItem.results.third_ca : "-"}
-                          </td>
-                          <td className="p-2 text-center font-medium">
-                            {courseItem.results ? courseItem.results.exam_score : "-"}
-                          </td>
-                          <td className="p-2 text-center font-bold">
-                            {courseItem.results ? courseItem.results.total_score : "-"}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="space-y-6">
+                  {studentData.courses.map((courseGroup, groupIndex) => (
+                    <Card key={groupIndex}>
+                      <CardContent className="pt-6">
+                        <div className="flex items-center gap-2 mb-4">
+                          <Calendar className="h-5 w-5 text-muted-foreground" />
+                          <h3 className="font-semibold">
+                            {courseGroup.academic_year} - {courseGroup.semester} Semester
+                          </h3>
+                          <Badge variant="outline" className="ml-auto">
+                            {courseGroup.courses.length} {courseGroup.courses.length === 1 ? 'Course' : 'Courses'}
+                          </Badge>
+                        </div>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b">
+                                <th className="text-left p-2 font-medium">Course</th>
+                                <th className="text-left p-2 font-medium">Code</th>
+                                <th className="text-center p-2 font-medium">Type</th>
+                                <th className="text-center p-2 font-medium">Unit</th>
+                                <th className="text-center p-2 font-medium">Level</th>
+                                <th className="text-left p-2 font-medium">Instructor</th>
+                                <th className="text-center p-2 font-medium">1st CA</th>
+                                <th className="text-center p-2 font-medium">2nd CA</th>
+                                <th className="text-center p-2 font-medium">3rd CA</th>
+                                <th className="text-center p-2 font-medium">Exam</th>
+                                <th className="text-center p-2 font-medium">Total</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {courseGroup.courses.map((course, courseIndex) => (
+                                <tr key={courseIndex} className="border-b hover:bg-muted/50">
+                                  <td className="p-2">
+                                    <div className="font-medium">{course?.title || "N/A"}</div>
+                                  </td>
+                                  <td className="p-2">
+                                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded">
+                                      {course?.course_code || "N/A"}
+                                    </code>
+                                  </td>
+                                  <td className="p-2 text-center">
+                                    <Badge variant="outline" className="text-xs">
+                                      {course?.course_type || "N/A"}
+                                    </Badge>
+                                  </td>
+                                  <td className="p-2 text-center">{course?.course_unit || "-"}</td>
+                                  <td className="p-2 text-center">
+                                    Level {course?.course_level || "N/A"}
+                                  </td>
+                                  <td className="p-2">
+                                    {course?.instructor ? (
+                                      <span className="text-xs">{course.instructor.full_name}</span>
+                                    ) : (
+                                      <span className="text-xs text-muted-foreground">N/A</span>
+                                    )}
+                                  </td>
+                                  <td className="p-2 text-center font-medium">
+                                    {course?.results?.first_ca ?? "-"}
+                                  </td>
+                                  <td className="p-2 text-center font-medium">
+                                    {course?.results?.second_ca ?? "-"}
+                                  </td>
+                                  <td className="p-2 text-center font-medium">
+                                    {course?.results?.third_ca ?? "-"}
+                                  </td>
+                                  <td className="p-2 text-center font-medium">
+                                    {course?.results?.exam_score ?? "-"}
+                                  </td>
+                                  <td className="p-2 text-center font-bold">
+                                    {course?.results?.total_score ?? "-"}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
               ) : (
                 <div className="text-center py-8">
@@ -533,9 +554,21 @@ export default function ViewStudentDialog({
               {studentData.wallet ? (
                 <Card>
                   <CardContent className="pt-6">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Wallet className="h-5 w-5 text-muted-foreground" />
-                      <h3 className="font-semibold">Wallet Balance</h3>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <Wallet className="h-5 w-5 text-muted-foreground" />
+                        <h3 className="font-semibold">Wallet Balance</h3>
+                      </div>
+                      {isSuperAdmin && (
+                        <Button
+                          onClick={() => setManageWalletOpen(true)}
+                          size="sm"
+                          variant="outline"
+                        >
+                          <CreditCard className="h-4 w-4 mr-2" />
+                          Manage Wallet
+                        </Button>
+                      )}
                     </div>
                     <div className="mb-6">
                       <p className="text-3xl font-bold">
@@ -748,6 +781,19 @@ export default function ViewStudentDialog({
           </div>
         )}
       </DialogContent>
+
+      {/* Manage Wallet Dialog */}
+      {studentData && (
+        <ManageWalletDialog
+          open={manageWalletOpen}
+          onOpenChange={setManageWalletOpen}
+          studentId={studentId}
+          studentName={`${studentData.personalInformation.fname} ${studentData.personalInformation.lname}`}
+          currentBalance={parseFloat(studentData.wallet?.balance || "0")}
+          currency={studentData.wallet?.currency || "NGN"}
+          onSuccess={fetchStudentDetails}
+        />
+      )}
     </Dialog>
   );
 }

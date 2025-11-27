@@ -492,6 +492,30 @@ export interface CourseResults {
   total_score: number;
 }
 
+export interface CourseWithDetails {
+  id: number;
+  title: string;
+  course_code: string;
+  course_unit: number;
+  course_type: string;
+  course_level: number;
+  price: string;
+  exam_fee: number;
+  currency: string;
+  program: CourseProgram | null;
+  faculty: CourseFaculty;
+  instructor: CourseInstructor | null;
+  registration: CourseRegistration;
+  results: CourseResults;
+}
+
+export interface StudentCourseGroup {
+  academic_year: string;
+  semester: string;
+  date: string;
+  courses: CourseWithDetails[];
+}
+
 export interface StudentCourse {
   registration: CourseRegistration;
   course: CourseDetails;
@@ -549,6 +573,45 @@ export interface StudentWallet {
   currency: string;
   transactions: WalletTransaction[];
   summary: WalletSummary;
+}
+
+// Wallet Transaction Request/Response Types
+export interface CreateWalletTransactionData {
+  type: "Credit" | "Debit";
+  amount: number;
+  service_name: string;
+  ref?: string;
+  notes?: string;
+  semester?: string;
+  academic_year?: string;
+  currency?: string;
+}
+
+export interface CreateWalletTransactionResponse {
+  success: boolean;
+  message: string;
+  data: {
+    transaction: {
+      id: number;
+      student_id: number;
+      type: "Credit" | "Debit";
+      amount: number;
+      service_name: string;
+      ref: string;
+      date: string;
+      currency: string;
+    };
+    wallet: {
+      previous_balance: number;
+      new_balance: number;
+      student: {
+        id: number;
+        name: string;
+        email: string;
+        matric_number: string;
+      };
+    };
+  };
 }
 
 export interface SchoolFeePayment {
@@ -614,7 +677,7 @@ export interface StudentFullDetails {
   faculty: StudentFaculty;
   program: StudentProgram;
   registrations: StudentRegistration[];
-  courses: StudentCourse[];
+  courses: StudentCourseGroup[];
   exams: ExamDetails[];
   wallet: StudentWallet;
   payments: StudentPayments;
@@ -778,6 +841,25 @@ export const resetStudentPassword = async (
     return response.data;
   } catch (err) {
     handleApiError(err, 'resetting student password');
+    throw err;
+  }
+};
+
+// Create Wallet Transaction (Credit/Debit)
+export const createWalletTransaction = async (
+  studentId: number,
+  data: CreateWalletTransactionData
+): Promise<CreateWalletTransactionResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.post<CreateWalletTransactionResponse>(
+      `${BASE_URL}/api/admin/students/${studentId}/wallet/transaction`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'creating wallet transaction');
     throw err;
   }
 };
