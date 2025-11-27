@@ -2,6 +2,8 @@ import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom
 import { ThemeProvider } from "@/Components/theme-provider";
 import { useAuth, AuthProvider } from "@/context/AuthContext";
 import AdminLoginPage from "@/pages/AdminLogin";
+import ForgotPasswordPage from "@/pages/ForgotPassword";
+import ResetPasswordPage from "@/pages/ResetPassword";
 import SuperAdminLayout from "@/Components/super-admin/AdminLayout";
 import SuperAdminDashboard from "@/pages/super-admin/dashboard/DashboardPage";
 import SuperAdminProfile from "@/pages/super-admin/profile/ProfilePage";
@@ -73,6 +75,26 @@ function AppRouter() {
               <Navigate to="/super-admin/dashboard" replace />
             ) : (
               <AdminLoginPage />
+            )
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            hasSuperAdminAccess ? (
+              <Navigate to="/super-admin/dashboard" replace />
+            ) : (
+              <ForgotPasswordPage />
+            )
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            hasSuperAdminAccess ? (
+              <Navigate to="/super-admin/dashboard" replace />
+            ) : (
+              <ResetPasswordPage />
             )
           }
         />

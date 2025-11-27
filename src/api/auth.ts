@@ -129,5 +129,34 @@ export class AuthApi {
       return err;
     }
   }
+
+  async requestPasswordReset(data: { email: string }) {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/api/admin/password/reset-request`,
+        { email: data.email }
+      );
+      return response;
+    } catch (err: any) {
+      console.error("Error requesting password reset:", err);
+      throw err;
+    }
+  }
+
+  async resetPassword(data: { token: string; newPassword: string }) {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/api/admin/password/reset`,
+        {
+          token: data.token,
+          newPassword: data.newPassword,
+        }
+      );
+      return response;
+    } catch (err: any) {
+      console.error("Error resetting password:", err);
+      throw err;
+    }
+  }
 }
 

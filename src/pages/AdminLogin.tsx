@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
@@ -142,6 +142,14 @@ export default function AdminLoginPage() {
                     )}
                   </button>
                 </div>
+              </div>
+              <div className="flex items-center justify-end">
+                <Link
+                  to="/forgot-password"
+                  className="text-sm text-muted-foreground hover:text-primary"
+                >
+                  Forgot password?
+                </Link>
               </div>
               <Button
                 type="submit"
