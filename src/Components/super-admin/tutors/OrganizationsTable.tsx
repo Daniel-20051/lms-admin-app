@@ -87,7 +87,7 @@ export default function OrganizationsTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
+            <TableHead>S/N</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Phone</TableHead>
@@ -129,7 +129,7 @@ export default function OrganizationsTable({
               </TableCell>
             </TableRow>
           ) : (
-            organizations.map((organization) => {
+            organizations.map((organization, index) => {
               const displayFields = getDisplayFields(organization);
               const name = displayFields.find(f => f.label === "Name")?.value || `Organization #${organization.id}`;
               const email = displayFields.find(f => f.label === "Email")?.value || "N/A";
@@ -138,7 +138,7 @@ export default function OrganizationsTable({
 
               return (
                 <TableRow key={organization.id}>
-                  <TableCell className="font-medium">{organization.id}</TableCell>
+                  <TableCell className="font-medium">{index + 1}</TableCell>
                   <TableCell>{name}</TableCell>
                   <TableCell className="text-muted-foreground">{email}</TableCell>
                   <TableCell className="text-muted-foreground">{phone}</TableCell>

@@ -66,7 +66,7 @@ export default function ProgramsTable({
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="w-[80px]">ID</TableHead>
+                        <TableHead className="w-[80px]">S/N</TableHead>
                         <TableHead>Title</TableHead>
                         <TableHead>Faculty</TableHead>
                         <TableHead className="hidden md:table-cell">Description</TableHead>
@@ -76,9 +76,9 @@ export default function ProgramsTable({
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {programs.map((program) => (
+                    {programs.map((program, index) => (
                         <TableRow key={program.id}>
-                            <TableCell className="font-medium">{program.id}</TableCell>
+                            <TableCell className="font-medium">{index + 1}</TableCell>
                             <TableCell>
                                 <div className="font-medium">{program.title}</div>
                             </TableCell>

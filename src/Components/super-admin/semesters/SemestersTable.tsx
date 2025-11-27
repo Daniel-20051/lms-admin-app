@@ -92,7 +92,7 @@ export default function SemestersTable({
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="w-[80px]">ID</TableHead>
+                        <TableHead className="w-[80px]">S/N</TableHead>
                         <TableHead>Academic Year</TableHead>
                         <TableHead>Semester</TableHead>
                         <TableHead>Status</TableHead>
@@ -103,9 +103,9 @@ export default function SemestersTable({
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {semesters.filter(semester => semester != null).map((semester) => (
+                    {semesters.filter(semester => semester != null).map((semester, index) => (
                         <TableRow key={semester.id}>
-                            <TableCell className="font-medium">{semester.id}</TableCell>
+                            <TableCell className="font-medium">{index + 1}</TableCell>
                             <TableCell>
                                 <div className="font-medium">{semester.academic_year || 'N/A'}</div>
                             </TableCell>

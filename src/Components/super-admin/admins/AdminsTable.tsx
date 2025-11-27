@@ -73,7 +73,7 @@ export default function AdminsTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Admin ID</TableHead>
+            <TableHead>S/N</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Role</TableHead>
@@ -128,9 +128,9 @@ export default function AdminsTable({
               </TableCell>
             </TableRow>
           ) : (
-            admins.map((admin) => (
+            admins.map((admin, index) => (
               <TableRow key={admin.id}>
-                <TableCell className="font-medium">#{admin.id}</TableCell>
+                <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell>
                   {admin.fname} {admin.lname}
                 </TableCell>

@@ -233,7 +233,7 @@ export default function TutorRevenuePage() {
               <table className="w-full">
                 <thead>
                   <tr>
-                    <th className="text-left p-2 border-b">ID</th>
+                    <th className="text-left p-2 border-b">S/N</th>
                     <th className="text-left p-2 border-b">Course</th>
                     <th className="text-left p-2 border-b">Student</th>
                     <th className="text-right p-2 border-b">Price</th>
@@ -263,7 +263,7 @@ export default function TutorRevenuePage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left p-2 font-medium">ID</th>
+                      <th className="text-left p-2 font-medium">S/N</th>
                       <th className="text-left p-2 font-medium">Course</th>
                       <th className="text-left p-2 font-medium">Student</th>
                       <th className="text-right p-2 font-medium">Price</th>
@@ -273,9 +273,9 @@ export default function TutorRevenuePage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {paginatedTransactions.map((transaction) => (
+                    {paginatedTransactions.map((transaction, index) => (
                       <tr key={transaction.id} className="border-b hover:bg-muted/50">
-                        <td className="p-2">{transaction.id}</td>
+                        <td className="p-2">{index + 1}</td>
                         <td className="p-2">
                           <div>
                             <div className="font-medium">{transaction.course.title}</div>

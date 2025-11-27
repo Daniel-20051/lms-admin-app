@@ -88,7 +88,7 @@ export default function TutorsTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
+            <TableHead>S/N</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Phone</TableHead>
@@ -130,7 +130,7 @@ export default function TutorsTable({
               </TableCell>
             </TableRow>
           ) : (
-            tutors.map((tutor) => {
+            tutors.map((tutor, index) => {
               const displayFields = getDisplayFields(tutor);
               const name = displayFields.find(f => f.label === "Name")?.value || `Tutor #${tutor.id}`;
               const email = displayFields.find(f => f.label === "Email")?.value || "N/A";
@@ -139,7 +139,7 @@ export default function TutorsTable({
 
               return (
                 <TableRow key={tutor.id}>
-                  <TableCell className="font-medium">{tutor.id}</TableCell>
+                  <TableCell className="font-medium">{index + 1}</TableCell>
                   <TableCell>{name}</TableCell>
                   <TableCell className="text-muted-foreground">{email}</TableCell>
                   <TableCell className="text-muted-foreground">{phone}</TableCell>

@@ -67,7 +67,7 @@ export default function CoursesTable({
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="w-[80px]">ID</TableHead>
+                        <TableHead className="w-[80px]">S/N</TableHead>
                         <TableHead>Course Code</TableHead>
                         <TableHead>Title</TableHead>
                         <TableHead className="hidden md:table-cell">Program</TableHead>
@@ -82,9 +82,9 @@ export default function CoursesTable({
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {courses.filter(course => course != null).map((course) => (
+                    {courses.filter(course => course != null).map((course, index) => (
                         <TableRow key={course.id}>
-                            <TableCell className="font-medium">{course.id}</TableCell>
+                            <TableCell className="font-medium">{index + 1}</TableCell>
                             <TableCell>
                                 <div className="font-medium">{course.course_code || 'N/A'}</div>
                             </TableCell>

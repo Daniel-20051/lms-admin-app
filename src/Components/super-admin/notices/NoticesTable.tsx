@@ -69,7 +69,7 @@ export default function NoticesTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
+            <TableHead>S/N</TableHead>
             <TableHead>Title</TableHead>
             <TableHead>Note</TableHead>
             <TableHead>Type</TableHead>
@@ -116,9 +116,9 @@ export default function NoticesTable({
               </TableCell>
             </TableRow>
           ) : (
-            notices.map((notice) => (
+            notices.map((notice, index) => (
               <TableRow key={notice.id}>
-                <TableCell className="font-medium">#{notice.id}</TableCell>
+                <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell className="font-medium">{notice.title}</TableCell>
                 <TableCell className="text-muted-foreground">
                   {truncateText(notice.note.replace(/\\r\\n/g, " "))}

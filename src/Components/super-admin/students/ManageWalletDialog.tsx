@@ -13,7 +13,7 @@ import { Textarea } from "@/Components/ui/textarea";
 import { Wallet, AlertCircle, TrendingUp, TrendingDown } from "lucide-react";
 import { createWalletTransaction, type CreateWalletTransactionData } from "@/api/admin";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency, sanitizeCurrency } from "@/lib/utils";
 
 interface ManageWalletDialogProps {
   open: boolean;
@@ -43,14 +43,9 @@ export default function ManageWalletDialog({
     notes: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const formatCurrency = (amount: number, curr: string = "NGN") => {
-    return new Intl.NumberFormat("en-NG", {
-      style: "currency",
-      currency: curr,
-      minimumFractionDigits: 2,
-    }).format(amount);
-  };
+  
+  // Sanitize currency prop on mount
+  const validCurrency = sanitizeCurrency(currency);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -65,13 +60,13 @@ export default function ManageWalletDialog({
 
     // Check for debit with insufficient balance
     if (formData.type === "Debit" && formData.amount > currentBalance) {
-      newErrors.amount = `Insufficient balance. Current balance: ${formatCurrency(currentBalance, currency)}`;
+      newErrors.amount = `Insufficient balance. Current balance: ${formatCurrency(currentBalance, validCurrency)}`;
     }
 
     // Warn for large amounts (over 100,000)
     if (formData.amount > 100000) {
       const confirmed = window.confirm(
-        `You are about to ${formData.type.toLowerCase()} a large amount (${formatCurrency(formData.amount, currency)}). Are you sure you want to continue?`
+        `You are about to ${formData.type.toLowerCase()} a large amount (${formatCurrency(formData.amount, validCurrency)}). Are you sure you want to continue?`
       );
       if (!confirmed) {
         newErrors.amount = "Transaction cancelled";
@@ -108,7 +103,7 @@ export default function ManageWalletDialog({
 
       if (response.success) {
         toast.success(response.message || "Wallet transaction processed successfully", {
-          description: `New balance: ${formatCurrency(response.data.wallet.new_balance, currency)}`,
+          description: `New balance: ${formatCurrency(response.data.wallet.new_balance, validCurrency)}`,
         });
 
         // Reset form
@@ -169,7 +164,7 @@ export default function ManageWalletDialog({
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Current Balance</p>
-              <p className="text-2xl font-bold">{formatCurrency(currentBalance, currency)}</p>
+              <p className="text-2xl font-bold">{formatCurrency(currentBalance, validCurrency)}</p>
             </div>
             <Wallet className="h-8 w-8 text-muted-foreground" />
           </div>
@@ -235,7 +230,7 @@ export default function ManageWalletDialog({
 
           {/* Amount */}
           <div className="space-y-2">
-            <Label htmlFor="amount">Amount ({currency}) *</Label>
+            <Label htmlFor="amount">Amount ({validCurrency}) *</Label>
             <Input
               id="amount"
               type="number"
@@ -311,7 +306,7 @@ export default function ManageWalletDialog({
               <p className="text-sm font-medium">Balance Preview</p>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Current Balance:</span>
-                <span className="font-medium">{formatCurrency(currentBalance, currency)}</span>
+                <span className="font-medium">{formatCurrency(currentBalance, validCurrency)}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Change:</span>
@@ -321,13 +316,13 @@ export default function ManageWalletDialog({
                   }`}
                 >
                   {formData.type === "Credit" ? "+" : "-"}
-                  {formatCurrency(formData.amount, currency)}
+                  {formatCurrency(formData.amount, validCurrency)}
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm pt-2 border-t">
                 <span className="font-medium">New Balance:</span>
                 <span className="font-bold text-lg">
-                  {formatCurrency(newBalance, currency)}
+                  {formatCurrency(newBalance, validCurrency)}
                 </span>
               </div>
             </div>

@@ -25,13 +25,16 @@ import {
   CreditCard,
   Award,
   MapPin,
-  Building2
+  Building2,
+  ChevronDown,
+  ChevronRight
 } from "lucide-react";
 import { Button } from "@/Components/ui/button";
 import { getStudentFullDetails, type StudentFullDetails } from "@/api/admin";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import ManageWalletDialog from "./ManageWalletDialog";
+import { formatCurrency, sanitizeString, sanitizeCurrency } from "@/lib/utils";
 
 interface ViewStudentDialogProps {
   open: boolean;
@@ -49,6 +52,7 @@ export default function ViewStudentDialog({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [manageWalletOpen, setManageWalletOpen] = useState(false);
+  const [expandedRegistrations, setExpandedRegistrations] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     if (open && studentId) {
@@ -120,21 +124,6 @@ export default function ViewStudentDialog({
     return <Badge variant="outline">{status}</Badge>;
   };
 
-  const formatCurrency = (amount: number | string | null | undefined, currency: string | null = "NGN") => {
-    if (amount === null || amount === undefined) return "N/A";
-    const numAmount = typeof amount === "string" ? parseFloat(amount) : amount;
-    if (isNaN(numAmount)) return "N/A";
-    const currencyCode = currency || "NGN";
-    try {
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: currencyCode,
-      }).format(numAmount);
-    } catch (error) {
-      // Fallback if currency code is invalid
-      return `${currencyCode} ${numAmount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    }
-  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -158,7 +147,7 @@ export default function ViewStudentDialog({
         <DialogHeader>
           <DialogTitle>
             {studentData?.personalInformation 
-              ? `Student Profile: ${studentData.personalInformation.fname} ${studentData.personalInformation.mname || ''} ${studentData.personalInformation.lname}`.trim()
+              ? `Student Profile: ${sanitizeString(studentData.personalInformation.fname)} ${sanitizeString(studentData.personalInformation.mname || '')} ${sanitizeString(studentData.personalInformation.lname)}`.trim()
               : "Student Details"}
           </DialogTitle>
           <DialogDescription>
@@ -213,7 +202,7 @@ export default function ViewStudentDialog({
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">Full Name</label>
                       <p className="text-base font-medium mt-1">
-                        {studentData.personalInformation.fname} {studentData.personalInformation.mname || ''} {studentData.personalInformation.lname}
+                        {sanitizeString(studentData.personalInformation.fname)} {sanitizeString(studentData.personalInformation.mname || '')} {sanitizeString(studentData.personalInformation.lname)}
                       </p>
                     </div>
                     <div>
@@ -224,7 +213,7 @@ export default function ViewStudentDialog({
                       <label className="text-sm font-medium text-muted-foreground">Email</label>
                       <div className="flex items-center gap-2 mt-1">
                         <Mail className="h-4 w-4 text-muted-foreground" />
-                        <p className="text-sm">{studentData.personalInformation.email}</p>
+                        <p className="text-sm">{sanitizeString(studentData.personalInformation.email)}</p>
                       </div>
                     </div>
                     {studentData.personalInformation.phone && (
@@ -232,14 +221,14 @@ export default function ViewStudentDialog({
                         <label className="text-sm font-medium text-muted-foreground">Phone</label>
                         <div className="flex items-center gap-2 mt-1">
                           <Phone className="h-4 w-4 text-muted-foreground" />
-                          <p className="text-sm">{studentData.personalInformation.phone}</p>
+                          <p className="text-sm">{sanitizeString(studentData.personalInformation.phone)}</p>
                         </div>
                       </div>
                     )}
                     {studentData.personalInformation.gender && (
                       <div>
                         <label className="text-sm font-medium text-muted-foreground">Gender</label>
-                        <p className="text-sm mt-1">{studentData.personalInformation.gender}</p>
+                        <p className="text-sm mt-1">{sanitizeString(studentData.personalInformation.gender)}</p>
                       </div>
                     )}
                     {studentData.personalInformation.dob && (
@@ -256,26 +245,26 @@ export default function ViewStudentDialog({
                         <label className="text-sm font-medium text-muted-foreground">Address</label>
                         <div className="flex items-center gap-2 mt-1">
                           <MapPin className="h-4 w-4 text-muted-foreground" />
-                          <p className="text-sm">{studentData.personalInformation.address}</p>
+                          <p className="text-sm">{sanitizeString(studentData.personalInformation.address)}</p>
                         </div>
                       </div>
                     )}
                     {studentData.personalInformation.state_origin && (
                       <div>
                         <label className="text-sm font-medium text-muted-foreground">State of Origin</label>
-                        <p className="text-sm mt-1">{studentData.personalInformation.state_origin}</p>
+                        <p className="text-sm mt-1">{sanitizeString(studentData.personalInformation.state_origin)}</p>
                       </div>
                     )}
                     {studentData.personalInformation.country && (
                       <div>
                         <label className="text-sm font-medium text-muted-foreground">Country</label>
-                        <p className="text-sm mt-1">{studentData.personalInformation.country}</p>
+                        <p className="text-sm mt-1">{sanitizeString(studentData.personalInformation.country)}</p>
                       </div>
                     )}
                     {studentData.personalInformation.study_mode && (
                       <div>
                         <label className="text-sm font-medium text-muted-foreground">Study Mode</label>
-                        <p className="text-sm mt-1">{studentData.personalInformation.study_mode}</p>
+                        <p className="text-sm mt-1">{sanitizeString(studentData.personalInformation.study_mode)}</p>
                       </div>
                     )}
                     {studentData.personalInformation.application_code && (
@@ -302,7 +291,7 @@ export default function ViewStudentDialog({
                       <label className="text-sm font-medium text-muted-foreground">Matric Number</label>
                       {studentData.personalInformation.matric_number ? (
                         <code className="text-sm bg-muted px-2 py-1 rounded block mt-1 w-fit">
-                          {studentData.personalInformation.matric_number}
+                          {sanitizeString(studentData.personalInformation.matric_number)}
                         </code>
                       ) : (
                         <p className="text-sm text-muted-foreground italic mt-1">Not assigned</p>
@@ -310,7 +299,7 @@ export default function ViewStudentDialog({
                     </div>
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">Level</label>
-                      <p className="text-base font-medium mt-1">{studentData.personalInformation.level} Level</p>
+                      <p className="text-base font-medium mt-1">{sanitizeString(studentData.personalInformation.level)} Level</p>
                     </div>
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">Faculty</label>
@@ -344,49 +333,95 @@ export default function ViewStudentDialog({
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b">
+                        <th className="text-left p-2 font-medium w-8"></th>
                         <th className="text-left p-2 font-medium">Academic Year</th>
                         <th className="text-left p-2 font-medium">Semester</th>
                         <th className="text-left p-2 font-medium">Registration Date</th>
                         <th className="text-center p-2 font-medium">Status</th>
                         <th className="text-center p-2 font-medium">Courses</th>
-                        <th className="text-right p-2 font-medium">School Fees</th>
-                        <th className="text-center p-2 font-medium">Fees Status</th>
-                        <th className="text-left p-2 font-medium">Teller No</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {studentData.registrations.map((registration, index) => (
-                        <tr key={index} className="border-b hover:bg-muted/50">
-                          <td className="p-2 font-medium">{registration.academic_year}</td>
-                          <td className="p-2">{registration.semester}</td>
-                          <td className="p-2 text-xs">{formatDate(registration.registration_date)}</td>
-                          <td className="p-2 text-center">
-                            <Badge variant={registration.registration_status === "registered" ? "default" : "secondary"} className="text-xs">
-                              {registration.registration_status}
-                            </Badge>
-                          </td>
-                          <td className="p-2 text-center">{registration.course_count}</td>
-                          <td className="p-2 text-right font-medium">
-                            {registration.school_fees ? (
-                              formatCurrency(registration.school_fees.amount, registration.school_fees.currency)
-                            ) : (
-                              "-"
+                      {studentData.registrations.map((registration, index) => {
+                        const isExpanded = expandedRegistrations.has(index);
+                        const toggleExpand = () => {
+                          const newExpanded = new Set(expandedRegistrations);
+                          if (isExpanded) {
+                            newExpanded.delete(index);
+                          } else {
+                            newExpanded.add(index);
+                          }
+                          setExpandedRegistrations(newExpanded);
+                        };
+
+                        return (
+                          <>
+                            <tr key={index} className="border-b hover:bg-muted/50">
+                              <td className="p-2">
+                                {registration.courses && registration.courses.length > 0 && (
+                                  <button
+                                    onClick={toggleExpand}
+                                    className="flex items-center justify-center w-6 h-6 rounded hover:bg-muted transition-colors"
+                                    aria-label={isExpanded ? "Collapse courses" : "Expand courses"}
+                                  >
+                                    {isExpanded ? (
+                                      <ChevronDown className="h-4 w-4" />
+                                    ) : (
+                                      <ChevronRight className="h-4 w-4" />
+                                    )}
+                                  </button>
+                                )}
+                              </td>
+                              <td className="p-2 font-medium">{registration.academic_year}</td>
+                              <td className="p-2">{registration.semester}</td>
+                              <td className="p-2 text-xs">{formatDate(registration.registration_date)}</td>
+                              <td className="p-2 text-center">
+                                <Badge 
+                                  variant={registration.registration_status === "registered" ? "default" : "secondary"} 
+                                  className="text-xs capitalize"
+                                >
+                                  {sanitizeString(registration.registration_status)}
+                                </Badge>
+                              </td>
+                              <td className="p-2 text-center">
+                                <span className="font-medium">{registration.course_count}</span>
+                                {registration.courses && registration.courses.length > 0 && (
+                                  <span className="text-xs text-muted-foreground ml-1">
+                                    ({registration.courses.length})
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                            {isExpanded && registration.courses && registration.courses.length > 0 && (
+                              <tr key={`${index}-courses`} className="border-b bg-muted/30">
+                                <td colSpan={6} className="p-4">
+                                  <div className="space-y-2">
+                                    <h4 className="font-medium text-sm mb-2">Registered Courses:</h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                                      {registration.courses.map((course) => (
+                                        <div
+                                          key={course.id}
+                                          className="flex items-center gap-2 p-2 rounded-md bg-background border"
+                                        >
+                                          <BookOpen className="h-4 w-4 text-muted-foreground shrink-0" />
+                                          <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-medium truncate">
+                                              {sanitizeString(course.title)}
+                                            </p>
+                                            <p className="text-xs text-muted-foreground">
+                                              <code>{course.course_code}</code>
+                                            </p>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
                             )}
-                          </td>
-                          <td className="p-2 text-center">
-                            {registration.school_fees ? (
-                              <Badge variant={registration.school_fees.status === "Paid" ? "default" : "secondary"} className="text-xs">
-                                {registration.school_fees.status}
-                              </Badge>
-                            ) : (
-                              "-"
-                            )}
-                          </td>
-                          <td className="p-2 text-xs">
-                            {registration.school_fees?.teller_no || "-"}
-                          </td>
-                        </tr>
-                      ))}
+                          </>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -453,7 +488,7 @@ export default function ViewStudentDialog({
                                   </td>
                                   <td className="p-2">
                                     {course?.instructor ? (
-                                      <span className="text-xs">{course.instructor.full_name}</span>
+                                      <span className="text-xs">{sanitizeString(course.instructor.full_name)}</span>
                                     ) : (
                                       <span className="text-xs text-muted-foreground">N/A</span>
                                     )}
@@ -788,9 +823,9 @@ export default function ViewStudentDialog({
           open={manageWalletOpen}
           onOpenChange={setManageWalletOpen}
           studentId={studentId}
-          studentName={`${studentData.personalInformation.fname} ${studentData.personalInformation.lname}`}
+          studentName={`${sanitizeString(studentData.personalInformation.fname)} ${sanitizeString(studentData.personalInformation.lname)}`}
           currentBalance={parseFloat(studentData.wallet?.balance || "0")}
-          currency={studentData.wallet?.currency || "NGN"}
+          currency={sanitizeCurrency(studentData.wallet?.currency)}
           onSuccess={fetchStudentDetails}
         />
       )}

@@ -440,7 +440,7 @@ export interface StudentRegistration {
   course_count: number;
   courses: RegistrationCourse[];
   registration_date: string;
-  school_fees: RegistrationSchoolFees;
+  school_fees: RegistrationSchoolFees | null;
   registration_status: string;
 }
 

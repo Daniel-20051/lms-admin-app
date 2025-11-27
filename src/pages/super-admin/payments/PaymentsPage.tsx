@@ -331,7 +331,7 @@ export default function PaymentsPage() {
                   <table className="w-full">
                     <thead>
                       <tr>
-                        <th className="text-left p-2 border-b">ID</th>
+                        <th className="text-left p-2 border-b">S/N</th>
                         <th className="text-left p-2 border-b">Service</th>
                         <th className="text-left p-2 border-b">Date</th>
                         <th className="text-left p-2 border-b">Reference</th>
@@ -367,7 +367,7 @@ export default function PaymentsPage() {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b">
-                          <th className="text-left p-2 font-medium">ID</th>
+                          <th className="text-left p-2 font-medium">S/N</th>
                           <th className="text-left p-2 font-medium">Service</th>
                           <th className="text-left p-2 font-medium">Date</th>
                           <th className="text-left p-2 font-medium">Reference</th>
@@ -380,9 +380,9 @@ export default function PaymentsPage() {
                         </tr>
                       </thead>
                       <tbody>
-                        {fundings.map((funding) => (
+                        {fundings.map((funding, index) => (
                           <tr key={funding.id} className="border-b hover:bg-muted/50">
-                            <td className="p-2">{funding.id}</td>
+                            <td className="p-2">{index + 1}</td>
                             <td className="p-2 truncate max-w-[200px]" title={funding.service_name}>
                               {funding.service_name}
                             </td>
@@ -462,7 +462,7 @@ export default function PaymentsPage() {
                   <table className="w-full">
                     <thead>
                       <tr>
-                        <th className="text-left p-2 border-b">ID</th>
+                        <th className="text-left p-2 border-b">S/N</th>
                         <th className="text-left p-2 border-b">Matric Number</th>
                         <th className="text-left p-2 border-b">Student</th>
                         <th className="text-left p-2 border-b">Date</th>
@@ -502,7 +502,7 @@ export default function PaymentsPage() {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b">
-                          <th className="text-left p-2 font-medium">ID</th>
+                          <th className="text-left p-2 font-medium">S/N</th>
                           <th className="text-left p-2 font-medium">Matric Number</th>
                           <th className="text-left p-2 font-medium">Student</th>
                           <th className="text-left p-2 font-medium">Date</th>
@@ -517,9 +517,9 @@ export default function PaymentsPage() {
                         </tr>
                       </thead>
                       <tbody>
-                        {schoolFees.map((fee) => (
+                        {schoolFees.map((fee, index) => (
                           <tr key={fee.id} className="border-b hover:bg-muted/50">
-                            <td className="p-2">{fee.id}</td>
+                            <td className="p-2">{index + 1}</td>
                             <td className="p-2 truncate max-w-[150px]" title={fee.matric_number}>
                               {fee.matric_number}
                             </td>
@@ -600,7 +600,7 @@ export default function PaymentsPage() {
                   <table className="w-full">
                     <thead>
                       <tr>
-                        <th className="text-left p-2 border-b">ID</th>
+                        <th className="text-left p-2 border-b">S/N</th>
                         <th className="text-left p-2 border-b">Student</th>
                         <th className="text-left p-2 border-b">Date</th>
                         <th className="text-right p-2 border-b">Amount</th>
@@ -632,7 +632,7 @@ export default function PaymentsPage() {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b">
-                          <th className="text-left p-2 font-medium">ID</th>
+                          <th className="text-left p-2 font-medium">S/N</th>
                           <th className="text-left p-2 font-medium">Student</th>
                           <th className="text-left p-2 font-medium">Date</th>
                           <th className="text-right p-2 font-medium">Amount</th>
@@ -643,9 +643,9 @@ export default function PaymentsPage() {
                         </tr>
                       </thead>
                       <tbody>
-                        {courseOrders.map((order) => (
+                        {courseOrders.map((order, index) => (
                           <tr key={order.id} className="border-b hover:bg-muted/50">
-                            <td className="p-2">{order.id}</td>
+                            <td className="p-2">{index + 1}</td>
                             <td className="p-2 truncate max-w-[200px]">
                               {order.student ? (
                                 <span title={`${order.student.fname} ${order.student.lname} (${order.student.email})`}>

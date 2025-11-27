@@ -62,7 +62,7 @@ export default function FacultiesTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
+            <TableHead>S/N</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Description</TableHead>
             <TableHead>Programs</TableHead>
@@ -109,9 +109,9 @@ export default function FacultiesTable({
               </TableCell>
             </TableRow>
           ) : (
-            faculties.map((faculty) => (
+            faculties.map((faculty, index) => (
               <TableRow key={faculty.id}>
-                <TableCell className="font-medium">#{faculty.id}</TableCell>
+                <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell className="font-medium">{faculty.name}</TableCell>
                 <TableCell className="text-muted-foreground">
                   {faculty.description}
