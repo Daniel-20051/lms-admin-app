@@ -150,7 +150,6 @@ export default function ManageWalletDialog({
   };
 
   const newBalance = calculateNewBalance();
-  const balanceChange = newBalance - currentBalance;
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
