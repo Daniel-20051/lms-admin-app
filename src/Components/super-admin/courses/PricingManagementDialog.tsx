@@ -70,12 +70,20 @@ export default function PricingManagementDialog({ open, onOpenChange }: PricingM
                 setCourses(wpuCourses);
 
                 // Fetch existing prices for this semester
-                const pricesResponse = await getCoursePrices({ academic_year: academicYear, semester });
-                const priceMap: Record<number, string> = {};
-                pricesResponse.data.prices.forEach(p => {
-                    priceMap[p.course_id] = p.price.toString();
-                });
-                setPrices(priceMap);
+                try {
+                    const pricesResponse = await getCoursePrices({ academic_year: academicYear, semester });
+                    const priceMap: Record<number, string> = {};
+                    if (pricesResponse.data?.prices && Array.isArray(pricesResponse.data.prices)) {
+                        pricesResponse.data.prices.forEach(p => {
+                            priceMap[p.course_id] = p.price.toString();
+                        });
+                    }
+                    setPrices(priceMap);
+                } catch (priceError) {
+                    // If no prices exist yet, that's okay - just set empty prices
+                    console.log('No prices set for this semester yet');
+                    setPrices({});
+                }
             } catch (error) {
                 console.error('Error fetching courses and prices:', error);
                 toast.error('Failed to load courses and prices');

@@ -274,13 +274,21 @@ export default function AllocationManagementTable({
                                                         </div>
                                                     </TableCell>
                                                     <TableCell>
-                                                        ₦{allocation.allocated_price.toLocaleString()}
+                                                        {allocation.allocated_price ? (
+                                                            <span>₦{allocation.allocated_price.toLocaleString()}</span>
+                                                        ) : (
+                                                            <span className="text-muted-foreground italic">Not set</span>
+                                                        )}
                                                     </TableCell>
                                                     <TableCell>
                                                         {getStatusBadge(allocation.registration_status)}
                                                     </TableCell>
                                                     <TableCell>
-                                                        {new Date(allocation.allocated_at).toLocaleDateString()}
+                                                        {allocation.allocated_at ? (
+                                                            new Date(allocation.allocated_at).toLocaleDateString()
+                                                        ) : (
+                                                            <span className="text-muted-foreground italic">N/A</span>
+                                                        )}
                                                     </TableCell>
                                                     <TableCell>
                                                         {allocation.registration_status === 'allocated' && (

@@ -226,14 +226,37 @@ export default function AllocationsView({ onAddAllocation, refreshKey }: Allocat
                 </div>
 
                 {/* Summary */}
-                <Card>
+                <Card className="pt-3">
                     <CardHeader>
                         <CardTitle>Allocations Summary</CardTitle>
                         <CardDescription>
                             Total: {total} allocation{total !== 1 ? 's' : ''}
+                            {filteredAllocations.length > 0 && (
+                                <>
+                                    {' • '}
+                                    Without price: {filteredAllocations.filter(a => !a.allocated_price).length}
+                                </>
+                            )}
                         </CardDescription>
                     </CardHeader>
                 </Card>
+
+                {/* Warning for missing prices */}
+                {filteredAllocations.length > 0 && filteredAllocations.some(a => !a.allocated_price) && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
+                        <div className="flex items-start gap-2">
+                            <svg className="h-5 w-5 text-yellow-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <div>
+                                <h3 className="font-medium text-yellow-800">Missing Course Prices</h3>
+                                <p className="text-sm text-yellow-700 mt-1">
+                                    Some allocations don't have prices set. Please set course prices in the <strong>Pricing</strong> tab before students can register.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Table */}
                 {loading ? (
@@ -273,13 +296,21 @@ export default function AllocationsView({ onAddAllocation, refreshKey }: Allocat
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                ₦{allocation.allocated_price.toLocaleString()}
+                                                {allocation.allocated_price ? (
+                                                    <span>₦{allocation.allocated_price.toLocaleString()}</span>
+                                                ) : (
+                                                    <span className="text-muted-foreground italic">Not set</span>
+                                                )}
                                             </TableCell>
                                             <TableCell>
                                                 {getStatusBadge(allocation.registration_status)}
                                             </TableCell>
                                             <TableCell>
-                                                {new Date(allocation.allocated_at).toLocaleDateString()}
+                                                {allocation.allocated_at ? (
+                                                    new Date(allocation.allocated_at).toLocaleDateString()
+                                                ) : (
+                                                    <span className="text-muted-foreground italic">N/A</span>
+                                                )}
                                             </TableCell>
                                             <TableCell>
                                                 {allocation.registration_status === 'allocated' && (
