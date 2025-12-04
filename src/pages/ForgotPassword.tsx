@@ -22,11 +22,11 @@ export default function ForgotPasswordPage() {
       const authApi = new AuthApi();
       const response = await authApi.requestPasswordReset({ email });
 
-      if (response.data?.success) {
+      if ((response.data as any)?.success) {
         setIsSuccess(true);
         toast.success("Password reset link sent to your email!");
       } else {
-        toast.error(response.data?.message || "Failed to send reset link");
+        toast.error((response.data as any)?.message || "Failed to send reset link");
       }
     } catch (error: any) {
       console.error("Password reset error:", error);

@@ -52,7 +52,7 @@ export default function ResetPasswordPage() {
         newPassword,
       });
 
-      if (response.data?.success) {
+      if ((response.data as any)?.success) {
         setIsSuccess(true);
         toast.success("Password reset successful!");
         // Redirect to login after 3 seconds
@@ -60,7 +60,7 @@ export default function ResetPasswordPage() {
           navigate("/admin-login");
         }, 3000);
       } else {
-        toast.error(response.data?.message || "Failed to reset password");
+        toast.error((response.data as any)?.message || "Failed to reset password");
       }
     } catch (error: any) {
       console.error("Password reset error:", error);
