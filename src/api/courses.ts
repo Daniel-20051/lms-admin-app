@@ -468,3 +468,413 @@ export const UploadUnitVideo = (moduleId: string, unitId: string, videoFile: Fil
   const api = new CoursesApi();
   return api.UploadUnitVideo(moduleId, unitId, videoFile, onProgress);
 };
+
+// ==================== COURSE PRICING MANAGEMENT ====================
+
+export interface CoursePricing {
+  id: number;
+  course_id: number;
+  course_title?: string;
+  course_code?: string;
+  academic_year: string;
+  semester: string;
+  price: number;
+  currency: string;
+  created_at?: string;
+}
+
+export interface SetCoursePriceData {
+  course_id: number;
+  academic_year: string;
+  semester: string;
+  price: number;
+  currency?: string;
+}
+
+export interface SetCoursePriceResponse {
+  success: boolean;
+  message: string;
+  data: {
+    pricing: CoursePricing;
+  };
+}
+
+export const setCoursePrice = async (data: SetCoursePriceData): Promise<SetCoursePriceResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.post<SetCoursePriceResponse>(
+      `${BASE_URL}/api/admin/courses/pricing`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'setting course price');
+    throw err;
+  }
+};
+
+export interface BulkSetCoursePricesData {
+  academic_year: string;
+  semester: string;
+  prices: Array<{
+    course_id: number;
+    price: number;
+    currency?: string;
+  }>;
+}
+
+export interface BulkSetCoursePricesResponse {
+  success: boolean;
+  message: string;
+  data: {
+    created: number;
+    updated: number;
+    total: number;
+    prices: CoursePricing[];
+  };
+}
+
+export const bulkSetCoursePrices = async (data: BulkSetCoursePricesData): Promise<BulkSetCoursePricesResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.post<BulkSetCoursePricesResponse>(
+      `${BASE_URL}/api/admin/courses/pricing/bulk`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'bulk setting course prices');
+    throw err;
+  }
+};
+
+export interface GetCoursePricesParams {
+  academic_year: string;
+  semester: string;
+  course_id?: number;
+  program_id?: number;
+}
+
+export interface GetCoursePricesResponse {
+  success: boolean;
+  message: string;
+  data: {
+    prices: CoursePricing[];
+    total: number;
+  };
+}
+
+export const getCoursePrices = async (params: GetCoursePricesParams): Promise<GetCoursePricesResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const queryParams = new URLSearchParams();
+    queryParams.append('academic_year', params.academic_year);
+    queryParams.append('semester', params.semester);
+    if (params.course_id) queryParams.append('course_id', params.course_id.toString());
+    if (params.program_id) queryParams.append('program_id', params.program_id.toString());
+
+    const response = await axios.get<GetCoursePricesResponse>(
+      `${BASE_URL}/api/admin/courses/pricing?${queryParams.toString()}`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'getting course prices');
+    throw err;
+  }
+};
+
+export interface CopyCoursePricesData {
+  from_academic_year: string;
+  from_semester: string;
+  to_academic_year: string;
+  to_semester: string;
+  program_id?: number;
+}
+
+export interface CopyCoursePricesResponse {
+  success: boolean;
+  message: string;
+  data: {
+    copied: number;
+    from: {
+      academic_year: string;
+      semester: string;
+    };
+    to: {
+      academic_year: string;
+      semester: string;
+    };
+  };
+}
+
+export const copyCoursePrices = async (data: CopyCoursePricesData): Promise<CopyCoursePricesResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.post<CopyCoursePricesResponse>(
+      `${BASE_URL}/api/admin/courses/pricing/copy`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'copying course prices');
+    throw err;
+  }
+};
+
+// ==================== COURSE ALLOCATION MANAGEMENT ====================
+
+export interface AllocateCourseData {
+  allocation_type: 'program' | 'level' | 'individual' | 'faculty';
+  course_ids: number[];
+  academic_year: string;
+  semester: string;
+  program_id?: number;
+  level?: string;
+  faculty_id?: number;
+  student_ids?: number[];
+  exclude_student_ids?: number[];
+}
+
+export interface AllocateCourseResponse {
+  success: boolean;
+  message: string;
+  data: {
+    summary: {
+      students_count: number;
+      courses_count: number;
+      total_possible: number;
+      allocated: number;
+      skipped: number;
+      errors: number;
+    };
+    errors: any[];
+  };
+}
+
+export const allocateCourses = async (data: AllocateCourseData): Promise<AllocateCourseResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.post<AllocateCourseResponse>(
+      `${BASE_URL}/api/admin/courses/allocate`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'allocating courses');
+    throw err;
+  }
+};
+
+export interface CourseAllocation {
+  id: number;
+  student: {
+    id: number;
+    name: string;
+    email: string;
+    matric_number: string;
+    level: string;
+  };
+  course: {
+    id: number;
+    title: string;
+    course_code: string;
+    course_unit: number;
+  };
+  academic_year: string;
+  semester: string;
+  registration_status: 'allocated' | 'registered' | 'cancelled';
+  allocated_price: number;
+  allocated_at: string;
+  registered_at: string | null;
+}
+
+export interface GetAllocationsParams {
+  academic_year?: string;
+  semester?: string;
+  student_id?: number;
+  program_id?: number;
+  level?: string;
+  registration_status?: 'allocated' | 'registered' | 'cancelled';
+  page?: number;
+  limit?: number;
+}
+
+export interface GetAllocationsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    allocations: CourseAllocation[];
+    pagination: PaginationData;
+  };
+}
+
+export const getAllocations = async (params: GetAllocationsParams = {}): Promise<GetAllocationsResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const queryParams = new URLSearchParams();
+    
+    if (params.academic_year) queryParams.append('academic_year', params.academic_year);
+    if (params.semester) queryParams.append('semester', params.semester);
+    if (params.student_id) queryParams.append('student_id', params.student_id.toString());
+    if (params.program_id) queryParams.append('program_id', params.program_id.toString());
+    if (params.level) queryParams.append('level', params.level);
+    if (params.registration_status) queryParams.append('registration_status', params.registration_status);
+    if (params.page) queryParams.append('page', params.page.toString());
+    if (params.limit) queryParams.append('limit', params.limit.toString());
+
+    const response = await axios.get<GetAllocationsResponse>(
+      `${BASE_URL}/api/admin/courses/allocations?${queryParams.toString()}`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'getting allocations');
+    throw err;
+  }
+};
+
+export interface RemoveAllocationResponse {
+  success: boolean;
+  message: string;
+}
+
+export const removeAllocation = async (allocationId: number): Promise<RemoveAllocationResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.delete<RemoveAllocationResponse>(
+      `${BASE_URL}/api/admin/courses/allocate/${allocationId}`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'removing allocation');
+    throw err;
+  }
+};
+
+export interface BulkRemoveAllocationsData {
+  academic_year: string;
+  semester: string;
+  student_ids?: number[];
+  course_ids?: number[];
+}
+
+export interface BulkRemoveAllocationsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    deleted_count: number;
+  };
+}
+
+export const bulkRemoveAllocations = async (data: BulkRemoveAllocationsData): Promise<BulkRemoveAllocationsResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.delete<BulkRemoveAllocationsResponse>(
+      `${BASE_URL}/api/admin/courses/allocate/bulk`,
+      { 
+        headers,
+        data: data
+      } as any
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'bulk removing allocations');
+    throw err;
+  }
+};
+
+// ==================== STUDENT COURSE ALLOCATION ====================
+
+export interface AllocatedCourse {
+  allocation_id: number;
+  course: {
+    id: number;
+    title: string;
+    course_code: string;
+    course_unit: number;
+  };
+  price: number;
+  allocated_at: string;
+}
+
+export interface GetMyAllocatedCoursesResponse {
+  success: boolean;
+  message: string;
+  data: {
+    semester: {
+      id: number;
+      academic_year: string;
+      semester: string;
+      status: string;
+      registration_deadline: string;
+      deadline_passed: boolean;
+    };
+    allocated_courses: AllocatedCourse[];
+    total_amount: number;
+    course_count: number;
+    can_register: boolean;
+  };
+}
+
+export const getMyAllocatedCourses = async (): Promise<GetMyAllocatedCoursesResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.get<GetMyAllocatedCoursesResponse>(
+      `${BASE_URL}/api/courses/allocated`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'getting allocated courses');
+    throw err;
+  }
+};
+
+export interface RegisterAllocatedCoursesResponse {
+  success: boolean;
+  message: string;
+  data: {
+    order: {
+      id: number;
+      amount: number;
+      currency: string;
+      date: string;
+    };
+    courses: Array<{
+      allocation_id: number;
+      course_id: number;
+      course_code: string;
+      course_title: string;
+      price: number;
+      allocated_price: number;
+    }>;
+    payment: {
+      transaction_id: number;
+      amount_debited: number;
+      previous_balance: number;
+      new_balance: number;
+    };
+    registered_count: number;
+  };
+}
+
+export const registerAllocatedCourses = async (): Promise<RegisterAllocatedCoursesResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.post<RegisterAllocatedCoursesResponse>(
+      `${BASE_URL}/api/courses/register-allocated`,
+      {},
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'registering allocated courses');
+    throw err;
+  }
+};

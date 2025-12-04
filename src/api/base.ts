@@ -53,3 +53,53 @@ export const handleApiError = (err: any, context: string) => {
   // Preserve the original error structure for better error handling upstream
   return err;
 };
+
+// ==================== FACULTIES API ====================
+
+export interface Faculty {
+  id: number;
+  name: string;
+  description?: string;
+  status?: string;
+}
+
+export interface PaginationData {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface GetFacultiesParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+}
+
+export interface GetFacultiesResponse {
+  success: boolean;
+  message: string;
+  data: {
+    faculties: Faculty[];
+    pagination: PaginationData;
+  };
+}
+
+export const getFaculties = async (params: GetFacultiesParams = {}): Promise<GetFacultiesResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const queryParams = new URLSearchParams();
+
+    if (params.page) queryParams.append('page', params.page.toString());
+    if (params.limit) queryParams.append('limit', params.limit.toString());
+    if (params.search) queryParams.append('search', params.search);
+
+    const url = `${BASE_URL}/api/admin/faculties${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+
+    const response = await axios.get<GetFacultiesResponse>(url, { headers });
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'getting faculties');
+    throw err;
+  }
+};

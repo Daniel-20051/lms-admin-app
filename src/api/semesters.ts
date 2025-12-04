@@ -257,3 +257,40 @@ export const deleteSemester = async (semesterId: number): Promise<DeleteSemester
     }
 };
 
+// ==================== REGISTRATION DEADLINE MANAGEMENT ====================
+
+export interface ExtendRegistrationDeadlineData {
+    registration_deadline: string; // Format: "YYYY-MM-DD"
+}
+
+export interface ExtendRegistrationDeadlineResponse {
+    success: boolean;
+    message: string;
+    data: {
+        semester: {
+            id: number;
+            academic_year: string;
+            semester: string;
+            registration_deadline: string;
+        };
+    };
+}
+
+export const extendRegistrationDeadline = async (
+    semesterId: number,
+    data: ExtendRegistrationDeadlineData
+): Promise<ExtendRegistrationDeadlineResponse> => {
+    try {
+        const headers = getAuthHeaders();
+        const response = await axios.patch<ExtendRegistrationDeadlineResponse>(
+            `${BASE_URL}/api/admin/semesters/${semesterId}/extend-deadline`,
+            data,
+            { headers }
+        );
+        return response.data;
+    } catch (err) {
+        handleApiError(err, 'extending registration deadline');
+        throw err;
+    }
+};
+

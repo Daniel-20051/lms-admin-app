@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,8 +10,16 @@ import {
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 import { Loader2, Plus } from "lucide-react";
 import { createStudent, type CreateStudentData } from "@/api/admin";
+import { getPrograms } from "@/api/programs";
 import { toast } from "sonner";
 
 interface CreateStudentDialogProps {
@@ -26,6 +34,8 @@ export default function CreateStudentDialog({
   onStudentCreated,
 }: CreateStudentDialogProps) {
   const [creating, setCreating] = useState(false);
+  const [fetching, setFetching] = useState(false);
+  const [programs, setPrograms] = useState<Array<{ id: number; title: string }>>([]);
   const [formData, setFormData] = useState<CreateStudentData>({
     email: "",
     password: "",
@@ -39,6 +49,31 @@ export default function CreateStudentDialog({
     designated_institute: 0,
     foreign_student: 0,
   });
+
+  // Fetch programs when dialog opens
+  useEffect(() => {
+    if (open) {
+      fetchPrograms();
+    }
+  }, [open]);
+
+  const fetchPrograms = async () => {
+    setFetching(true);
+    try {
+      const programsResponse = await getPrograms({ limit: 1000 });
+      setPrograms(programsResponse.data.programs.map(p => ({ id: p.id, title: p.title })));
+      
+      // Set default program if available
+      if (programsResponse.data.programs.length > 0 && !formData.program_id) {
+        setFormData(prev => ({ ...prev, program_id: programsResponse.data.programs[0].id }));
+      }
+    } catch (error: any) {
+      console.error('Error fetching programs:', error);
+      toast.error('Failed to load programs');
+    } finally {
+      setFetching(false);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -60,6 +95,11 @@ export default function CreateStudentDialog({
       return;
     }
 
+    if (!formData.program_id || formData.program_id < 1) {
+      toast.error("Please select a program");
+      return;
+    }
+
     if (formData.password.length < 6) {
       toast.error("Password must be at least 6 characters long");
       return;
@@ -71,6 +111,7 @@ export default function CreateStudentDialog({
       if (response.success) {
         toast.success(response.message || "Student created successfully");
         // Reset form
+        const defaultProgramId = programs.length > 0 ? programs[0].id : 1;
         setFormData({
           email: "",
           password: "",
@@ -78,7 +119,7 @@ export default function CreateStudentDialog({
           lname: "",
           matric_number: "",
           level: 100,
-          program_id: 1,
+          program_id: defaultProgramId,
           currency: "NGN",
           referral_code: "",
           designated_institute: 0,
@@ -200,36 +241,49 @@ export default function CreateStudentDialog({
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="level">Level *</Label>
-                <Input
-                  id="level"
-                  name="level"
-                  type="number"
-                  min="100"
-                  max="800"
-                  step="100"
-                  value={formData.level}
-                  onChange={handleInputChange}
-                  placeholder="e.g., 100, 200, 300"
-                  required
+                <Select
+                  value={formData.level.toString()}
+                  onValueChange={(value) => setFormData({ ...formData, level: parseInt(value) })}
                   disabled={creating}
-                />
+                >
+                  <SelectTrigger id="level">
+                    <SelectValue placeholder="Select level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="100">100 Level</SelectItem>
+                    <SelectItem value="200">200 Level</SelectItem>
+                    <SelectItem value="300">300 Level</SelectItem>
+                    <SelectItem value="400">400 Level</SelectItem>
+                    <SelectItem value="500">500 Level</SelectItem>
+                    <SelectItem value="600">600 Level</SelectItem>
+                    <SelectItem value="700">700 Level</SelectItem>
+                    <SelectItem value="800">800 Level</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="program_id">Program ID *</Label>
-                <Input
-                  id="program_id"
-                  name="program_id"
-                  type="number"
-                  min="1"
-                  value={formData.program_id}
-                  onChange={handleInputChange}
-                  placeholder="Enter program ID"
-                  required
-                  disabled={creating}
-                />
-                <p className="text-xs text-muted-foreground">
-                  Enter the program ID number
-                </p>
+                <Label htmlFor="program_id">Program *</Label>
+                <Select
+                  value={formData.program_id?.toString() || ""}
+                  onValueChange={(value) => setFormData({ ...formData, program_id: parseInt(value) })}
+                  disabled={creating || fetching}
+                >
+                  <SelectTrigger id="program_id">
+                    <SelectValue placeholder={fetching ? "Loading programs..." : "Select a program"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {programs.map((program) => (
+                      <SelectItem key={program.id} value={program.id.toString()}>
+                        {program.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {programs.length === 0 && !fetching && (
+                  <p className="text-xs text-muted-foreground">
+                    No programs available
+                  </p>
+                )}
               </div>
             </div>
 
@@ -239,14 +293,19 @@ export default function CreateStudentDialog({
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="currency">Currency</Label>
-                  <Input
-                    id="currency"
-                    name="currency"
+                  <Select
                     value={formData.currency}
-                    onChange={handleInputChange}
-                    placeholder="NGN"
+                    onValueChange={(value) => setFormData({ ...formData, currency: value })}
                     disabled={creating}
-                  />
+                  >
+                    <SelectTrigger id="currency">
+                      <SelectValue placeholder="Select currency" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="NGN">NGN</SelectItem>
+                      <SelectItem value="USD">USD</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="referral_code">Referral Code</Label>
