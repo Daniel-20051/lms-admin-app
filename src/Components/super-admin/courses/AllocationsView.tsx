@@ -138,10 +138,10 @@ export default function AllocationsView({ onAddAllocation, refreshKey }: Allocat
         
         const search = searchTerm.toLowerCase();
         return (
-            allocation.student.name.toLowerCase().includes(search) ||
-            allocation.student.matric_number.toLowerCase().includes(search) ||
-            allocation.course.course_code.toLowerCase().includes(search) ||
-            allocation.course.title.toLowerCase().includes(search)
+            allocation.student.name?.toLowerCase().includes(search) ||
+            allocation.student.matric_number?.toLowerCase().includes(search) ||
+            allocation.course.course_code?.toLowerCase().includes(search) ||
+            allocation.course.title?.toLowerCase().includes(search)
         );
     });
 

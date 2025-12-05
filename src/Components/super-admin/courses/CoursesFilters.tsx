@@ -170,7 +170,7 @@ export default function CoursesFilters({
                         <SelectItem value="all">All Instructors</SelectItem>
                         {staff.map((instructor) => (
                             <SelectItem key={instructor.id} value={instructor.id.toString()}>
-                                {instructor.first_name} {instructor.last_name}
+                                {instructor.full_name}
                             </SelectItem>
                         ))}
                     </SelectContent>
