@@ -5,6 +5,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogBody,
 } from "@/Components/ui/dialog";
 import { Badge } from "@/Components/ui/badge";
 import { Skeleton } from "@/Components/ui/skeleton";
@@ -67,12 +68,13 @@ export default function ViewFacultyDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh]">
         <DialogHeader>
           <DialogTitle>Faculty Details</DialogTitle>
           <DialogDescription>View detailed information about the faculty</DialogDescription>
         </DialogHeader>
 
+        <DialogBody>
         {loading ? (
           <div className="space-y-4">
             <Skeleton className="h-8 w-48" />
@@ -157,6 +159,7 @@ export default function ViewFacultyDialog({
             <p className="text-muted-foreground">No faculty data available</p>
           </div>
         )}
+        </DialogBody>
       </DialogContent>
     </Dialog>
   );

@@ -5,6 +5,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogBody,
 } from "@/Components/ui/dialog";
 import { Badge } from "@/Components/ui/badge";
 import { Skeleton } from "@/Components/ui/skeleton";
@@ -73,12 +74,13 @@ export default function ViewNoticeDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh]">
         <DialogHeader>
           <DialogTitle>Notice Details</DialogTitle>
           <DialogDescription>View detailed information about the notice</DialogDescription>
         </DialogHeader>
 
+        <DialogBody>
         {loading ? (
           <div className="space-y-4">
             <Skeleton className="h-8 w-48" />
@@ -141,6 +143,7 @@ export default function ViewNoticeDialog({
             <p className="text-muted-foreground">No notice data available</p>
           </div>
         )}
+        </DialogBody>
       </DialogContent>
     </Dialog>
   );

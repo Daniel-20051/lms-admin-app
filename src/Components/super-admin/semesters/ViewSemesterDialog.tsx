@@ -5,6 +5,7 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
+    DialogBody,
 } from "@/Components/ui/dialog";
 import { Badge } from "@/Components/ui/badge";
 import { Separator } from "@/Components/ui/separator";
@@ -90,7 +91,7 @@ export default function ViewSemesterDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-2xl max-h-[90vh]">
                 <DialogHeader>
                     <DialogTitle>Semester Details</DialogTitle>
                     <DialogDescription>
@@ -98,6 +99,7 @@ export default function ViewSemesterDialog({
                     </DialogDescription>
                 </DialogHeader>
 
+                <DialogBody>
                 {loading ? (
                     <div className="py-8 text-center">
                         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent" />
@@ -155,6 +157,7 @@ export default function ViewSemesterDialog({
                         <p className="text-sm text-muted-foreground">No semester data available</p>
                     </div>
                 )}
+                </DialogBody>
             </DialogContent>
         </Dialog>
     );

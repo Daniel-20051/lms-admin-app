@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/Components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogBody } from "@/Components/ui/dialog";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
@@ -178,7 +178,7 @@ export default function PricingManagementDialog({ open, onOpenChange }: PricingM
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-5xl max-h-[90vh]">
                 <DialogHeader>
                     <DialogTitle>Course Pricing Management</DialogTitle>
                     <DialogDescription>
@@ -186,7 +186,8 @@ export default function PricingManagementDialog({ open, onOpenChange }: PricingM
                     </DialogDescription>
                 </DialogHeader>
 
-                <Tabs defaultValue="set-prices" className="w-full">
+                <DialogBody>
+                    <Tabs defaultValue="set-prices" className="w-full">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="set-prices">Set Prices</TabsTrigger>
                         <TabsTrigger value="copy-prices">Copy Prices</TabsTrigger>
@@ -218,7 +219,7 @@ export default function PricingManagementDialog({ open, onOpenChange }: PricingM
                             </div>
                         ) : courses.length > 0 ? (
                             <>
-                                <Card>
+                                <Card className="pt-3">
                                     <CardHeader>
                                         <CardTitle>Course Prices</CardTitle>
                                         <CardDescription>
@@ -290,7 +291,7 @@ export default function PricingManagementDialog({ open, onOpenChange }: PricingM
                     </TabsContent>
 
                     <TabsContent value="copy-prices" className="space-y-4">
-                        <Card>
+                        <Card className="pt-3">
                             <CardHeader>
                                 <CardTitle>Copy Prices from Another Semester</CardTitle>
                                 <CardDescription>
@@ -358,6 +359,7 @@ export default function PricingManagementDialog({ open, onOpenChange }: PricingM
                         </Card>
                     </TabsContent>
                 </Tabs>
+                </DialogBody>
             </DialogContent>
         </Dialog>
     );

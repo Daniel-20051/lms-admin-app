@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/Components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogBody } from "@/Components/ui/dialog";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
@@ -213,7 +213,7 @@ export default function CourseAllocationDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-4xl max-h-[90vh]">
                 <DialogHeader>
                     <DialogTitle>Allocate Courses to Students</DialogTitle>
                     <DialogDescription>
@@ -221,7 +221,8 @@ export default function CourseAllocationDialog({
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-6">
+                <DialogBody>
+                    <div className="space-y-6">
                     {/* Semester Selection */}
                     <div className="space-y-2">
                         <Label>Semester</Label>
@@ -451,6 +452,7 @@ export default function CourseAllocationDialog({
                         </Button>
                     </div>
                 </div>
+                </DialogBody>
             </DialogContent>
         </Dialog>
     );

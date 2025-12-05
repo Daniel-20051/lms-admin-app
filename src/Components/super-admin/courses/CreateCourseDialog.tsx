@@ -6,6 +6,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
+    DialogBody,
 } from "@/Components/ui/dialog";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
@@ -226,7 +227,7 @@ export default function CreateCourseDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-3xl max-h-[90vh]">
                 <DialogHeader>
                     <DialogTitle>Create New Course</DialogTitle>
                     <DialogDescription>
@@ -234,6 +235,7 @@ export default function CreateCourseDialog({
                     </DialogDescription>
                 </DialogHeader>
 
+                <DialogBody>
                 {fetching ? (
                     <div className="py-8 text-center">
                         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]" />
@@ -592,6 +594,7 @@ export default function CreateCourseDialog({
                         </DialogFooter>
                     </form>
                 )}
+                </DialogBody>
             </DialogContent>
         </Dialog>
     );

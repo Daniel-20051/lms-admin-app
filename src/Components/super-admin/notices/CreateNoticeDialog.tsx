@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogBody,
 } from "@/Components/ui/dialog";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
@@ -92,6 +93,7 @@ export default function CreateNoticeDialog({
           </DialogDescription>
         </DialogHeader>
 
+        <DialogBody>
         <form onSubmit={handleSubmit}>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
@@ -151,6 +153,7 @@ export default function CreateNoticeDialog({
             </Button>
           </DialogFooter>
         </form>
+        </DialogBody>
       </DialogContent>
     </Dialog>
   );

@@ -18,6 +18,7 @@ export default function ProgramsPage() {
         loading,
         searchTerm,
         statusFilter,
+        facultyFilter,
         currentPage,
         selectedProgram,
         selectedProgramId,
@@ -28,6 +29,7 @@ export default function ProgramsPage() {
         showCreateDialog,
         setSearchTerm,
         setStatusFilter,
+        setFacultyFilter,
         setSelectedProgram,
         setSelectedProgramId,
         setShowViewDialog,
@@ -79,6 +81,8 @@ export default function ProgramsPage() {
                         onSearchChange={setSearchTerm}
                         statusFilter={statusFilter}
                         onStatusChange={setStatusFilter}
+                        facultyFilter={facultyFilter}
+                        onFacultyChange={setFacultyFilter}
                     />
 
                     {/* Table */}

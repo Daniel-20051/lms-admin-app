@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/Components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogBody } from "@/Components/ui/dialog";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
@@ -167,7 +167,7 @@ export default function AllocationManagementTable({
     return (
         <>
             <Dialog open={open} onOpenChange={onOpenChange}>
-                <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+                <DialogContent className="max-w-6xl max-h-[90vh]">
                     <DialogHeader>
                         <DialogTitle>Manage Course Allocations</DialogTitle>
                         <DialogDescription>
@@ -175,7 +175,8 @@ export default function AllocationManagementTable({
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="space-y-4">
+                    <DialogBody>
+                        <div className="space-y-4">
                         {/* Filters */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-2">
@@ -340,6 +341,7 @@ export default function AllocationManagementTable({
                             </div>
                         )}
                     </div>
+                    </DialogBody>
                 </DialogContent>
             </Dialog>
 

@@ -5,6 +5,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogBody,
 } from "@/Components/ui/dialog";
 import { Badge } from "@/Components/ui/badge";
 import { Check, X } from "lucide-react";
@@ -138,7 +139,8 @@ export default function ViewPermissionsDialog({
             View permissions and access levels for {admin.fname} {admin.lname}
           </DialogDescription>
         </DialogHeader>
-        <div className="max-h-[70vh] overflow-y-auto pr-4">
+        <DialogBody>
+        <div>
           <div className="space-y-6">
             {/* Staff Permissions */}
             <PermissionSection
@@ -177,6 +179,7 @@ export default function ViewPermissionsDialog({
             />
           </div>
         </div>
+        </DialogBody>
       </DialogContent>
     </Dialog>
   );

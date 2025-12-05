@@ -1,12 +1,17 @@
 import { Input } from "@/Components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { Search } from "lucide-react";
+import { useState, useEffect } from "react";
+import { getFaculties, type Faculty } from "@/api/base";
+import { toast } from "sonner";
 
 interface ProgramsFiltersProps {
     searchTerm: string;
     onSearchChange: (value: string) => void;
     statusFilter: 'Y' | 'N' | 'all';
     onStatusChange: (value: 'Y' | 'N' | 'all') => void;
+    facultyFilter: number | null;
+    onFacultyChange: (value: number | null) => void;
 }
 
 export default function ProgramsFilters({
@@ -14,7 +19,29 @@ export default function ProgramsFilters({
     onSearchChange,
     statusFilter,
     onStatusChange,
+    facultyFilter,
+    onFacultyChange,
 }: ProgramsFiltersProps) {
+    const [faculties, setFaculties] = useState<Faculty[]>([]);
+    const [loadingFaculties, setLoadingFaculties] = useState(false);
+
+    useEffect(() => {
+        const fetchFaculties = async () => {
+            setLoadingFaculties(true);
+            try {
+                const response = await getFaculties({ limit: 100 });
+                setFaculties(response.data.faculties);
+            } catch (error) {
+                console.error('Error fetching faculties:', error);
+                toast.error('Failed to load faculties');
+            } finally {
+                setLoadingFaculties(false);
+            }
+        };
+
+        fetchFaculties();
+    }, []);
+
     return (
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
             {/* Search */}
@@ -27,6 +54,25 @@ export default function ProgramsFilters({
                     className="pl-10"
                 />
             </div>
+
+            {/* Faculty Filter */}
+            <Select 
+                value={facultyFilter?.toString() || "all"} 
+                onValueChange={(value) => onFacultyChange(value === "all" ? null : parseInt(value))}
+                disabled={loadingFaculties}
+            >
+                <SelectTrigger className="w-full sm:w-[200px]">
+                    <SelectValue placeholder="All Faculties" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="all">All Faculties</SelectItem>
+                    {faculties.map((faculty) => (
+                        <SelectItem key={faculty.id} value={faculty.id.toString()}>
+                            {faculty.name}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
 
             {/* Status Filter */}
             <Select value={statusFilter} onValueChange={onStatusChange}>

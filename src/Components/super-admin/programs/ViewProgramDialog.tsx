@@ -5,6 +5,7 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
+    DialogBody,
 } from "@/Components/ui/dialog";
 import { Badge } from "@/Components/ui/badge";
 import { Separator } from "@/Components/ui/separator";
@@ -49,7 +50,7 @@ export default function ViewProgramDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-2xl max-h-[90vh]">
                 <DialogHeader>
                     <DialogTitle>Program Details</DialogTitle>
                     <DialogDescription>
@@ -57,6 +58,7 @@ export default function ViewProgramDialog({
                     </DialogDescription>
                 </DialogHeader>
 
+                <DialogBody>
                 {loading ? (
                     <div className="py-8 text-center">
                         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent" />
@@ -145,6 +147,7 @@ export default function ViewProgramDialog({
                         <p className="text-sm text-muted-foreground">No program data available</p>
                     </div>
                 )}
+                </DialogBody>
             </DialogContent>
         </Dialog>
     );

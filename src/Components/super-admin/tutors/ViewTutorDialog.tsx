@@ -5,6 +5,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogBody,
 } from "@/Components/ui/dialog";
 import { Badge } from "@/Components/ui/badge";
 import { Skeleton } from "@/Components/ui/skeleton";
@@ -120,7 +121,7 @@ export default function ViewTutorDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh]">
         <DialogHeader>
           <DialogTitle>Tutor Profile</DialogTitle>
           <DialogDescription>
@@ -128,6 +129,7 @@ export default function ViewTutorDialog({
           </DialogDescription>
         </DialogHeader>
 
+        <DialogBody>
         {loading ? (
           <div className="space-y-4">
             <Skeleton className="h-32 w-full" />
@@ -318,6 +320,7 @@ export default function ViewTutorDialog({
             </TabsContent>
           </Tabs>
         ) : null}
+        </DialogBody>
       </DialogContent>
     </Dialog>
   );
