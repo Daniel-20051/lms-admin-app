@@ -27,6 +27,9 @@ export default function CoursesPage() {
         semesterFilter,
         academicYearFilter,
         programFilter,
+        facultyFilter,
+        staffFilter,
+        levelFilter,
         currentPage,
         selectedCourseId,
         selectedCourse,
@@ -39,6 +42,9 @@ export default function CoursesPage() {
         setSemesterFilter,
         setAcademicYearFilter,
         setProgramFilter,
+        setFacultyFilter,
+        setStaffFilter,
+        setLevelFilter,
         setSelectedCourseId,
         setSelectedCourse,
         setShowViewDialog,
@@ -130,6 +136,12 @@ export default function CoursesPage() {
                                 onAcademicYearChange={setAcademicYearFilter}
                                 programFilter={programFilter}
                                 onProgramChange={handleProgramChange}
+                                facultyFilter={facultyFilter}
+                                onFacultyChange={setFacultyFilter}
+                                staffFilter={staffFilter}
+                                onStaffChange={setStaffFilter}
+                                levelFilter={levelFilter}
+                                onLevelChange={setLevelFilter}
                             />
 
                             {/* Table */}

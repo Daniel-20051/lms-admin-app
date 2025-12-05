@@ -108,15 +108,37 @@ export default function CourseAllocationDialog({
         }
     }, [open]);
 
-    // Filter courses based on search term
+    // Clear selected courses when allocation type, program, or faculty changes
+    useEffect(() => {
+        setSelectedCourses([]);
+    }, [allocationType, selectedProgram, selectedFaculty]);
+
+    // Filter courses based on search term and selected program/faculty
     const filteredCourses = courses.filter(course => {
-        if (!courseSearchTerm) return true;
+        // Filter by program if allocation type is "program" and a program is selected
+        if (allocationType === 'program' && selectedProgram) {
+            if (course.program_id !== parseInt(selectedProgram)) {
+                return false;
+            }
+        }
+
+        // Filter by faculty if allocation type is "faculty" and a faculty is selected
+        if (allocationType === 'faculty' && selectedFaculty) {
+            if (course.faculty_id !== parseInt(selectedFaculty)) {
+                return false;
+            }
+        }
+
+        // Filter by search term
+        if (courseSearchTerm) {
+            const searchLower = courseSearchTerm.toLowerCase();
+            return (
+                course.course_code.toLowerCase().includes(searchLower) ||
+                course.title.toLowerCase().includes(searchLower)
+            );
+        }
         
-        const searchLower = courseSearchTerm.toLowerCase();
-        return (
-            course.course_code.toLowerCase().includes(searchLower) ||
-            course.title.toLowerCase().includes(searchLower)
-        );
+        return true;
     });
 
     const handleCourseToggle = (courseId: number) => {
@@ -277,12 +299,7 @@ export default function CourseAllocationDialog({
                         <>
                             <div className="space-y-2">
                                 <Label>
-                                    Program * 
-                                    {programs.length > 0 ? (
-                                        <span className="text-green-600"> ({programs.length} programs available)</span>
-                                    ) : (
-                                        <span className="text-red-600"> (0 programs - check console)</span>
-                                    )}
+                                    Program *
                                 </Label>
                                 <Select value={selectedProgram} onValueChange={setSelectedProgram}>
                                     <SelectTrigger>
@@ -291,7 +308,7 @@ export default function CourseAllocationDialog({
                                     <SelectContent className="bg-white dark:bg-gray-800 max-h-[300px] overflow-auto z-100">
                                         {programs.length === 0 ? (
                                             <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                                                No programs available. Check browser console for details.
+                                                No programs available
                                             </div>
                                         ) : (
                                             programs.map((program) => (
@@ -306,10 +323,6 @@ export default function CourseAllocationDialog({
                                         )}
                                     </SelectContent>
                                 </Select>
-                                {/* Debug info */}
-                                <div className="text-xs text-muted-foreground">
-                                    Debug: {programs.length} programs in state | Selected: {selectedProgram || 'none'}
-                                </div>
                             </div>
                             <div className="space-y-2">
                                 <Label>Level (Optional)</Label>
@@ -339,7 +352,7 @@ export default function CourseAllocationDialog({
                     {allocationType === 'faculty' && (
                         <>
                             <div className="space-y-2">
-                                <Label>Faculty * {faculties.length > 0 && `(${faculties.length} faculties available)`}</Label>
+                                <Label>Faculty *</Label>
                                 <Select value={selectedFaculty} onValueChange={setSelectedFaculty}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select faculty" />
@@ -418,7 +431,7 @@ export default function CourseAllocationDialog({
                                     <CardTitle>Select Courses</CardTitle>
                                     <CardDescription>
                                         Choose courses to allocate ({selectedCourses.length} selected)
-                                        {courseSearchTerm && ` • Showing ${filteredCourses.length} of ${courses.length} courses`}
+                                        {(courseSearchTerm || selectedProgram || selectedFaculty) && ` • Showing ${filteredCourses.length} of ${courses.length} courses`}
                                     </CardDescription>
                                 </div>
                                 <Button

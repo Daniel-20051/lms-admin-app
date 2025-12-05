@@ -3,6 +3,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getPrograms, type Program } from "@/api/programs";
+import { getFaculties, type Faculty } from "@/api/base";
+import { getStaff, type Staff } from "@/api/admin";
 
 interface CoursesFiltersProps {
     searchTerm: string;
@@ -13,10 +15,17 @@ interface CoursesFiltersProps {
     onAcademicYearChange: (value: string | null) => void;
     programFilter: number | null;
     onProgramChange: (value: number | null) => void;
+    facultyFilter: number | null;
+    onFacultyChange: (value: number | null) => void;
+    staffFilter: number | null;
+    onStaffChange: (value: number | null) => void;
+    levelFilter: number | null;
+    onLevelChange: (value: number | null) => void;
 }
 
 // Mock data - you may want to fetch these from an API
 const SEMESTERS = ['1ST', '2ND'];
+const LEVELS = [100, 200, 300, 400, 500, 600, 700];
 
 // Generate academic years (e.g., 2020/2021, 2021/2022, etc.)
 const generateAcademicYears = () => {
@@ -41,13 +50,24 @@ export default function CoursesFilters({
     onAcademicYearChange,
     programFilter,
     onProgramChange,
+    facultyFilter,
+    onFacultyChange,
+    staffFilter,
+    onStaffChange,
+    levelFilter,
+    onLevelChange,
 }: CoursesFiltersProps) {
     const [programs, setPrograms] = useState<Program[]>([]);
+    const [faculties, setFaculties] = useState<Faculty[]>([]);
+    const [staff, setStaff] = useState<Staff[]>([]);
     const [loadingPrograms, setLoadingPrograms] = useState(false);
+    const [loadingFaculties, setLoadingFaculties] = useState(false);
+    const [loadingStaff, setLoadingStaff] = useState(false);
 
-    // Fetch programs on mount
+    // Fetch all data on mount
     useEffect(() => {
-        const fetchPrograms = async () => {
+        const fetchData = async () => {
+            // Fetch programs
             setLoadingPrograms(true);
             try {
                 const response = await getPrograms({ limit: 1000 });
@@ -57,9 +77,31 @@ export default function CoursesFilters({
             } finally {
                 setLoadingPrograms(false);
             }
+
+            // Fetch faculties
+            setLoadingFaculties(true);
+            try {
+                const response = await getFaculties({ limit: 1000 });
+                setFaculties(response.data.faculties);
+            } catch (error) {
+                console.error('Error fetching faculties:', error);
+            } finally {
+                setLoadingFaculties(false);
+            }
+
+            // Fetch staff
+            setLoadingStaff(true);
+            try {
+                const response = await getStaff({ limit: 1000 });
+                setStaff(response.data.staff);
+            } catch (error) {
+                console.error('Error fetching staff:', error);
+            } finally {
+                setLoadingStaff(false);
+            }
         };
 
-        fetchPrograms();
+        fetchData();
     }, []);
 
     return (
@@ -75,7 +117,7 @@ export default function CoursesFilters({
                 />
             </div>
 
-            {/* Filters Row */}
+            {/* Filters Row 1 */}
             <div className="flex flex-col sm:flex-row gap-4">
                 {/* Program Filter */}
                 <Select 
@@ -86,7 +128,7 @@ export default function CoursesFilters({
                     <SelectTrigger className="w-full sm:w-[200px]">
                         <SelectValue placeholder="All Programs" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-[300px]">
                         <SelectItem value="all">All Programs</SelectItem>
                         {programs.map((program) => (
                             <SelectItem key={program.id} value={program.id.toString()}>
@@ -96,6 +138,65 @@ export default function CoursesFilters({
                     </SelectContent>
                 </Select>
 
+                {/* Faculty Filter */}
+                <Select 
+                    value={facultyFilter ? facultyFilter.toString() : 'all'} 
+                    onValueChange={(value) => onFacultyChange(value === 'all' ? null : parseInt(value))}
+                    disabled={loadingFaculties}
+                >
+                    <SelectTrigger className="w-full sm:w-[200px]">
+                        <SelectValue placeholder="All Faculties" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[300px]">
+                        <SelectItem value="all">All Faculties</SelectItem>
+                        {faculties.map((faculty) => (
+                            <SelectItem key={faculty.id} value={faculty.id.toString()}>
+                                {faculty.name}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+
+                {/* Staff/Instructor Filter */}
+                <Select 
+                    value={staffFilter ? staffFilter.toString() : 'all'} 
+                    onValueChange={(value) => onStaffChange(value === 'all' ? null : parseInt(value))}
+                    disabled={loadingStaff}
+                >
+                    <SelectTrigger className="w-full sm:w-[220px]">
+                        <SelectValue placeholder="All Instructors" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[300px]">
+                        <SelectItem value="all">All Instructors</SelectItem>
+                        {staff.map((instructor) => (
+                            <SelectItem key={instructor.id} value={instructor.id.toString()}>
+                                {instructor.first_name} {instructor.last_name}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+
+                {/* Level Filter */}
+                <Select 
+                    value={levelFilter ? levelFilter.toString() : 'all'} 
+                    onValueChange={(value) => onLevelChange(value === 'all' ? null : parseInt(value))}
+                >
+                    <SelectTrigger className="w-full sm:w-[150px]">
+                        <SelectValue placeholder="All Levels" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">All Levels</SelectItem>
+                        {LEVELS.map((level) => (
+                            <SelectItem key={level} value={level.toString()}>
+                                {level} Level
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+
+            {/* Filters Row 2 */}
+            <div className="flex flex-col sm:flex-row gap-4">
                 {/* Academic Year Filter */}
                 <Select 
                     value={academicYearFilter || 'all'} 
@@ -104,7 +205,7 @@ export default function CoursesFilters({
                     <SelectTrigger className="w-full sm:w-[180px]">
                         <SelectValue placeholder="All Academic Years" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-[300px]">
                         <SelectItem value="all">All Academic Years</SelectItem>
                         {ACADEMIC_YEARS.map((year) => (
                             <SelectItem key={year} value={year}>

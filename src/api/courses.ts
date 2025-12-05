@@ -83,10 +83,10 @@ export const getCourses = async (params: GetCoursesParams = {}): Promise<GetCour
         if (params.page) queryParams.append('page', params.page.toString());
         if (params.limit) queryParams.append('limit', params.limit.toString());
         if (params.search) queryParams.append('search', params.search);
-        if (params.programId) queryParams.append('programId', params.programId.toString());
-        if (params.facultyId) queryParams.append('facultyId', params.facultyId.toString());
-        if (params.staffId) queryParams.append('staffId', params.staffId.toString());
-        if (params.level) queryParams.append('level', params.level.toString());
+        if (params.programId) queryParams.append('program_id', params.programId.toString());
+        if (params.facultyId) queryParams.append('faculty_id', params.facultyId.toString());
+        if (params.staffId) queryParams.append('staff_id', params.staffId.toString());
+        if (params.level) queryParams.append('course_level', params.level.toString());
         if (params.semester) queryParams.append('semester', params.semester);
         if (params.academic_year) queryParams.append('academic_year', params.academic_year);
 
