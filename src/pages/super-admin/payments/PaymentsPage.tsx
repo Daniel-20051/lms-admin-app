@@ -333,6 +333,7 @@ export default function PaymentsPage() {
                       <tr>
                         <th className="text-left p-2 border-b">S/N</th>
                         <th className="text-left p-2 border-b">Service</th>
+                        <th className="text-left p-2 border-b">Student</th>
                         <th className="text-left p-2 border-b">Date</th>
                         <th className="text-left p-2 border-b">Reference</th>
                         <th className="text-left p-2 border-b">Type</th>
@@ -347,6 +348,7 @@ export default function PaymentsPage() {
                       {Array.from({ length: 5 }).map((_, index) => (
                         <tr key={index}>
                           <td className="p-2"><Skeleton className="h-4 w-12" /></td>
+                          <td className="p-2"><Skeleton className="h-4 w-32" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-32" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-24" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-28" /></td>
@@ -369,6 +371,7 @@ export default function PaymentsPage() {
                         <tr className="border-b">
                           <th className="text-left p-2 font-medium">S/N</th>
                           <th className="text-left p-2 font-medium">Service</th>
+                          <th className="text-left p-2 font-medium">Student</th>
                           <th className="text-left p-2 font-medium">Date</th>
                           <th className="text-left p-2 font-medium">Reference</th>
                           <th className="text-left p-2 font-medium">Type</th>
@@ -385,6 +388,15 @@ export default function PaymentsPage() {
                             <td className="p-2">{index + 1}</td>
                             <td className="p-2 truncate max-w-[200px]" title={funding.service_name}>
                               {funding.service_name}
+                            </td>
+                            <td className="p-2 truncate max-w-[200px]">
+                              {funding.student ? (
+                                <span title={`${funding.student.fname} ${funding.student.lname} ${funding.student.email ? `(${funding.student.email})` : ''}`}>
+                                  {funding.student.fname} {funding.student.lname}
+                                </span>
+                              ) : (
+                                <span className="text-muted-foreground">N/A</span>
+                              )}
                             </td>
                             <td className="p-2">{new Date(funding.date).toLocaleDateString()}</td>
                             <td className="p-2 truncate max-w-[150px]" title={funding.ref}>
