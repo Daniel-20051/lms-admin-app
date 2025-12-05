@@ -155,15 +155,16 @@ export default function ViewStudentDialog({
           </DialogDescription>
         </DialogHeader>
 
-        {loading ? (
-          <div className="space-y-4 py-4">
-            <Skeleton className="h-20 w-full" />
-            <Skeleton className="h-20 w-full" />
-            <Skeleton className="h-20 w-full" />
-          </div>
-        ) : studentData ? (
-          <Tabs defaultValue="personal" className="w-full">
-            <TabsList className="grid w-full grid-cols-6 mb-4">
+        <div className="px-6 pb-6">
+          {loading ? (
+            <div className="space-y-4">
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-20 w-full" />
+            </div>
+          ) : studentData ? (
+            <Tabs defaultValue="personal" className="w-full">
+              <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="personal" className="flex items-center gap-1 text-xs">
                 <User className="h-3 w-3" />
                 Personal
@@ -193,7 +194,7 @@ export default function ViewStudentDialog({
             {/* Personal Information Tab */}
             <TabsContent value="personal" className="space-y-4">
               <Card>
-                <CardContent className="pt-6 space-y-4">
+                <CardContent className="pt-4 space-y-4">
                   <div className="flex items-center gap-2 mb-4">
                     <User className="h-5 w-5 text-muted-foreground" />
                     <h3 className="font-semibold">Personal Information</h3>
@@ -281,7 +282,7 @@ export default function ViewStudentDialog({
 
               {/* Faculty & Program Information */}
               <Card>
-                <CardContent className="pt-6 space-y-4">
+                <CardContent className="pt-4 space-y-4">
                   <div className="flex items-center gap-2 mb-4">
                     <GraduationCap className="h-5 w-5 text-muted-foreground" />
                     <h3 className="font-semibold">Academic Information</h3>
@@ -439,7 +440,7 @@ export default function ViewStudentDialog({
                 <div className="space-y-6">
                   {studentData.courses.map((courseGroup, groupIndex) => (
                     <Card key={groupIndex}>
-                      <CardContent className="pt-6">
+                      <CardContent className="pt-4">
                         <div className="flex items-center gap-2 mb-4">
                           <Calendar className="h-5 w-5 text-muted-foreground" />
                           <h3 className="font-semibold">
@@ -588,7 +589,7 @@ export default function ViewStudentDialog({
             <TabsContent value="wallet" className="space-y-4">
               {studentData.wallet ? (
                 <Card>
-                  <CardContent className="pt-6">
+                  <CardContent className="pt-4">
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-2">
                         <Wallet className="h-5 w-5 text-muted-foreground" />
@@ -690,7 +691,7 @@ export default function ViewStudentDialog({
                 <>
                   {/* School Fees */}
                   <Card>
-                    <CardContent className="pt-6">
+                    <CardContent className="pt-4">
                       <div className="flex items-center gap-2 mb-4">
                         <GraduationCap className="h-5 w-5 text-muted-foreground" />
                         <h3 className="font-semibold">School Fees</h3>
@@ -753,7 +754,7 @@ export default function ViewStudentDialog({
                   {/* Course Orders */}
                   {studentData.payments.courseOrders && studentData.payments.courseOrders.length > 0 && (
                     <Card>
-                      <CardContent className="pt-6">
+                      <CardContent className="pt-4">
                         <div className="flex items-center gap-2 mb-4">
                           <BookOpen className="h-5 w-5 text-muted-foreground" />
                           <h3 className="font-semibold">Course Orders</h3>
@@ -792,29 +793,30 @@ export default function ViewStudentDialog({
                   <p className="text-muted-foreground">No payment data available</p>
                 </div>
               )}
-            </TabsContent>
-          </Tabs>
-        ) : error ? (
-          <div className="py-8 text-center">
-            <p className="text-destructive font-medium mb-2">Failed to fetch student details</p>
-            <p className="text-sm text-muted-foreground mb-4">{error}</p>
-            <Button
-              onClick={() => {
-                setError(null);
-                fetchStudentDetails();
-              }}
-              variant="outline"
-              size="sm"
-            >
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Try again
-            </Button>
-          </div>
-        ) : (
-          <div className="py-8 text-center text-muted-foreground">
-            No student data available
-          </div>
-        )}
+              </TabsContent>
+            </Tabs>
+          ) : error ? (
+            <div className="py-4 text-center">
+              <p className="text-destructive font-medium mb-2">Failed to fetch student details</p>
+              <p className="text-sm text-muted-foreground mb-4">{error}</p>
+              <Button
+                onClick={() => {
+                  setError(null);
+                  fetchStudentDetails();
+                }}
+                variant="outline"
+                size="sm"
+              >
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Try again
+              </Button>
+            </div>
+          ) : (
+            <div className="py-4 text-center text-muted-foreground">
+              No student data available
+            </div>
+          )}
+        </div>
       </DialogContent>
 
       {/* Manage Wallet Dialog */}

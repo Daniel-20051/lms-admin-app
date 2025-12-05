@@ -10,6 +10,13 @@ import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 import { Textarea } from "@/Components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 import { Wallet, AlertCircle, TrendingUp, TrendingDown } from "lucide-react";
 import { createWalletTransaction, type CreateWalletTransactionData } from "@/api/admin";
 import { toast } from "sonner";
@@ -35,12 +42,14 @@ export default function ManageWalletDialog({
   onSuccess,
 }: ManageWalletDialogProps) {
   const [loading, setLoading] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState<string>(sanitizeCurrency(currency));
   const [formData, setFormData] = useState<CreateWalletTransactionData>({
     type: "Credit",
     amount: 0,
     service_name: "",
     ref: "",
     notes: "",
+    currency: sanitizeCurrency(currency),
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   
@@ -60,13 +69,13 @@ export default function ManageWalletDialog({
 
     // Check for debit with insufficient balance
     if (formData.type === "Debit" && formData.amount > currentBalance) {
-      newErrors.amount = `Insufficient balance. Current balance: ${formatCurrency(currentBalance, validCurrency)}`;
+      newErrors.amount = `Insufficient balance. Current balance: ${formatCurrency(currentBalance, selectedCurrency)}`;
     }
 
     // Warn for large amounts (over 100,000)
     if (formData.amount > 100000) {
       const confirmed = window.confirm(
-        `You are about to ${formData.type.toLowerCase()} a large amount (${formatCurrency(formData.amount, validCurrency)}). Are you sure you want to continue?`
+        `You are about to ${formData.type.toLowerCase()} a large amount (${formatCurrency(formData.amount, selectedCurrency)}). Are you sure you want to continue?`
       );
       if (!confirmed) {
         newErrors.amount = "Transaction cancelled";
@@ -99,11 +108,15 @@ export default function ManageWalletDialog({
 
     try {
       setLoading(true);
-      const response = await createWalletTransaction(studentId, formData);
+      const transactionData = {
+        ...formData,
+        currency: selectedCurrency,
+      };
+      const response = await createWalletTransaction(studentId, transactionData);
 
       if (response.success) {
         toast.success(response.message || "Wallet transaction processed successfully", {
-          description: `New balance: ${formatCurrency(response.data.wallet.new_balance, validCurrency)}`,
+          description: `New balance: ${formatCurrency(response.data.wallet.new_balance, selectedCurrency)}`,
         });
 
         // Reset form
@@ -113,7 +126,9 @@ export default function ManageWalletDialog({
           service_name: "",
           ref: "",
           notes: "",
+          currency: validCurrency,
         });
+        setSelectedCurrency(validCurrency);
         setErrors({});
 
         // Call success callback to refresh student data
@@ -139,7 +154,9 @@ export default function ManageWalletDialog({
       service_name: "",
       ref: "",
       notes: "",
+      currency: validCurrency,
     });
+    setSelectedCurrency(validCurrency);
     setErrors({});
     onOpenChange(false);
   };
@@ -159,18 +176,19 @@ export default function ManageWalletDialog({
           </DialogDescription>
         </DialogHeader>
 
-        {/* Current Balance Display */}
-        <div className="rounded-lg border bg-muted/50 p-4 mb-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">Current Balance</p>
-              <p className="text-2xl font-bold">{formatCurrency(currentBalance, validCurrency)}</p>
+        <div className="px-6">
+          {/* Current Balance Display */}
+          <div className="rounded-lg border bg-muted/50 p-4 mb-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Current Balance</p>
+                <p className="text-2xl font-bold">{formatCurrency(currentBalance, validCurrency)}</p>
+              </div>
+              <Wallet className="h-8 w-8 text-muted-foreground" />
             </div>
-            <Wallet className="h-8 w-8 text-muted-foreground" />
           </div>
-        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
           {/* Transaction Type */}
           <div className="space-y-2">
             <Label>Transaction Type *</Label>
@@ -228,9 +246,32 @@ export default function ManageWalletDialog({
             </div>
           </div>
 
+          {/* Currency Selection */}
+          <div className="space-y-2">
+            <Label htmlFor="currency">Currency *</Label>
+            <Select
+              value={selectedCurrency}
+              onValueChange={(value) => {
+                setSelectedCurrency(value);
+                setFormData({ ...formData, currency: value });
+              }}
+            >
+              <SelectTrigger id="currency">
+                <SelectValue placeholder="Select currency" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="NGN">NGN (Nigerian Naira)</SelectItem>
+                <SelectItem value="USD">USD (US Dollar)</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Select the currency for this transaction. Currently supporting NGN and USD.
+            </p>
+          </div>
+
           {/* Amount */}
           <div className="space-y-2">
-            <Label htmlFor="amount">Amount ({validCurrency}) *</Label>
+            <Label htmlFor="amount">Amount ({selectedCurrency}) *</Label>
             <Input
               id="amount"
               type="number"
@@ -306,7 +347,7 @@ export default function ManageWalletDialog({
               <p className="text-sm font-medium">Balance Preview</p>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Current Balance:</span>
-                <span className="font-medium">{formatCurrency(currentBalance, validCurrency)}</span>
+                <span className="font-medium">{formatCurrency(currentBalance, selectedCurrency)}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Change:</span>
@@ -316,13 +357,13 @@ export default function ManageWalletDialog({
                   }`}
                 >
                   {formData.type === "Credit" ? "+" : "-"}
-                  {formatCurrency(formData.amount, validCurrency)}
+                  {formatCurrency(formData.amount, selectedCurrency)}
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm pt-2 border-t">
                 <span className="font-medium">New Balance:</span>
                 <span className="font-bold text-lg">
-                  {formatCurrency(newBalance, validCurrency)}
+                  {formatCurrency(newBalance, selectedCurrency)}
                 </span>
               </div>
             </div>
@@ -344,6 +385,7 @@ export default function ManageWalletDialog({
             </Button>
           </div>
         </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -166,15 +166,16 @@ export default function EditStudentDialog({
           </DialogDescription>
         </DialogHeader>
 
-        {loading ? (
-          <div className="space-y-4 py-4">
-            <Skeleton className="h-20 w-full" />
-            <Skeleton className="h-20 w-full" />
-            <Skeleton className="h-20 w-full" />
-          </div>
-        ) : student ? (
-          <form onSubmit={handleSubmit}>
-            <div className="space-y-4 py-4">
+        <div className="px-6">
+          {loading ? (
+            <div className="space-y-4">
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-20 w-full" />
+            </div>
+          ) : student ? (
+            <form onSubmit={handleSubmit}>
+              <div className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="fname">First Name *</Label>
@@ -258,51 +259,52 @@ export default function EditStudentDialog({
               </div>
             </div>
 
-            <DialogFooter>
+              <DialogFooter className="px-6 py-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  disabled={saving}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={saving}>
+                  {saving ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="mr-2 h-4 w-4" />
+                      Save Changes
+                    </>
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          ) : error ? (
+            <div className="py-4 text-center">
+              <p className="text-destructive font-medium mb-2">Failed to fetch student details</p>
+              <p className="text-sm text-muted-foreground mb-4">{error}</p>
               <Button
-                type="button"
+                onClick={() => {
+                  setError(null);
+                  fetchStudentDetails();
+                }}
                 variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={saving}
+                size="sm"
               >
-                Cancel
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Try again
               </Button>
-              <Button type="submit" disabled={saving}>
-                {saving ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <Save className="mr-2 h-4 w-4" />
-                    Save Changes
-                  </>
-                )}
-              </Button>
-            </DialogFooter>
-          </form>
-        ) : error ? (
-          <div className="py-8 text-center">
-            <p className="text-destructive font-medium mb-2">Failed to fetch student details</p>
-            <p className="text-sm text-muted-foreground mb-4">{error}</p>
-            <Button
-              onClick={() => {
-                setError(null);
-                fetchStudentDetails();
-              }}
-              variant="outline"
-              size="sm"
-            >
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Try again
-            </Button>
-          </div>
-        ) : (
-          <div className="py-8 text-center text-muted-foreground">
-            No student data available
-          </div>
-        )}
+            </div>
+          ) : (
+            <div className="py-4 text-center text-muted-foreground">
+              No student data available
+            </div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
