@@ -54,34 +54,22 @@ export default function CourseAllocationDialog({
 
     // Watch programs state changes
     useEffect(() => {
-        console.log('Programs state changed:', programs.length, programs);
+        // Programs state tracking
     }, [programs]);
 
     // Fetch initial data
     useEffect(() => {
-        console.log('CourseAllocationDialog open state:', open);
-        
         const fetchInitialData = async () => {
-            console.log('Starting to fetch initial data...');
             try {
-                console.log('Calling APIs...');
                 const [semestersRes, programsRes, facultiesRes] = await Promise.all([
                     getSemesters({ limit: 1000 }),
                     getPrograms({ limit: 1000 }),
                     getFaculties({ limit: 1000 }),
                 ]);
 
-                console.log('API responses received:');
-                console.log('- Semesters:', semestersRes.data.semesters.length);
-                console.log('- Programs:', programsRes.data.programs.length);
-                console.log('- Faculties:', facultiesRes.data.faculties.length);
-                console.log('Programs data:', programsRes.data.programs);
-
                 setSemesters(semestersRes.data.semesters);
                 setPrograms(programsRes.data.programs);
                 setFaculties(facultiesRes.data.faculties);
-
-                console.log('State updated successfully');
 
                 // Set active semester as default
                 const activeSemester = semestersRes.data.semesters.find(s => s.status === 'Active');
@@ -95,10 +83,7 @@ export default function CourseAllocationDialog({
         };
 
         if (open) {
-            console.log('Dialog is open, fetching data...');
             fetchInitialData();
-        } else {
-            console.log('Dialog is closed, skipping data fetch');
         }
     }, [open]);
 
@@ -299,10 +284,7 @@ export default function CourseAllocationDialog({
                                         <span className="text-red-600"> (0 programs - check console)</span>
                                     )}
                                 </Label>
-                                <Select value={selectedProgram} onValueChange={(val) => {
-                                    console.log('Program selected:', val);
-                                    setSelectedProgram(val);
-                                }}>
+                                <Select value={selectedProgram} onValueChange={setSelectedProgram}>
                                     <SelectTrigger>
                                         <SelectValue placeholder={programs.length > 0 ? "Select program" : "Loading programs..."} />
                                     </SelectTrigger>
