@@ -90,7 +90,7 @@ export default function CoursesFilters({
                         <SelectItem value="all">All Programs</SelectItem>
                         {programs.map((program) => (
                             <SelectItem key={program.id} value={program.id.toString()}>
-                                {program.name}
+                                {program.title}
                             </SelectItem>
                         ))}
                     </SelectContent>
