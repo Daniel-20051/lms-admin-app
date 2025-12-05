@@ -1,6 +1,8 @@
 import { Input } from "@/Components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { Search } from "lucide-react";
+import { useState, useEffect } from "react";
+import { getPrograms, type Program } from "@/api/programs";
 
 interface CoursesFiltersProps {
     searchTerm: string;
@@ -9,6 +11,8 @@ interface CoursesFiltersProps {
     onSemesterChange: (value: string | null) => void;
     academicYearFilter: string | null;
     onAcademicYearChange: (value: string | null) => void;
+    programFilter: number | null;
+    onProgramChange: (value: number | null) => void;
 }
 
 // Mock data - you may want to fetch these from an API
@@ -35,7 +39,29 @@ export default function CoursesFilters({
     onSemesterChange,
     academicYearFilter,
     onAcademicYearChange,
+    programFilter,
+    onProgramChange,
 }: CoursesFiltersProps) {
+    const [programs, setPrograms] = useState<Program[]>([]);
+    const [loadingPrograms, setLoadingPrograms] = useState(false);
+
+    // Fetch programs on mount
+    useEffect(() => {
+        const fetchPrograms = async () => {
+            setLoadingPrograms(true);
+            try {
+                const response = await getPrograms({ limit: 1000 });
+                setPrograms(response.data.programs);
+            } catch (error) {
+                console.error('Error fetching programs:', error);
+            } finally {
+                setLoadingPrograms(false);
+            }
+        };
+
+        fetchPrograms();
+    }, []);
+
     return (
         <div className="flex flex-col gap-4 mb-6">
             {/* Search */}
@@ -51,6 +77,25 @@ export default function CoursesFilters({
 
             {/* Filters Row */}
             <div className="flex flex-col sm:flex-row gap-4">
+                {/* Program Filter */}
+                <Select 
+                    value={programFilter ? programFilter.toString() : 'all'} 
+                    onValueChange={(value) => onProgramChange(value === 'all' ? null : parseInt(value))}
+                    disabled={loadingPrograms}
+                >
+                    <SelectTrigger className="w-full sm:w-[200px]">
+                        <SelectValue placeholder="All Programs" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">All Programs</SelectItem>
+                        {programs.map((program) => (
+                            <SelectItem key={program.id} value={program.id.toString()}>
+                                {program.name}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+
                 {/* Academic Year Filter */}
                 <Select 
                     value={academicYearFilter || 'all'} 

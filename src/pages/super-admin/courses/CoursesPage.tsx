@@ -2,7 +2,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Com
 import { Button } from "@/Components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import { Plus, DollarSign, Users, List } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useCoursesManagement } from "@/hooks/useCoursesManagement";
 import CoursesFilters from "@/Components/super-admin/courses/CoursesFilters";
 import CoursesTable from "@/Components/super-admin/courses/CoursesTable";
@@ -16,6 +17,8 @@ import CourseAllocationDialog from "@/Components/super-admin/courses/CourseAlloc
 import AllocationsView from "@/Components/super-admin/courses/AllocationsView";
 
 export default function CoursesPage() {
+    const [searchParams, setSearchParams] = useSearchParams();
+
     const {
         courses,
         pagination,
@@ -23,6 +26,7 @@ export default function CoursesPage() {
         searchTerm,
         semesterFilter,
         academicYearFilter,
+        programFilter,
         currentPage,
         selectedCourseId,
         selectedCourse,
@@ -34,6 +38,7 @@ export default function CoursesPage() {
         setSearchTerm,
         setSemesterFilter,
         setAcademicYearFilter,
+        setProgramFilter,
         setSelectedCourseId,
         setSelectedCourse,
         setShowViewDialog,
@@ -51,6 +56,27 @@ export default function CoursesPage() {
     const [showPricingDialog, setShowPricingDialog] = useState(false);
     const [showAllocationDialog, setShowAllocationDialog] = useState(false);
     const [allocationsRefreshKey, setAllocationsRefreshKey] = useState(0);
+
+    // Initialize program filter from URL on mount
+    useEffect(() => {
+        const programIdFromUrl = searchParams.get('program');
+        if (programIdFromUrl) {
+            setProgramFilter(parseInt(programIdFromUrl));
+        }
+    }, []);
+
+    // Update URL when program filter changes
+    useEffect(() => {
+        if (programFilter) {
+            setSearchParams({ program: programFilter.toString() });
+        } else {
+            setSearchParams({});
+        }
+    }, [programFilter]);
+
+    const handleProgramChange = (programId: number | null) => {
+        setProgramFilter(programId);
+    };
 
     return (
         <div className="space-y-4 md:space-y-6">
@@ -102,6 +128,8 @@ export default function CoursesPage() {
                                 onSemesterChange={setSemesterFilter}
                                 academicYearFilter={academicYearFilter}
                                 onAcademicYearChange={setAcademicYearFilter}
+                                programFilter={programFilter}
+                                onProgramChange={handleProgramChange}
                             />
 
                             {/* Table */}

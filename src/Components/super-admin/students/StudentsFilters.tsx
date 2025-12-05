@@ -47,6 +47,8 @@ export default function StudentsFilters({
           <SelectItem value="300">300 Level</SelectItem>
           <SelectItem value="400">400 Level</SelectItem>
           <SelectItem value="500">500 Level</SelectItem>
+          <SelectItem value="600">600 Level</SelectItem>
+          <SelectItem value="700">700 Level</SelectItem>
         </SelectContent>
       </Select>
       <Select value={statusFilter} onValueChange={onStatusChange}>

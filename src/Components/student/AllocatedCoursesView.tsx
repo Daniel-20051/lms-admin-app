@@ -93,7 +93,7 @@ export default function AllocatedCoursesView() {
 
     if (!data || data.allocated_courses.length === 0) {
         return (
-            <Card>
+            <Card className="pt-3">
                 <CardHeader>
                     <CardTitle>Allocated Courses</CardTitle>
                     <CardDescription>
@@ -139,7 +139,7 @@ export default function AllocatedCoursesView() {
             )}
 
             {/* Semester Info Card */}
-            <Card>
+            <Card className="pt-3">
                 <CardHeader>
                     <CardTitle>Semester Information</CardTitle>
                 </CardHeader>
@@ -175,7 +175,7 @@ export default function AllocatedCoursesView() {
             </Card>
 
             {/* Courses Table */}
-            <Card>
+            <Card className="pt-3">
                 <CardHeader>
                     <CardTitle>Your Allocated Courses</CardTitle>
                     <CardDescription>

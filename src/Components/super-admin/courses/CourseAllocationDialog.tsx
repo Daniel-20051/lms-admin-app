@@ -29,7 +29,7 @@ const ALLOCATION_TYPES = [
     { value: 'faculty', label: 'By Faculty' },
 ];
 
-const LEVELS = ['100', '200', '300', '400', '500', '600'];
+const LEVELS = ['100', '200', '300', '400', '500', '600', '700'];
 
 export default function CourseAllocationDialog({ 
     open, 
@@ -52,19 +52,36 @@ export default function CourseAllocationDialog({
     const [selectedCourses, setSelectedCourses] = useState<number[]>([]);
     const [courseSearchTerm, setCourseSearchTerm] = useState<string>("");
 
+    // Watch programs state changes
+    useEffect(() => {
+        console.log('Programs state changed:', programs.length, programs);
+    }, [programs]);
+
     // Fetch initial data
     useEffect(() => {
+        console.log('CourseAllocationDialog open state:', open);
+        
         const fetchInitialData = async () => {
+            console.log('Starting to fetch initial data...');
             try {
+                console.log('Calling APIs...');
                 const [semestersRes, programsRes, facultiesRes] = await Promise.all([
-                    getSemesters({ limit: 100 }),
-                    getPrograms({ limit: 100 }),
-                    getFaculties({ limit: 100 }),
+                    getSemesters({ limit: 1000 }),
+                    getPrograms({ limit: 1000 }),
+                    getFaculties({ limit: 1000 }),
                 ]);
+
+                console.log('API responses received:');
+                console.log('- Semesters:', semestersRes.data.semesters.length);
+                console.log('- Programs:', programsRes.data.programs.length);
+                console.log('- Faculties:', facultiesRes.data.faculties.length);
+                console.log('Programs data:', programsRes.data.programs);
 
                 setSemesters(semestersRes.data.semesters);
                 setPrograms(programsRes.data.programs);
                 setFaculties(facultiesRes.data.faculties);
+
+                console.log('State updated successfully');
 
                 // Set active semester as default
                 const activeSemester = semestersRes.data.semesters.find(s => s.status === 'Active');
@@ -78,7 +95,10 @@ export default function CourseAllocationDialog({
         };
 
         if (open) {
+            console.log('Dialog is open, fetching data...');
             fetchInitialData();
+        } else {
+            console.log('Dialog is closed, skipping data fetch');
         }
     }, [open]);
 
@@ -230,13 +250,16 @@ export default function CourseAllocationDialog({
                             <SelectTrigger>
                                 <SelectValue placeholder="Select semester" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-white dark:bg-gray-800 max-h-[300px] overflow-auto z-100">
                                 {semesters.map((sem) => (
                                     <SelectItem 
                                         key={sem.id} 
                                         value={`${sem.academic_year}|${sem.semester}`}
+                                        className="text-gray-900 dark:text-gray-100"
                                     >
-                                        {sem.academic_year} - {sem.semester} {sem.status === 'Active' && '(Active)'}
+                                        <span className="text-foreground">
+                                            {sem.academic_year} - {sem.semester} {sem.status === 'Active' && '(Active)'}
+                                        </span>
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -250,10 +273,14 @@ export default function CourseAllocationDialog({
                             <SelectTrigger>
                                 <SelectValue />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-white dark:bg-gray-800 max-h-[300px] overflow-auto z-100">
                                 {ALLOCATION_TYPES.map((type) => (
-                                    <SelectItem key={type.value} value={type.value}>
-                                        {type.label}
+                                    <SelectItem 
+                                        key={type.value} 
+                                        value={type.value}
+                                        className="text-gray-900 dark:text-gray-100"
+                                    >
+                                        <span className="text-foreground">{type.label}</span>
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -264,19 +291,43 @@ export default function CourseAllocationDialog({
                     {allocationType === 'program' && (
                         <>
                             <div className="space-y-2">
-                                <Label>Program *</Label>
-                                <Select value={selectedProgram} onValueChange={setSelectedProgram}>
+                                <Label>
+                                    Program * 
+                                    {programs.length > 0 ? (
+                                        <span className="text-green-600"> ({programs.length} programs available)</span>
+                                    ) : (
+                                        <span className="text-red-600"> (0 programs - check console)</span>
+                                    )}
+                                </Label>
+                                <Select value={selectedProgram} onValueChange={(val) => {
+                                    console.log('Program selected:', val);
+                                    setSelectedProgram(val);
+                                }}>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select program" />
+                                        <SelectValue placeholder={programs.length > 0 ? "Select program" : "Loading programs..."} />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                        {programs.map((program) => (
-                                            <SelectItem key={program.id} value={program.id.toString()}>
-                                                {program.title}
-                                            </SelectItem>
-                                        ))}
+                                    <SelectContent className="bg-white dark:bg-gray-800 max-h-[300px] overflow-auto z-100">
+                                        {programs.length === 0 ? (
+                                            <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                                                No programs available. Check browser console for details.
+                                            </div>
+                                        ) : (
+                                            programs.map((program) => (
+                                                <SelectItem 
+                                                    key={program.id} 
+                                                    value={program.id.toString()}
+                                                    className="text-gray-900 dark:text-gray-100"
+                                                >
+                                                    <span className="text-foreground">{program.title}</span>
+                                                </SelectItem>
+                                            ))
+                                        )}
                                     </SelectContent>
                                 </Select>
+                                {/* Debug info */}
+                                <div className="text-xs text-muted-foreground">
+                                    Debug: {programs.length} programs in state | Selected: {selectedProgram || 'none'}
+                                </div>
                             </div>
                             <div className="space-y-2">
                                 <Label>Level (Optional)</Label>
@@ -284,11 +335,17 @@ export default function CourseAllocationDialog({
                                     <SelectTrigger>
                                         <SelectValue placeholder="All levels" />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All levels</SelectItem>
+                                    <SelectContent className="bg-white dark:bg-gray-800 max-h-[300px] overflow-auto z-100">
+                                        <SelectItem value="all" className="text-gray-900 dark:text-gray-100">
+                                            <span className="text-foreground">All levels</span>
+                                        </SelectItem>
                                         {LEVELS.map((level) => (
-                                            <SelectItem key={level} value={level}>
-                                                {level} Level
+                                            <SelectItem 
+                                                key={level} 
+                                                value={level}
+                                                className="text-gray-900 dark:text-gray-100"
+                                            >
+                                                <span className="text-foreground">{level} Level</span>
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -300,17 +357,27 @@ export default function CourseAllocationDialog({
                     {allocationType === 'faculty' && (
                         <>
                             <div className="space-y-2">
-                                <Label>Faculty *</Label>
+                                <Label>Faculty * {faculties.length > 0 && `(${faculties.length} faculties available)`}</Label>
                                 <Select value={selectedFaculty} onValueChange={setSelectedFaculty}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select faculty" />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                        {faculties.map((faculty) => (
-                                            <SelectItem key={faculty.id} value={faculty.id.toString()}>
-                                                {faculty.name}
-                                            </SelectItem>
-                                        ))}
+                                    <SelectContent className="bg-white dark:bg-gray-800 max-h-[300px] overflow-auto z-100">
+                                        {faculties.length === 0 ? (
+                                            <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                                                No faculties available
+                                            </div>
+                                        ) : (
+                                            faculties.map((faculty) => (
+                                                <SelectItem 
+                                                    key={faculty.id} 
+                                                    value={faculty.id.toString()}
+                                                    className="text-gray-900 dark:text-gray-100"
+                                                >
+                                                    <span className="text-foreground">{faculty.name}</span>
+                                                </SelectItem>
+                                            ))
+                                        )}
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -320,11 +387,17 @@ export default function CourseAllocationDialog({
                                     <SelectTrigger>
                                         <SelectValue placeholder="All levels" />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All levels</SelectItem>
+                                    <SelectContent className="bg-white dark:bg-gray-800 max-h-[300px] overflow-auto z-100">
+                                        <SelectItem value="all" className="text-gray-900 dark:text-gray-100">
+                                            <span className="text-foreground">All levels</span>
+                                        </SelectItem>
                                         {LEVELS.map((level) => (
-                                            <SelectItem key={level} value={level}>
-                                                {level} Level
+                                            <SelectItem 
+                                                key={level} 
+                                                value={level}
+                                                className="text-gray-900 dark:text-gray-100"
+                                            >
+                                                <span className="text-foreground">{level} Level</span>
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -340,10 +413,14 @@ export default function CourseAllocationDialog({
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select level" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="bg-white dark:bg-gray-800 max-h-[300px] overflow-auto z-100">
                                     {LEVELS.map((level) => (
-                                        <SelectItem key={level} value={level}>
-                                            {level} Level
+                                        <SelectItem 
+                                            key={level} 
+                                            value={level}
+                                            className="text-gray-900 dark:text-gray-100"
+                                        >
+                                            <span className="text-foreground">{level} Level</span>
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
