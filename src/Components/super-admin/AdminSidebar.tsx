@@ -111,19 +111,9 @@ const navigationCategories: NavigationCategory[] = [
     ],
   },
   {
-    title: "Assessment",
+    title: "Notices",
     icon: ClipboardList,
     items: [
-      {
-        title: "Exams",
-        href: "/super-admin/exams",
-        icon: FileText,
-      },
-      {
-        title: "Question Bank",
-        href: "/super-admin/exams/question-bank",
-        icon: BookOpen,
-      },
       {
         title: "Notices",
         href: "/super-admin/notices",
@@ -176,7 +166,7 @@ export default function AdminSidebar({
     Personnel: false,
     Academic: false,
     "Content Management": false,
-    Assessment: false,
+    Notices: false,
     Financial: false,
   });
 

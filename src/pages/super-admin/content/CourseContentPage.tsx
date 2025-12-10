@@ -3,6 +3,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Com
 import { Button } from "@/Components/ui/button";
 import { Badge } from "@/Components/ui/badge";
 import { Skeleton } from "@/Components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/Components/ui/table";
 import { BookOpen } from "lucide-react";
 import { useCoursesManagement } from "@/hooks/useCoursesManagement";
 import CoursesFilters from "@/Components/super-admin/courses/CoursesFilters";
@@ -81,79 +89,122 @@ export default function CourseContentPage() {
         </CardContent>
       </Card>
 
-      {/* Courses Grid */}
-      {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[...Array(6)].map((_, i) => (
-            <Card key={i}>
-              <CardHeader>
-                <Skeleton className="h-6 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-20 w-full" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      ) : courses.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <BookOpen className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground text-center">
-              No courses found. Try adjusting your filters.
-            </p>
-          </CardContent>
-        </Card>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {courses.map((course) => (
-            <Card
-              key={course.id}
-              className="pt-3 hover:shadow-lg transition-shadow cursor-pointer"
-              onClick={() => handleCourseClick(course.id)}
-            >
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg line-clamp-2">
-                      {course.title}
-                    </CardTitle>
-                    <CardDescription className="mt-1">
-                      {course.course_code}
-                    </CardDescription>
-                  </div>
-                  <Badge variant="outline">
-                    Level {course.course_level}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {course.program && (
-                  <div className="text-sm text-muted-foreground">
-                    {course.program.title}
-                  </div>
-                )}
-                <Button className="w-full" variant="secondary">
-                  Manage Content
-                </Button>
-              </CardContent>
-            </Card>
-            ))}
-          </div>
+      {/* Courses Table */}
+      <Card className="pt-3">
+        <CardContent>
+          {loading ? (
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>S/N</TableHead>
+                    <TableHead>Course Title</TableHead>
+                    <TableHead>Course Code</TableHead>
+                    <TableHead>Level</TableHead>
+                    <TableHead>Program</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {[...Array(5)].map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell>
+                        <Skeleton className="h-4 w-8" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-48" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-24" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-6 w-16" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-32" />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Skeleton className="h-9 w-32 ml-auto" />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          ) : courses.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <BookOpen className="h-12 w-12 text-muted-foreground mb-4" />
+              <p className="text-muted-foreground text-center">
+                No courses found. Try adjusting your filters.
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>S/N</TableHead>
+                      <TableHead>Course Title</TableHead>
+                      <TableHead>Course Code</TableHead>
+                      <TableHead>Level</TableHead>
+                      <TableHead>Program</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {courses.map((course, index) => (
+                      <TableRow key={course.id}>
+                        <TableCell className="font-medium">
+                          {(currentPage - 1) * (pagination?.limit || 20) + index + 1}
+                        </TableCell>
+                        <TableCell>
+                          <div className="font-medium">{course.title}</div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm text-muted-foreground">
+                            {course.course_code}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline">
+                            Level {course.course_level}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm text-muted-foreground">
+                            {course.program?.title || "N/A"}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="secondary"
+                            onClick={() => handleCourseClick(course.id)}
+                          >
+                            Manage Content
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
 
-          {/* Pagination */}
-          {!loading && courses.length > 0 && (
-            <CoursesPagination
-              currentPage={currentPage}
-              pagination={pagination}
-              onPreviousPage={handlePreviousPage}
-              onNextPage={handleNextPage}
-            />
+              {/* Pagination */}
+              {!loading && courses.length > 0 && (
+                <div className="mt-6">
+                  <CoursesPagination
+                    currentPage={currentPage}
+                    pagination={pagination}
+                    onPreviousPage={handlePreviousPage}
+                    onNextPage={handleNextPage}
+                  />
+                </div>
+              )}
+            </>
           )}
-        </>
-      )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
