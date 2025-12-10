@@ -3,7 +3,14 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
 import { Badge } from "@/Components/ui/badge";
-import { Skeleton } from "@/Components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/Components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import { 
   ArrowLeft, 
@@ -14,7 +21,8 @@ import {
   ChevronDown,
   Edit,
   Trash2,
-  Eye
+  Eye,
+  Info
 } from "lucide-react";
 import { GetStaffCoursesbyId, GetCourseModules, DeleteModule, DeleteUnit } from "@/api/courses";
 import { GetQuiz, DeleteQuiz } from "@/api/quiz";
@@ -57,10 +65,22 @@ interface Quiz {
   description?: string;
   duration_minutes: number;
   status: string;
+  attempts_allowed?: number;
   total_questions?: number;
   total_attempts?: number;
   average_score?: number;
-  created_at: string;
+  created_at?: string;
+  questions?: Array<{
+    id: number;
+    question_text: string;
+    question_type: string;
+    points: number;
+    options: Array<{
+      id: number;
+      text: string;
+      is_correct: boolean;
+    }>;
+  }>;
 }
 
 interface Course {
@@ -102,6 +122,7 @@ export default function CourseDetailPage() {
   const [showDeleteQuizDialog, setShowDeleteQuizDialog] = useState(false);
 
   const [deleteUnitLoading, setDeleteUnitLoading] = useState(false);
+  const [deleteQuizLoading, setDeleteQuizLoading] = useState(false);
 
   const [selectedModule, setSelectedModule] = useState<Module | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
@@ -210,6 +231,7 @@ export default function CourseDetailPage() {
   const handleDeleteQuiz = async () => {
     if (!selectedQuiz) return;
     try {
+      setDeleteQuizLoading(true);
       await DeleteQuiz(selectedQuiz.id);
       toast.success("Quiz deleted successfully");
       loadQuizzes();
@@ -218,6 +240,8 @@ export default function CourseDetailPage() {
     } catch (error) {
       console.error("Error deleting quiz:", error);
       toast.error("Failed to delete quiz");
+    } finally {
+      setDeleteQuizLoading(false);
     }
   };
 
@@ -235,10 +259,10 @@ export default function CourseDetailPage() {
         </Button>
         <div className="flex-1">
           {courseLoading ? (
-            <>
-              <Skeleton className="h-9 w-64 mb-2" />
-              <Skeleton className="h-5 w-48" />
-            </>
+            <div className="flex items-center gap-3">
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted-foreground border-t-primary"></div>
+              <span className="text-muted-foreground">Loading course...</span>
+            </div>
           ) : (
             <>
               <h1 className="text-3xl font-bold tracking-tight">
@@ -256,11 +280,9 @@ export default function CourseDetailPage() {
       <Tabs defaultValue="modules" className="space-y-4">
         <TabsList>
           <TabsTrigger value="modules">
-            <BookOpen className="h-4 w-4 mr-2" />
             Modules & Units
           </TabsTrigger>
           <TabsTrigger value="quizzes">
-            <ListChecks className="h-4 w-4 mr-2" />
             Quizzes
           </TabsTrigger>
         </TabsList>
@@ -276,15 +298,9 @@ export default function CourseDetailPage() {
           </div>
 
           {loading ? (
-            <div className="space-y-4">
-              {[...Array(3)].map((_, i) => (
-                <Card key={i}>
-                  <CardHeader>
-                    <Skeleton className="h-6 w-1/2" />
-                    <Skeleton className="h-4 w-3/4" />
-                  </CardHeader>
-                </Card>
-              ))}
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
+              <p className="mt-4 text-sm text-muted-foreground">Loading modules...</p>
             </div>
           ) : modules.length === 0 ? (
             <Card>
@@ -296,12 +312,12 @@ export default function CourseDetailPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2">
               {modules.map((module, index) => {
                 const isExpanded = expandedModules[module.id];
                 return (
-                  <Card key={module.id} className="pt-3">
-                    <CardHeader className="pb-3">
+                  <Card key={module.id} className="pt-3 pb-0">
+                    <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3 flex-1">
                           <div className="w-8 h-8 rounded bg-muted flex items-center justify-center text-muted-foreground font-semibold text-sm">
@@ -446,84 +462,96 @@ export default function CourseDetailPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {quizzes.map((quiz) => (
-                <Card key={quiz.id}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg line-clamp-2">
-                          {quiz.title}
-                        </CardTitle>
-                        <CardDescription className="mt-1">
-                          {quiz.duration_minutes} minutes
-                        </CardDescription>
-                      </div>
-                      <Badge
-                        variant={quiz.status === "published" ? "default" : "secondary"}
-                      >
-                        {quiz.status}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Questions:</span>
-                        <span className="font-medium">{quiz.total_questions || 0}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Attempts:</span>
-                        <span className="font-medium">{quiz.total_attempts || 0}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Avg Score:</span>
-                        <span className="font-medium">
-                          {quiz.average_score
-                            ? `${quiz.average_score.toFixed(1)}%`
-                            : "N/A"}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => {
-                          setSelectedQuiz(quiz);
-                          setShowQuizDetailsDialog(true);
-                        }}
-                      >
-                        <Eye className="h-4 w-4 mr-1" />
-                        View
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => {
-                          setSelectedQuiz(quiz);
-                          setShowEditQuizDialog(true);
-                        }}
-                      >
-                        <Edit className="h-4 w-4 mr-1" />
-                        Edit
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedQuiz(quiz);
-                          setShowDeleteQuizDialog(true);
-                        }}
-                      >
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-12">#</TableHead>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Duration</TableHead>
+                    <TableHead>Questions</TableHead>
+                    <TableHead>Attempts</TableHead>
+                    <TableHead>Avg Score</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="w-[120px]">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {quizzes.map((quiz, index) => (
+                    <TableRow key={quiz.id}>
+                      <TableCell>
+                        <div className="w-8 h-8 rounded bg-muted flex items-center justify-center text-muted-foreground font-semibold text-sm">
+                          {index + 1}
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-medium">{quiz.title}</TableCell>
+                      <TableCell>{quiz.duration_minutes} min</TableCell>
+                      <TableCell>{quiz.total_questions || 0}</TableCell>
+                      <TableCell>{quiz.total_attempts || 0}</TableCell>
+                      <TableCell>
+                        {quiz.average_score
+                          ? `${quiz.average_score.toFixed(1)}%`
+                          : "N/A"}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={quiz.status === "published" ? "default" : "secondary"}
+                        >
+                          {quiz.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => {
+                              setSelectedQuiz(quiz);
+                              setShowQuizStatsDialog(true);
+                            }}
+                          >
+                            <Info className="h-4 w-4 text-primary" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => {
+                              setSelectedQuiz(quiz);
+                              setShowQuizDetailsDialog(true);
+                            }}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => {
+                              setSelectedQuiz(quiz);
+                              setShowEditQuizDialog(true);
+                            }}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => {
+                              setSelectedQuiz(quiz);
+                              setShowDeleteQuizDialog(true);
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           )}
         </TabsContent>
@@ -585,12 +613,14 @@ export default function CourseDetailPage() {
             open={showQuizDetailsDialog}
             onOpenChange={setShowQuizDetailsDialog}
             quizId={selectedQuiz.id}
+            quiz={selectedQuiz}
           />
-          <QuizStatsDialog
-            open={showQuizStatsDialog}
-            onOpenChange={setShowQuizStatsDialog}
-            quizId={selectedQuiz.id}
-          />
+           <QuizStatsDialog
+             open={showQuizStatsDialog}
+             onOpenChange={setShowQuizStatsDialog}
+             quizId={selectedQuiz.id}
+             quizTitle={selectedQuiz.title}
+           />
         </>
       )}
 
@@ -623,6 +653,7 @@ export default function CourseDetailPage() {
         description="Are you sure you want to delete this quiz? This will also delete all questions and student attempts. This action cannot be undone."
         confirmText="Delete"
         variant="destructive"
+        isProcessing={deleteQuizLoading}
       />
     </div>
   );

@@ -286,6 +286,19 @@ export class CoursesApi {
     }
   }
 
+  async GetStaffCoursesByYear(year1: string, year2: string) {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.get(`${BASE_URL}/api/courses/staff/${year1}/${year2}`, {
+        headers
+      });
+      return response;
+    } catch (err: any) {
+      console.error("Error during getting staff courses by year:", err);
+      throw err;
+    }
+  }
+
   async GetStaffCoursesbyId(id: string) {
     try {
       const headers = getAuthHeaders();
@@ -374,7 +387,7 @@ export class CoursesApi {
   async EditUnit(unitId: string, data: {title: string, content: string, video_url?: string}) {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.put(`${BASE_URL}/api/units/${unitId}`, data, {
+      const response = await axios.patch(`${BASE_URL}/api/units/${unitId}`, data, {
         headers
       });
       return response;
@@ -426,6 +439,11 @@ export class CoursesApi {
 export const GetStaffCourses = (session: string) => {
   const api = new CoursesApi();
   return api.GetStaffCourses(session);
+};
+
+export const GetStaffCoursesByYear = (year1: string, year2: string) => {
+  const api = new CoursesApi();
+  return api.GetStaffCoursesByYear(year1, year2);
 };
 
 export const GetStaffCoursesbyId = (id: string) => {

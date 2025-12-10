@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Com
 import { Button } from "@/Components/ui/button";
 import { Badge } from "@/Components/ui/badge";
 import { Skeleton } from "@/Components/ui/skeleton";
-import { BookOpen, FolderOpen, Users } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { useCoursesManagement } from "@/hooks/useCoursesManagement";
 import CoursesFilters from "@/Components/super-admin/courses/CoursesFilters";
 import CoursesPagination from "@/Components/super-admin/courses/CoursesPagination";
@@ -135,16 +135,6 @@ export default function CourseContentPage() {
                     {course.program.title}
                   </div>
                 )}
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <FolderOpen className="h-4 w-4 text-muted-foreground" />
-                    <span>{(course as any).modules_count || 0} Modules</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                    <span>{(course as any).students_count || 0} Students</span>
-                  </div>
-                </div>
                 <Button className="w-full" variant="secondary">
                   Manage Content
                 </Button>

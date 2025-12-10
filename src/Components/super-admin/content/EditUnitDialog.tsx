@@ -78,26 +78,43 @@ export default function EditUnitDialog({
     try {
       setLoading(true);
       
-      // Update unit data
-      const unitData = {
-        ...formData,
-        video_url: videoFile ? undefined : formData.video_url, // Clear video_url if uploading new file
-      };
-      
-      await EditUnit(String(unit.id), unitData);
-      
-      // If video file is selected, upload it
+      // If video file is selected, upload it first, then update unit with the video_url
       if (videoFile) {
         try {
-          await UploadUnitVideo(String(unit.module_id), String(unit.id), videoFile, (progress) => {
+          const videoResponse = await UploadUnitVideo(String(unit.module_id), String(unit.id), videoFile, (progress) => {
             setUploadProgress(progress);
           });
+          const videoData = videoResponse.data as any;
+          
+          // Update unit data with the new video_url from upload response
+          const unitData = {
+            title: formData.title,
+            content: formData.content,
+            video_url: videoData?.data?.video_url || videoData?.video_url || formData.video_url,
+          };
+          
+          await EditUnit(String(unit.id), unitData);
           toast.success("Unit updated and video uploaded successfully");
         } catch (videoError: any) {
           console.error("Error uploading video:", videoError);
+          // Still try to update unit without video_url if upload fails
+          const unitData = {
+            title: formData.title,
+            content: formData.content,
+            video_url: formData.video_url, // Keep existing video_url
+          };
+          await EditUnit(String(unit.id), unitData);
           toast.warning("Unit updated but video upload failed. You can upload the video later.");
         }
       } else {
+        // No new video file, just update unit with existing data
+        const unitData = {
+          title: formData.title,
+          content: formData.content,
+          video_url: formData.video_url || undefined,
+        };
+        
+        await EditUnit(String(unit.id), unitData);
         toast.success("Unit updated successfully");
       }
       

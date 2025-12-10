@@ -26,11 +26,13 @@ import TutorRevenuePage from "@/pages/super-admin/revenue/TutorRevenuePage";
 import CourseContentPage from "@/pages/super-admin/content/CourseContentPage";
 import CourseDetailPage from "@/pages/super-admin/content/CourseDetailPage";
 import QuizzesPage from "@/pages/super-admin/content/QuizzesPage";
+import ExamsPage from "@/pages/super-admin/content/ExamsPage";
 import ResultsPage from "@/pages/super-admin/content/ResultsPage";
 import CourseQuizzesPage from "@/pages/super-admin/content/CourseQuizzesPage";
 
 // Exam Management Pages
 import ExamsListPage from "@/pages/super-admin/exams/ExamsListPage";
+import CourseExamsPage from "@/pages/super-admin/exams/CourseExamsPage";
 import QuestionBankPage from "@/pages/super-admin/exams/QuestionBankPage";
 
 import { Toaster } from "sonner";
@@ -136,13 +138,14 @@ function AppRouter() {
             <Route path="content/course-content" element={<CourseContentPage />} />
             <Route path="content/course-content/:courseId" element={<CourseDetailPage />} />
             <Route path="content/quizzes" element={<QuizzesPage />} />
+            <Route path="content/exams" element={<ExamsPage />} />
             <Route path="content/results" element={<ResultsPage />} />
             <Route path="content/results/:courseId" element={<CourseQuizzesPage />} />
             
             {/* Exam Management Routes */}
             <Route path="exams" element={<ExamsListPage />} />
             <Route path="exams/question-bank" element={<QuestionBankPage />} />
-            <Route path="exams/course/:courseId" element={<ExamsListPage />} />
+            <Route path="exams/course/:courseId" element={<CourseExamsPage />} />
 
           </Route>
         </Route>

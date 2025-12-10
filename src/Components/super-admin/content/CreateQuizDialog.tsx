@@ -355,7 +355,7 @@ export default function CreateQuizDialog({
                 Cancel
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? "Creating..." : "Next: Add Questions"}
+                {loading ? "Creating..." : "Add Questions"}
               </Button>
             </DialogFooter>
           </form>

@@ -105,8 +105,8 @@ const navigationCategories: NavigationCategory[] = [
         icon: BookMarked,
       },
       {
-        title: "Quizzes",
-        href: "/super-admin/content/quizzes",
+        title: "Exams",
+        href: "/super-admin/content/exams",
         icon: ListChecks,
       },
       {
