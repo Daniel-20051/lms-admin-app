@@ -44,7 +44,7 @@ interface Quiz {
   attempts_allowed?: number;
   status: string;
   created_at?: string;
-  questions: QuizQuestion[];
+  questions?: QuizQuestion[];
 }
 
 export default function QuizDetailsDialog({

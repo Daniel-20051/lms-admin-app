@@ -5,18 +5,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/Components/ui/dialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
+import { Card, CardContent, CardHeader } from "@/Components/ui/card";
 import { Input } from "@/Components/ui/input";
 import { Progress } from "@/Components/ui/progress";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/Components/ui/table";
-import { Badge } from "@/Components/ui/badge";
 import { GetQuizStats } from "@/api/quiz";
 import { toast } from "sonner";
 import { 
@@ -113,12 +104,6 @@ export default function QuizStatsDialog({
       student.email.toLowerCase().includes(query)
     );
   }) || [];
-
-  const getScoreColor = (percentage: number) => {
-    if (percentage >= 80) return "text-green-600";
-    if (percentage >= 60) return "text-yellow-600";
-    return "text-red-600";
-  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

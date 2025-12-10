@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogBody,
 } from "@/Components/ui/dialog";
 import { Button } from "@/Components/ui/button";
@@ -109,19 +107,17 @@ export default function ViewExamDialog({
   const [loadingStatistics, setLoadingStatistics] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showDetails, setShowDetails] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     if (open && examId) {
       loadExamDetails();
-      loadAttempts(1);
+      loadAttempts();
       loadStatistics();
     } else {
       setExamDetails(null);
       setAttempts([]);
       setStatistics(null);
       setSearchQuery("");
-      setCurrentPage(1);
     }
   }, [open, examId]);
 
@@ -160,7 +156,7 @@ export default function ViewExamDialog({
     }
   };
 
-  const loadAttempts = async (page: number = 1) => {
+  const loadAttempts = async () => {
     if (!examId) return;
 
     try {
@@ -170,7 +166,6 @@ export default function ViewExamDialog({
 
       if (data?.status && data?.data) {
         setAttempts(data.data);
-        setCurrentPage(page);
       } else {
         setAttempts([]);
       }

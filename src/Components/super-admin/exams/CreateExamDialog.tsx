@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -154,10 +153,10 @@ export default function CreateExamDialog({
       // Format dates for API (convert datetime-local to ISO format)
       const startAt = formData.start_at
         ? new Date(formData.start_at).toISOString()
-        : null;
+        : undefined;
       const endAt = formData.end_at
         ? new Date(formData.end_at).toISOString()
-        : null;
+        : undefined;
 
       const payload = {
         course_id: courseId,

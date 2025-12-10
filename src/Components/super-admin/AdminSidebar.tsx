@@ -25,7 +25,6 @@ import {
   FolderOpen,
   BookMarked,
   ListChecks,
-  BarChart3
 } from "lucide-react";
 import { Button } from "@/Components/ui/button";
 import { cn } from "@/lib/utils";
@@ -108,11 +107,6 @@ const navigationCategories: NavigationCategory[] = [
         title: "Exams",
         href: "/super-admin/content/exams",
         icon: ListChecks,
-      },
-      {
-        title: "Results",
-        href: "/super-admin/content/results",
-        icon: BarChart3,
       },
     ],
   },
