@@ -10,7 +10,6 @@ import {
   ChevronRight,
   ChevronDown,
   BookOpen,
-  FileText,
   GraduationCap,
   Calendar,
   Building2,
