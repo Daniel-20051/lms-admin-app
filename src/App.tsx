@@ -22,6 +22,17 @@ import TutorsPage from "@/pages/super-admin/tutors/TutorsPage";
 import RevenuePage from "@/pages/super-admin/revenue/RevenuePage";
 import TutorRevenuePage from "@/pages/super-admin/revenue/TutorRevenuePage";
 
+// Content Management Pages
+import CourseContentPage from "@/pages/super-admin/content/CourseContentPage";
+import CourseDetailPage from "@/pages/super-admin/content/CourseDetailPage";
+import QuizzesPage from "@/pages/super-admin/content/QuizzesPage";
+import ResultsPage from "@/pages/super-admin/content/ResultsPage";
+import CourseQuizzesPage from "@/pages/super-admin/content/CourseQuizzesPage";
+
+// Exam Management Pages
+import ExamsListPage from "@/pages/super-admin/exams/ExamsListPage";
+import QuestionBankPage from "@/pages/super-admin/exams/QuestionBankPage";
+
 import { Toaster } from "sonner";
 import { useEffect } from "react";
 import socketService from "@/services/Socketservice";
@@ -120,6 +131,18 @@ function AppRouter() {
             <Route path="revenue/tutor/:ownerType/:ownerId" element={<TutorRevenuePage />} />
             <Route path="activity-logs" element={<ActivityLogsPage />} />
             <Route path="settings" element={<SettingsPage />} />
+            
+            {/* Content Management Routes */}
+            <Route path="content/course-content" element={<CourseContentPage />} />
+            <Route path="content/course-content/:courseId" element={<CourseDetailPage />} />
+            <Route path="content/quizzes" element={<QuizzesPage />} />
+            <Route path="content/results" element={<ResultsPage />} />
+            <Route path="content/results/:courseId" element={<CourseQuizzesPage />} />
+            
+            {/* Exam Management Routes */}
+            <Route path="exams" element={<ExamsListPage />} />
+            <Route path="exams/question-bank" element={<QuestionBankPage />} />
+            <Route path="exams/course/:courseId" element={<ExamsListPage />} />
 
           </Route>
         </Route>

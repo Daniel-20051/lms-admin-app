@@ -16,9 +16,11 @@ export interface ConfirmDialogProps {
   confirmText?: string;
   cancelText?: string;
   onConfirm: () => void;
-  onCancel: () => void;
+  onCancel?: () => void;
+  onOpenChange?: (open: boolean) => void;
   isProcessing?: boolean;
   children?: React.ReactNode;
+  variant?: "default" | "destructive";
 }
 
 const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
@@ -29,27 +31,48 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   cancelText = "Cancel",
   onConfirm,
   onCancel,
+  onOpenChange,
   isProcessing = false,
   children,
+  variant = "default",
 }) => {
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel();
+    } else if (onOpenChange) {
+      onOpenChange(false);
+    }
+  };
+
   return (
     <Dialog
       open={open}
-      onOpenChange={(next) => (!next ? onCancel() : undefined)}
+      onOpenChange={(next) => {
+        if (!next) {
+          handleCancel();
+        } else if (onOpenChange) {
+          onOpenChange(next);
+        }
+      }}
     >
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-md p-6">
+        <DialogHeader className="px-0 pt-0 pb-4">
           <DialogTitle>{title}</DialogTitle>
-          {description && <DialogDescription>{description}</DialogDescription>}
+          {description && <DialogDescription className="pt-2">{description}</DialogDescription>}
         </DialogHeader>
 
-        {children}
+        {children && <div className="px-0 pb-4">{children}</div>}
 
-        <DialogFooter className="flex gap-2">
-          <Button variant="outline" onClick={onCancel} disabled={isProcessing}>
+        <DialogFooter className="px-0 pb-0 pt-4 flex gap-2">
+          <Button variant="outline" onClick={handleCancel} disabled={isProcessing}>
             {cancelText}
           </Button>
-          <Button onClick={onConfirm} disabled={isProcessing} className="gap-2">
+          <Button 
+            onClick={onConfirm} 
+            disabled={isProcessing} 
+            className="gap-2"
+            variant={variant === "destructive" ? "destructive" : "default"}
+          >
             {isProcessing ? (
               <>
                 <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />

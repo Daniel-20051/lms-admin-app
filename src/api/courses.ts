@@ -113,7 +113,7 @@ export const getCourse = async (courseId: number): Promise<GetCourseResponse> =>
     try {
         const headers = getAuthHeaders();
         const response = await axios.get<GetCourseResponse>(
-            `${BASE_URL}/api/admin/courses/${courseId}`,
+            `${BASE_URL}/api/courses/single/${courseId}`,
             { headers }
         );
         return response.data;
@@ -289,7 +289,7 @@ export class CoursesApi {
   async GetStaffCoursesbyId(id: string) {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.get(`${BASE_URL}/api/staff/courses/${id}`, {
+      const response = await axios.get(`${BASE_URL}/api/courses/single/${id}`, {
         headers
       });
       return response;
@@ -316,6 +316,7 @@ export class CoursesApi {
     try {
       const headers = getAuthHeaders();
       const response = await axios.post(`${BASE_URL}/api/courses/${courseId}/modules`, {
+        course_id: parseInt(courseId, 10),
         title,
         description
       }, {
@@ -344,7 +345,10 @@ export class CoursesApi {
   async AddUnit(moduleId: string, data: {title: string, content: string, content_type: string, order: number, status: string}) {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.post(`${BASE_URL}/api/modules/${moduleId}/units`, data, {
+      const response = await axios.post(`${BASE_URL}/api/modules/${moduleId}/units`, {
+        ...data,
+        module_id: parseInt(moduleId, 10),
+      }, {
         headers
       });
       return response;

@@ -21,7 +21,11 @@ import {
   TrendingUp,
   UsersRound,
   Wallet,
-  ClipboardList
+  ClipboardList,
+  FolderOpen,
+  BookMarked,
+  ListChecks,
+  BarChart3
 } from "lucide-react";
 import { Button } from "@/Components/ui/button";
 import { cn } from "@/lib/utils";
@@ -92,6 +96,27 @@ const navigationCategories: NavigationCategory[] = [
     ],
   },
   {
+    title: "Content Management",
+    icon: FolderOpen,
+    items: [
+      {
+        title: "Course Content",
+        href: "/super-admin/content/course-content",
+        icon: BookMarked,
+      },
+      {
+        title: "Quizzes",
+        href: "/super-admin/content/quizzes",
+        icon: ListChecks,
+      },
+      {
+        title: "Results",
+        href: "/super-admin/content/results",
+        icon: BarChart3,
+      },
+    ],
+  },
+  {
     title: "Assessment",
     icon: ClipboardList,
     items: [
@@ -99,6 +124,11 @@ const navigationCategories: NavigationCategory[] = [
         title: "Exams",
         href: "/super-admin/exams",
         icon: FileText,
+      },
+      {
+        title: "Question Bank",
+        href: "/super-admin/exams/question-bank",
+        icon: BookOpen,
       },
       {
         title: "Notices",
@@ -151,6 +181,7 @@ export default function AdminSidebar({
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({
     Personnel: false,
     Academic: false,
+    "Content Management": false,
     Assessment: false,
     Financial: false,
   });
