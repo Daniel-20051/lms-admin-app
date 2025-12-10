@@ -1,17 +1,15 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
 import { Badge } from "@/Components/ui/badge";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import { 
-  BookOpen, 
   Plus, 
   FileQuestion, 
   ListChecks
 } from "lucide-react";
-import { GetBankQuestions, AddObjectiveQuestion, AddTheoryQuestion } from "@/api/exams";
+import { GetBankQuestions } from "@/api/exams";
 import {
   Select,
   SelectContent,
@@ -22,12 +20,6 @@ import {
 import { toast } from "sonner";
 import { useCoursesManagement } from "@/hooks/useCoursesManagement";
 import CoursesFilters from "@/Components/super-admin/courses/CoursesFilters";
-
-interface Course {
-  id: number;
-  title: string;
-  course_code: string;
-}
 
 interface BankQuestion {
   id: number;
@@ -44,11 +36,8 @@ interface BankQuestion {
 }
 
 export default function QuestionBankPage() {
-  const location = useLocation();
-
   const {
     courses,
-    loading: coursesLoading,
     searchTerm,
     semesterFilter,
     academicYearFilter,

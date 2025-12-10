@@ -59,8 +59,9 @@ export default function QuizDetailsDialog({
     try {
       setLoading(true);
       const response = await GetQuizById(quizId);
-      if (response.data.success) {
-        setQuiz(response.data.data);
+      const data = response.data as any;
+      if (data?.success) {
+        setQuiz(data.data);
       }
     } catch (error) {
       console.error("Error loading quiz details:", error);

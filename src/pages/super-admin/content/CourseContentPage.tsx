@@ -138,11 +138,11 @@ export default function CourseContentPage() {
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <FolderOpen className="h-4 w-4 text-muted-foreground" />
-                    <span>{course.modules_count || 0} Modules</span>
+                    <span>{(course as any).modules_count || 0} Modules</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Users className="h-4 w-4 text-muted-foreground" />
-                    <span>{course.students_count || 0} Students</span>
+                    <span>{(course as any).students_count || 0} Students</span>
                   </div>
                 </div>
                 <Button className="w-full" variant="secondary">

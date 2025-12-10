@@ -62,8 +62,9 @@ export default function QuizStatsDialog({
     try {
       setLoading(true);
       const response = await GetQuizStats(quizId);
-      if (response.data.success) {
-        setStats(response.data.data);
+      const data = response.data as any;
+      if (data?.success) {
+        setStats(data.data);
       }
     } catch (error) {
       console.error("Error loading quiz stats:", error);

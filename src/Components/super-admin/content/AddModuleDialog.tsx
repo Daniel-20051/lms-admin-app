@@ -50,13 +50,14 @@ export default function AddModuleDialog({
       );
       
       // Check for success in response (could be status or success field)
-      if (response.data?.status || response.data?.success || response.status === 201 || response.status === 200) {
+      const data = response.data as any;
+      if (data?.status || data?.success || response.status === 201 || response.status === 200) {
         toast.success("Module created successfully");
         setFormData({ title: "", description: "" });
         onSuccess();
         onOpenChange(false); // Auto-close dialog on success
       } else {
-        toast.error(response.data?.message || "Failed to create module");
+        toast.error(data?.message || "Failed to create module");
       }
     } catch (error: any) {
       console.error("Error creating module:", error);

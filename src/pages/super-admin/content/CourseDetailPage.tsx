@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Com
 import { Button } from "@/Components/ui/button";
 import { Badge } from "@/Components/ui/badge";
 import { Skeleton } from "@/Components/ui/skeleton";
-import { Alert, AlertDescription } from "@/Components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import { 
   ArrowLeft, 
@@ -13,17 +12,13 @@ import {
   FileText, 
   ListChecks,
   ChevronDown,
-  ChevronRight,
   Edit,
   Trash2,
-  Eye,
-  Play,
-  AlertCircle
+  Eye
 } from "lucide-react";
 import { GetStaffCoursesbyId, GetCourseModules, DeleteModule, DeleteUnit } from "@/api/courses";
 import { GetQuiz, DeleteQuiz } from "@/api/quiz";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import AddModuleDialog from "@/Components/super-admin/content/AddModuleDialog";
 import AddUnitDialog from "@/Components/super-admin/content/AddUnitDialog";
 import EditUnitDialog from "@/Components/super-admin/content/EditUnitDialog";
@@ -124,10 +119,11 @@ export default function CourseDetailPage() {
     try {
       setCourseLoading(true);
       const response = await GetStaffCoursesbyId(courseId!);
-      if (response.data.status || response.data.success) {
-        setCourse(response.data.data);
+      const data = response.data as any;
+      if (data?.status || data?.success) {
+        setCourse(data.data);
       } else {
-        console.error("Unexpected response format:", response.data);
+        console.error("Unexpected response format:", data);
         toast.error("Failed to load course details");
       }
     } catch (error) {
@@ -142,10 +138,11 @@ export default function CourseDetailPage() {
     try {
       setLoading(true);
       const response = await GetCourseModules(courseId!);
-      if (response.data.status || response.data.success) {
-        setModules(response.data.data || []);
+      const data = response.data as any;
+      if (data?.status || data?.success) {
+        setModules(data.data || []);
       } else {
-        console.error("Unexpected response format:", response.data);
+        console.error("Unexpected response format:", data);
         setModules([]);
       }
     } catch (error) {
@@ -160,8 +157,9 @@ export default function CourseDetailPage() {
   const loadQuizzes = async () => {
     try {
       const response = await GetQuiz(Number(courseId));
-      if (response.data.status || response.data.success) {
-        setQuizzes(response.data.data || []);
+      const data = response.data as any;
+      if (data?.status || data?.success) {
+        setQuizzes(data.data || []);
       } else {
         setQuizzes([]);
       }
@@ -223,16 +221,6 @@ export default function CourseDetailPage() {
     }
   };
 
-  const getContentTypeIcon = (type: string) => {
-    switch (type) {
-      case "video":
-        return <Play className="h-4 w-4" />;
-      case "document":
-        return <FileText className="h-4 w-4" />;
-      default:
-        return <BookOpen className="h-4 w-4" />;
-    }
-  };
 
   return (
     <div className="space-y-6">

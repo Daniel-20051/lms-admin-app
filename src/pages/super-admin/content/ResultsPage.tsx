@@ -137,11 +137,11 @@ export default function ResultsPage() {
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                    <span>{course.quizzes_count || 0} Quizzes</span>
+                    <span>{(course as any).quizzes_count || 0} Quizzes</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Users className="h-4 w-4 text-muted-foreground" />
-                    <span>{course.students_count || 0} Students</span>
+                    <span>{(course as any).students_count || 0} Students</span>
                   </div>
                 </div>
                 <Button 

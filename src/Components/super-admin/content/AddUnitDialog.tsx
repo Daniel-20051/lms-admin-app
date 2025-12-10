@@ -65,13 +65,14 @@ export default function AddUnitDialog({
       };
       
       const response = await AddUnit(moduleId, unitData);
+      const data = response.data as any;
       
       // Check if unit was created successfully
-      if (!response.data?.data?.id) {
+      if (!data?.data?.id) {
         throw new Error("Failed to create unit - no unit ID returned");
       }
       
-      const unitId = response.data.data.id;
+      const unitId = data.data.id;
       
       // If video file is selected, upload it to the created unit
       if (videoFile) {

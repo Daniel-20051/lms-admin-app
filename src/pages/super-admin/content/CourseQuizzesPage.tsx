@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Com
 import { Button } from "@/Components/ui/button";
 import { Badge } from "@/Components/ui/badge";
 import { Skeleton } from "@/Components/ui/skeleton";
-import { ArrowLeft, ListChecks, Eye, TrendingUp } from "lucide-react";
+import { ArrowLeft, ListChecks, TrendingUp } from "lucide-react";
 import { GetStaffCoursesbyId } from "@/api/courses";
 import { GetQuiz } from "@/api/quiz";
 import QuizStatsDialog from "@/Components/super-admin/content/QuizStatsDialog";
@@ -53,8 +53,9 @@ export default function CourseQuizzesPage() {
   const loadCourseData = async () => {
     try {
       const response = await GetStaffCoursesbyId(courseId!);
-      if (response.data.success) {
-        setCourse(response.data.data);
+      const data = response.data as any;
+      if (data?.success) {
+        setCourse(data.data);
       }
     } catch (error) {
       console.error("Error loading course:", error);
@@ -66,8 +67,9 @@ export default function CourseQuizzesPage() {
     try {
       setLoading(true);
       const response = await GetQuiz(Number(courseId));
-      if (response.data.success) {
-        setQuizzes(response.data.data || []);
+      const data = response.data as any;
+      if (data?.success) {
+        setQuizzes(data.data || []);
       }
     } catch (error) {
       console.error("Error loading quizzes:", error);

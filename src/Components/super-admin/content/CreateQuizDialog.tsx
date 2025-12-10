@@ -20,7 +20,7 @@ import {
 } from "@/Components/ui/select";
 import { CreateQuiz, AddQuizQuestions } from "@/api/quiz";
 import { toast } from "sonner";
-import { Plus, Trash2, CheckSquare, Square } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { Checkbox } from "@/Components/ui/checkbox";
 
 interface Module {
@@ -51,7 +51,6 @@ interface QuizOption {
 export default function CreateQuizDialog({
   open,
   onOpenChange,
-  courseId,
   modules,
   onSuccess,
 }: CreateQuizDialogProps) {
@@ -95,9 +94,10 @@ export default function CreateQuizDialog({
       };
       
       const response = await CreateQuiz(payload);
+      const data = response.data as any;
       
-      if (response.data?.data?.id) {
-        setQuizId(response.data.data.id);
+      if (data?.data?.id) {
+        setQuizId(data.data.id);
         toast.success("Quiz created successfully");
         setStep("questions");
       } else {

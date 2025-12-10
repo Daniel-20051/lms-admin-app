@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
@@ -36,12 +35,8 @@ interface Quiz {
 }
 
 export default function QuizzesPage() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const {
     courses,
-    loading: coursesLoading,
     searchTerm,
     semesterFilter,
     academicYearFilter,
@@ -97,8 +92,9 @@ export default function QuizzesPage() {
       for (const course of courses) {
         try {
           const quizzesResponse = await GetQuiz(course.id);
-          if (quizzesResponse.data.success) {
-            const courseQuizzes = (quizzesResponse.data.data || []).map((quiz: Quiz) => ({
+          const data = quizzesResponse.data as any;
+          if (data?.success) {
+            const courseQuizzes = (data.data || []).map((quiz: Quiz) => ({
               ...quiz,
               course: {
                 id: course.id,
