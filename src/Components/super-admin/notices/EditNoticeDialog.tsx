@@ -33,11 +33,40 @@ export default function EditNoticeDialog({
   onNoticeUpdated,
 }: EditNoticeDialogProps) {
   const [saving, setSaving] = useState(false);
-  const [formData, setFormData] = useState<UpdateNoticeData>({
+  const [formData, setFormData] = useState<UpdateNoticeData & { expires_at_local?: string }>({
     title: "",
     note: "",
     course_id: null,
+    expires_at: null,
+    expires_at_local: "",
   });
+
+  // Helper function to convert ISO date to datetime-local format
+  const isoToDatetimeLocal = (isoString: string | null): string => {
+    if (!isoString) return "";
+    try {
+      const date = new Date(isoString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
+    } catch {
+      return "";
+    }
+  };
+
+  // Helper function to convert datetime-local format to ISO string
+  const datetimeLocalToIso = (localString: string): string | null => {
+    if (!localString) return null;
+    try {
+      const date = new Date(localString);
+      return date.toISOString();
+    } catch {
+      return null;
+    }
+  };
 
   useEffect(() => {
     if (open && notice) {
@@ -45,6 +74,8 @@ export default function EditNoticeDialog({
         title: notice.title || "",
         note: notice.note || "",
         course_id: notice.course_id,
+        expires_at: notice.expires_at,
+        expires_at_local: isoToDatetimeLocal(notice.expires_at),
       });
     }
   }, [open, notice]);
@@ -66,7 +97,14 @@ export default function EditNoticeDialog({
 
     try {
       setSaving(true);
-      const response = await updateNotice(notice.id, formData);
+      // Convert datetime-local to ISO format for API
+      const updateData: UpdateNoticeData = {
+        title: formData.title,
+        note: formData.note,
+        course_id: formData.course_id,
+        expires_at: datetimeLocalToIso(formData.expires_at_local || ""),
+      };
+      const response = await updateNotice(notice.id, updateData);
       if (response.success) {
         toast.success(response.message || "Notice updated successfully");
         onNoticeUpdated?.();
@@ -119,6 +157,22 @@ export default function EditNoticeDialog({
                 required
                 disabled={saving}
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="expires_at">Expires At</Label>
+              <Input
+                id="expires_at"
+                type="datetime-local"
+                value={formData.expires_at_local || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, expires_at_local: e.target.value })
+                }
+                disabled={saving}
+              />
+              <p className="text-xs text-muted-foreground">
+                Leave empty for permanent notice
+              </p>
             </div>
           </div>
 

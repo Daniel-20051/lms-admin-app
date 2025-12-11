@@ -74,6 +74,7 @@ export default function NoticesTable({
             <TableHead>Note</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Date</TableHead>
+            <TableHead>Expires At</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -97,13 +98,16 @@ export default function NoticesTable({
                   <Skeleton className="h-4 w-24" />
                 </TableCell>
                 <TableCell>
+                  <Skeleton className="h-4 w-24" />
+                </TableCell>
+                <TableCell>
                   <Skeleton className="h-8 w-8" />
                 </TableCell>
               </TableRow>
             ))
           ) : notices.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center py-8">
+              <TableCell colSpan={7} className="text-center py-8">
                 <div className="flex flex-col items-center gap-2">
                   <Bell className="h-12 w-12 text-muted-foreground" />
                   <p className="text-muted-foreground">No notices found</p>
@@ -130,6 +134,9 @@ export default function NoticesTable({
                 </TableCell>
                 <TableCell className="text-muted-foreground text-sm">
                   {formatDate(notice.date)}
+                </TableCell>
+                <TableCell className="text-muted-foreground text-sm">
+                  {notice.expires_at ? formatDate(notice.expires_at) : "-"}
                 </TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>

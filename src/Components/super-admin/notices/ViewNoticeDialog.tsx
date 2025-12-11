@@ -121,6 +121,11 @@ export default function ViewNoticeDialog({
                 <label className="text-sm font-medium text-muted-foreground">Created Date</label>
                 <p className="text-base">{formatDate(notice.date)}</p>
               </div>
+
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Expires At</label>
+                <p className="text-base">{notice.expires_at ? formatDate(notice.expires_at) : "Never (Permanent)"}</p>
+              </div>
             </div>
 
             {/* Notice Content */}

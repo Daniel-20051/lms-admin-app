@@ -31,11 +31,24 @@ export default function CreateNoticeDialog({
   onNoticeCreated,
 }: CreateNoticeDialogProps) {
   const [creating, setCreating] = useState(false);
-  const [formData, setFormData] = useState<CreateNoticeData>({
+  const [formData, setFormData] = useState<CreateNoticeData & { expires_at_local?: string }>({
     title: "",
     note: "",
     course_id: null,
+    expires_at: null,
+    expires_at_local: "",
   });
+
+  // Helper function to convert datetime-local format to ISO string
+  const datetimeLocalToIso = (localString: string): string | null => {
+    if (!localString) return null;
+    try {
+      const date = new Date(localString);
+      return date.toISOString();
+    } catch {
+      return null;
+    }
+  };
 
   // Reset form when dialog closes
   useEffect(() => {
@@ -44,6 +57,8 @@ export default function CreateNoticeDialog({
         title: "",
         note: "",
         course_id: null,
+        expires_at: null,
+        expires_at_local: "",
       });
     }
   }, [open]);
@@ -64,13 +79,22 @@ export default function CreateNoticeDialog({
 
     try {
       setCreating(true);
-      const response = await createNotice(formData);
+      // Convert datetime-local to ISO format for API
+      const createData: CreateNoticeData = {
+        title: formData.title,
+        note: formData.note,
+        course_id: formData.course_id,
+        expires_at: datetimeLocalToIso(formData.expires_at_local || ""),
+      };
+      const response = await createNotice(createData);
       if (response.success) {
         toast.success(response.message || "Notice created successfully");
         setFormData({
           title: "",
           note: "",
           course_id: null,
+          expires_at: null,
+          expires_at_local: "",
         });
         onNoticeCreated?.();
         onOpenChange(false);
@@ -125,6 +149,22 @@ export default function CreateNoticeDialog({
               />
               <p className="text-xs text-muted-foreground">
                 This notice will be visible to all users (system-wide notice)
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="expires_at">Expires At</Label>
+              <Input
+                id="expires_at"
+                type="datetime-local"
+                value={formData.expires_at_local || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, expires_at_local: e.target.value })
+                }
+                disabled={creating}
+              />
+              <p className="text-xs text-muted-foreground">
+                Leave empty for permanent notice
               </p>
             </div>
           </div>

@@ -1519,8 +1519,12 @@ export interface Notice {
   title: string;
   note: string;
   date: string;
-  token: string;
+  token: string | null;
   course_id: number | null;
+  expires_at: string | null;
+  is_permanent: boolean;
+  status: string;
+  target_audience: string;
   course: {
     id: number;
     title: string;
@@ -1597,6 +1601,7 @@ export interface CreateNoticeData {
   title: string;
   note: string;
   course_id: number | null;
+  expires_at?: string | null;
 }
 
 export interface CreateNoticeResponse {
@@ -1627,6 +1632,7 @@ export interface UpdateNoticeData {
   title?: string;
   note?: string;
   course_id?: number | null;
+  expires_at?: string | null;
 }
 
 export interface UpdateNoticeResponse {
