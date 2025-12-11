@@ -20,6 +20,7 @@ import {
 import { updateCourse, getCourse, type UpdateCourseData } from "@/api/courses";
 import { getPrograms } from "@/api/programs";
 import { getStaff } from "@/api/admin";
+import { getFaculties, type Faculty } from "@/api/base";
 import { toast } from "sonner";
 
 interface EditCourseDialogProps {
@@ -29,15 +30,6 @@ interface EditCourseDialogProps {
     onCourseUpdated: () => void;
 }
 
-// Mock faculties data - you may want to fetch this from an API
-const FACULTIES = [
-    { id: 2, name: "Economics & Management" },
-    { id: 6, name: "Environmental Science" },
-    { id: 8, name: "Science & Technology" },
-    { id: 10, name: "Law & Political Science" },
-    { id: 12, name: "Communications" },
-    { id: 14, name: "College of Education" },
-];
 
 const COURSE_TYPES = ['Core', 'Elective', 'General'];
 const LEVELS = [100, 200, 300, 400, 500, 600, 700];
@@ -60,6 +52,7 @@ export default function EditCourseDialog({
     const [fetchingCourse, setFetchingCourse] = useState(false);
     const [programs, setPrograms] = useState<Array<{ id: number; title: string }>>([]);
     const [staff, setStaff] = useState<Array<{ id: number; full_name: string }>>([]);
+    const [faculties, setFaculties] = useState<Faculty[]>([]);
     
     const [formData, setFormData] = useState<UpdateCourseData>({
         title: '',
@@ -94,10 +87,10 @@ export default function EditCourseDialog({
         owner_id?: string;
     }>({});
 
-    // Fetch programs and staff when dialog opens
+    // Fetch programs, staff, and faculties when dialog opens
     useEffect(() => {
         if (open) {
-            fetchProgramsAndStaff();
+            fetchProgramsStaffAndFaculties();
         }
     }, [open]);
 
@@ -108,19 +101,22 @@ export default function EditCourseDialog({
         }
     }, [open, courseId]);
 
-    const fetchProgramsAndStaff = async () => {
+    const fetchProgramsStaffAndFaculties = async () => {
         setFetching(true);
         try {
-            // Fetch programs
-            const programsResponse = await getPrograms({ limit: 1000 });
-            setPrograms(programsResponse.data.programs.map(p => ({ id: p.id, title: p.title })));
+            // Fetch programs, staff, and faculties in parallel
+            const [programsResponse, staffResponse, facultiesResponse] = await Promise.all([
+                getPrograms({ limit: 1000 }),
+                getStaff({ limit: 1000 }),
+                getFaculties({ limit: 1000 }),
+            ]);
 
-            // Fetch staff
-            const staffResponse = await getStaff({ limit: 1000 });
+            setPrograms(programsResponse.data.programs.map(p => ({ id: p.id, title: p.title })));
             setStaff(staffResponse.data.staff.map(s => ({ id: s.id, full_name: s.full_name })));
+            setFaculties(facultiesResponse.data.faculties);
         } catch (error: any) {
-            console.error('Error fetching programs/staff:', error);
-            toast.error('Failed to load programs and staff');
+            console.error('Error fetching data:', error);
+            toast.error('Failed to load programs, staff, and faculties');
         } finally {
             setFetching(false);
         }
@@ -414,11 +410,17 @@ export default function EditCourseDialog({
                                             <SelectValue placeholder="Select faculty" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {FACULTIES.map((faculty) => (
-                                                <SelectItem key={faculty.id} value={faculty.id.toString()}>
-                                                    {faculty.name}
-                                                </SelectItem>
-                                            ))}
+                                            {faculties.length === 0 ? (
+                                                <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                                                    No faculties available
+                                                </div>
+                                            ) : (
+                                                faculties.map((faculty) => (
+                                                    <SelectItem key={faculty.id} value={faculty.id.toString()}>
+                                                        {faculty.name}
+                                                    </SelectItem>
+                                                ))
+                                            )}
                                         </SelectContent>
                                     </Select>
                                     {errors.faculty_id && (
