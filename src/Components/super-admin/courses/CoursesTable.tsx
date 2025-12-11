@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/Components/ui/table";
 import { Badge } from "@/Components/ui/badge";
-import { Eye, Edit, Trash2, MoreVertical } from "lucide-react";
+import { Eye, Edit, Trash2, MoreVertical, DollarSign } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -19,6 +19,7 @@ interface CoursesTableProps {
     onViewCourse: (id: number) => void;
     onEditCourse: (id: number) => void;
     onDeleteCourse: (course: Course) => void;
+    onUpdatePrice?: (id: number) => void;
 }
 
 export default function CoursesTable({
@@ -28,6 +29,7 @@ export default function CoursesTable({
     onViewCourse,
     onEditCourse,
     onDeleteCourse,
+    onUpdatePrice,
 }: CoursesTableProps) {
     if (loading) {
         return (
@@ -183,6 +185,14 @@ export default function CoursesTable({
                                             <Edit className="mr-2 h-4 w-4" />
                                             Edit Course
                                         </DropdownMenuItem>
+                                        {onUpdatePrice && (
+                                            <DropdownMenuItem
+                                                onClick={() => onUpdatePrice(course.id)}
+                                            >
+                                                <DollarSign className="mr-2 h-4 w-4" />
+                                                Update Price
+                                            </DropdownMenuItem>
+                                        )}
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem
                                             onClick={() => onDeleteCourse(course)}

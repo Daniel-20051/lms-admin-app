@@ -15,6 +15,7 @@ import CourseActionDialogs from "@/Components/super-admin/courses/CourseActionDi
 import PricingManagementDialog from "@/Components/super-admin/courses/PricingManagementDialog";
 import CourseAllocationDialog from "@/Components/super-admin/courses/CourseAllocationDialog";
 import AllocationsView from "@/Components/super-admin/courses/AllocationsView";
+import UpdateCoursePriceDialog from "@/Components/super-admin/courses/UpdateCoursePriceDialog";
 
 export default function CoursesPage() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -62,6 +63,8 @@ export default function CoursesPage() {
     const [showPricingDialog, setShowPricingDialog] = useState(false);
     const [showAllocationDialog, setShowAllocationDialog] = useState(false);
     const [allocationsRefreshKey, setAllocationsRefreshKey] = useState(0);
+    const [showUpdatePriceDialog, setShowUpdatePriceDialog] = useState(false);
+    const [selectedPriceUpdateCourseId, setSelectedPriceUpdateCourseId] = useState<number | null>(null);
 
     // Initialize program filter from URL on mount
     useEffect(() => {
@@ -160,6 +163,10 @@ export default function CoursesPage() {
                                 onDeleteCourse={(course) => {
                                     setSelectedCourse(course);
                                     setShowDeleteDialog(true);
+                                }}
+                                onUpdatePrice={(id) => {
+                                    setSelectedPriceUpdateCourseId(id);
+                                    setShowUpdatePriceDialog(true);
                                 }}
                             />
 
@@ -267,6 +274,21 @@ export default function CoursesPage() {
                 onAllocationSuccess={() => {
                     // Refresh allocations list
                     setAllocationsRefreshKey(prev => prev + 1);
+                }}
+            />
+
+            {/* Update Course Price Dialog */}
+            <UpdateCoursePriceDialog
+                open={showUpdatePriceDialog}
+                onOpenChange={(open) => {
+                    setShowUpdatePriceDialog(open);
+                    if (!open) {
+                        setSelectedPriceUpdateCourseId(null);
+                    }
+                }}
+                courseId={selectedPriceUpdateCourseId}
+                onPriceUpdated={() => {
+                    handleCourseUpdated();
                 }}
             />
         </div>

@@ -239,6 +239,44 @@ export const updateCourse = async (
     }
 };
 
+// Update Course Price
+export interface UpdateCoursePriceData {
+    price: number;
+    currency?: string;
+}
+
+export interface UpdateCoursePriceResponse {
+    success: boolean;
+    message: string;
+    data: {
+        course: {
+            id: number;
+            title: string;
+            course_code: string;
+            price: number;
+            currency: string;
+        };
+    };
+}
+
+export const updateCoursePrice = async (
+    courseId: number,
+    data: UpdateCoursePriceData
+): Promise<UpdateCoursePriceResponse> => {
+    try {
+        const headers = getAuthHeaders();
+        const response = await axios.put<UpdateCoursePriceResponse>(
+            `${BASE_URL}/api/admin/courses/${courseId}/price`,
+            data,
+            { headers }
+        );
+        return response.data;
+    } catch (err) {
+        handleApiError(err, 'updating course price');
+        throw err;
+    }
+};
+
 // Delete Course
 export interface DeleteCourseResponse {
     success: boolean;
