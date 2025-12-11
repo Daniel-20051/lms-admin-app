@@ -1,21 +1,46 @@
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { Users, UserCheck, UserX, GraduationCap } from "lucide-react";
-import type { Student, PaginationData } from "@/api/admin";
+import { getStudentStatistics, type StudentStatisticsRaw } from "@/api/admin";
+import { toast } from "sonner";
+import type { PaginationData } from "@/api/admin";
 
 interface StudentsStatisticsProps {
-  loading: boolean;
-  students: Student[];
+  loading?: boolean;
   pagination: PaginationData;
   currentPage: number;
 }
 
 export default function StudentsStatistics({
-  loading,
-  students,
+  loading: externalLoading,
   pagination,
   currentPage,
 }: StudentsStatisticsProps) {
+  const [stats, setStats] = useState<StudentStatisticsRaw | null>(null);
+  const [loadingStats, setLoadingStats] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        setLoadingStats(true);
+        const response = await getStudentStatistics();
+        if (response.success) {
+          setStats(response.data);
+        }
+      } catch (error: any) {
+        console.error("Error fetching student statistics:", error);
+        toast.error(error.response?.data?.message || "Failed to load student statistics");
+      } finally {
+        setLoadingStats(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  const loading = externalLoading || loadingStats;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
       <Card className="pt-3">
@@ -25,7 +50,7 @@ export default function StudentsStatistics({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            {loading ? <Skeleton className="h-8 w-16" /> : pagination.total}
+            {loading ? <Skeleton className="h-8 w-16" /> : stats?.total ?? pagination.total}
           </div>
           <p className="text-xs text-muted-foreground mt-1">Across all levels</p>
         </CardContent>
@@ -41,12 +66,10 @@ export default function StudentsStatistics({
             {loading ? (
               <Skeleton className="h-8 w-16" />
             ) : (
-              students.filter(
-                (s) => s.admin_status === "active" || s.admin_status === "Active"
-              ).length
+              stats?.active ?? 0
             )}
           </div>
-          <p className="text-xs text-muted-foreground mt-1">On current page</p>
+          <p className="text-xs text-muted-foreground mt-1">Total active students</p>
         </CardContent>
       </Card>
 
@@ -60,12 +83,10 @@ export default function StudentsStatistics({
             {loading ? (
               <Skeleton className="h-8 w-16" />
             ) : (
-              students.filter(
-                (s) => s.admin_status === "Pending" || s.admin_status === "inactive"
-              ).length
+              stats?.inactive ?? 0
             )}
           </div>
-          <p className="text-xs text-muted-foreground mt-1">On current page</p>
+          <p className="text-xs text-muted-foreground mt-1">Total inactive students</p>
         </CardContent>
       </Card>
 

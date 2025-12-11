@@ -66,7 +66,6 @@ export default function StudentsPage() {
       {/* Statistics Cards */}
       <StudentsStatistics
         loading={loading}
-        students={students}
         pagination={pagination}
         currentPage={currentPage}
       />

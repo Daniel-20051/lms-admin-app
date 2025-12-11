@@ -189,7 +189,7 @@ export interface StudentStatisticsByLevel {
 }
 
 export interface StudentStatisticsByProgram {
-  program_id: number;
+  program_id: number | null;
   count: string;
   "program.title": string | null;
 }

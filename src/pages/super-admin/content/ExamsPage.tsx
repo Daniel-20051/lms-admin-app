@@ -11,31 +11,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/Components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/Components/ui/select";
 import { BookOpen, FileText } from "lucide-react";
 import { hasValidSession } from "@/lib/cookies";
 import { Api } from "@/api";
 import { useCoursesManagement } from "@/hooks/useCoursesManagement";
 import CoursesPagination from "@/Components/super-admin/courses/CoursesPagination";
+import CoursesFilters from "@/Components/super-admin/courses/CoursesFilters";
 import { toast } from "sonner";
-
-// Generate academic years (e.g., 2020/2021, 2021/2022, etc.)
-const generateAcademicYears = () => {
-  const currentYear = new Date().getFullYear();
-  const years: string[] = [];
-  // Generate years from 5 years ago to 2 years ahead
-  for (let i = -5; i <= 2; i++) {
-    const year = currentYear + i;
-    years.push(`${year}/${year + 1}`);
-  }
-  return years.reverse(); // Most recent first
-};
 
 // Get current academic year
 const getCurrentAcademicYear = () => {
@@ -43,7 +25,6 @@ const getCurrentAcademicYear = () => {
   return `${currentYear}/${currentYear + 1}`;
 };
 
-const ACADEMIC_YEARS = generateAcademicYears();
 const CURRENT_YEAR = getCurrentAcademicYear();
 
 export default function ExamsPage() {
@@ -52,8 +33,20 @@ export default function ExamsPage() {
     courses,
     pagination,
     loading,
+    searchTerm,
+    semesterFilter,
     academicYearFilter,
+    programFilter,
+    facultyFilter,
+    staffFilter,
+    levelFilter,
+    setSearchTerm,
+    setSemesterFilter,
     setAcademicYearFilter,
+    setProgramFilter,
+    setFacultyFilter,
+    setStaffFilter,
+    setLevelFilter,
     currentPage,
     handlePreviousPage,
     handleNextPage,
@@ -117,27 +110,29 @@ export default function ExamsPage() {
             Pick a course to manage its exams.
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <Select 
-            value={academicYearFilter || undefined} 
-            onValueChange={(value) => setAcademicYearFilter(value || null)}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select year" />
-            </SelectTrigger>
-            <SelectContent>
-              {ACADEMIC_YEARS.map((year) => (
-                <SelectItem key={year} value={year}>
-                  {year}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
       </div>
 
       {/* Courses Table */}
       <Card>
+        <CardContent className="p-6 pb-0">
+          {/* Filters */}
+          <CoursesFilters
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            semesterFilter={semesterFilter}
+            onSemesterChange={setSemesterFilter}
+            academicYearFilter={academicYearFilter}
+            onAcademicYearChange={setAcademicYearFilter}
+            programFilter={programFilter}
+            onProgramChange={setProgramFilter}
+            facultyFilter={facultyFilter}
+            onFacultyChange={setFacultyFilter}
+            staffFilter={staffFilter}
+            onStaffChange={setStaffFilter}
+            levelFilter={levelFilter}
+            onLevelChange={setLevelFilter}
+          />
+        </CardContent>
         <CardContent className="p-0">
           {loading ? (
             <div className="p-6 space-y-4">
