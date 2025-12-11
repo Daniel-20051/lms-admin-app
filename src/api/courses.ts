@@ -166,7 +166,8 @@ export interface CreateCourseData {
     faculty_id: number;
     currency: string;
     owner_type: 'wpu' | 'sole_tutor' | 'organization';
-    is_marketplace: boolean;
+    is_marketplace?: boolean;
+    marketplace_status?: 'draft' | 'pending' | 'approved' | 'rejected' | 'published' | null;
     owner_id?: number | null;
 }
 
@@ -208,6 +209,7 @@ export interface UpdateCourseData {
     currency?: string;
     owner_type?: 'wpu' | 'sole_tutor' | 'organization';
     is_marketplace?: boolean;
+    marketplace_status?: 'draft' | 'pending' | 'approved' | 'rejected' | 'published' | null;
     owner_id?: number | null;
 }
 

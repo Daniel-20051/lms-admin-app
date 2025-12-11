@@ -78,6 +78,7 @@ export default function CoursesTable({
                         <TableHead className="hidden md:table-cell">Units</TableHead>
                         <TableHead className="hidden lg:table-cell">Price</TableHead>
                         <TableHead>Owner Type</TableHead>
+                        <TableHead className="hidden md:table-cell">Marketplace</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -142,6 +143,25 @@ export default function CoursesTable({
                                         </Badge>
                                     );
                                 })()}
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                                {course.is_marketplace ? (
+                                    <div className="flex flex-col gap-1">
+                                        <Badge 
+                                            variant="outline" 
+                                            className={course.marketplace_status === 'published' 
+                                                ? 'border-green-500 text-green-700 bg-green-50' 
+                                                : 'border-gray-300 text-gray-600 bg-gray-50'
+                                            }
+                                        >
+                                            {course.marketplace_status === 'published' ? 'Published' : 
+                                             course.marketplace_status === 'draft' ? 'Draft' : 
+                                             course.marketplace_status || 'Draft'}
+                                        </Badge>
+                                    </div>
+                                ) : (
+                                    <span className="text-sm text-muted-foreground">-</span>
+                                )}
                             </TableCell>
                             <TableCell className="text-right">
                                 <DropdownMenu>

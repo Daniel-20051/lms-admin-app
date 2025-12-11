@@ -16,6 +16,7 @@ import {
 import { getSemesters, type Semester } from "@/api/semesters";
 import { getPrograms, type Program } from "@/api/programs";
 import { getFaculties, type Faculty } from "@/api/base";
+import { getStudents, type Student } from "@/api/admin";
 
 interface CourseAllocationDialogProps {
     open: boolean;
@@ -27,6 +28,7 @@ const ALLOCATION_TYPES = [
     { value: 'program', label: 'By Program' },
     { value: 'level', label: 'By Level' },
     { value: 'faculty', label: 'By Faculty' },
+    { value: 'individual', label: 'Individual' },
 ];
 
 const LEVELS = ['100', '200', '300', '400', '500', '600', '700'];
@@ -43,6 +45,7 @@ export default function CourseAllocationDialog({
     const [programs, setPrograms] = useState<Program[]>([]);
     const [faculties, setFaculties] = useState<Faculty[]>([]);
     const [courses, setCourses] = useState<Course[]>([]);
+    const [students, setStudents] = useState<Student[]>([]);
     
     const [selectedSemester, setSelectedSemester] = useState<string>("");
     const [allocationType, setAllocationType] = useState<string>("program");
@@ -50,7 +53,10 @@ export default function CourseAllocationDialog({
     const [selectedFaculty, setSelectedFaculty] = useState<string>("");
     const [selectedLevel, setSelectedLevel] = useState<string>("");
     const [selectedCourses, setSelectedCourses] = useState<number[]>([]);
+    const [selectedStudents, setSelectedStudents] = useState<number[]>([]);
     const [courseSearchTerm, setCourseSearchTerm] = useState<string>("");
+    const [studentSearchTerm, setStudentSearchTerm] = useState<string>("");
+    const [studentsLoading, setStudentsLoading] = useState(false);
 
     // Watch programs state changes
     useEffect(() => {
@@ -93,7 +99,11 @@ export default function CourseAllocationDialog({
             setLoading(true);
             try {
                 const coursesResponse = await getCourses({ limit: 1000 });
-                const wpuCourses = coursesResponse.data.courses.filter(c => c.owner_type === 'wpu');
+                // Filter: Only WPU courses that are NOT marketplace (marketplace courses cannot be allocated)
+                const wpuCourses = coursesResponse.data.courses.filter(c => 
+                    c.owner_type === 'wpu' && 
+                    !(c.is_marketplace && c.marketplace_status === 'published')
+                );
                 setCourses(wpuCourses);
             } catch (error) {
                 console.error('Error fetching courses:', error);
@@ -108,9 +118,38 @@ export default function CourseAllocationDialog({
         }
     }, [open]);
 
+    // Fetch students when allocation type is 'individual'
+    useEffect(() => {
+        const fetchStudents = async () => {
+            if (allocationType === 'individual' && open) {
+                setStudentsLoading(true);
+                try {
+                    const response = await getStudents({ limit: 1000, search: studentSearchTerm || undefined });
+                    if (response.success) {
+                        setStudents(response.data.students);
+                    }
+                } catch (error) {
+                    console.error('Error fetching students:', error);
+                    toast.error('Failed to load students');
+                } finally {
+                    setStudentsLoading(false);
+                }
+            } else {
+                setStudents([]);
+            }
+        };
+
+        const timer = setTimeout(() => {
+            fetchStudents();
+        }, studentSearchTerm ? 300 : 0); // Debounce search
+
+        return () => clearTimeout(timer);
+    }, [allocationType, open, studentSearchTerm]);
+
     // Clear selected courses when allocation type, program, or faculty changes
     useEffect(() => {
         setSelectedCourses([]);
+        setSelectedStudents([]);
     }, [allocationType, selectedProgram, selectedFaculty]);
 
     // Filter courses based on search term and selected program/faculty
@@ -166,6 +205,38 @@ export default function CourseAllocationDialog({
         setCourseSearchTerm("");
     };
 
+    const handleStudentToggle = (studentId: number) => {
+        setSelectedStudents(prev =>
+            prev.includes(studentId)
+                ? prev.filter(id => id !== studentId)
+                : [...prev, studentId]
+        );
+    };
+
+    const handleSelectAllStudents = () => {
+        const filteredStudentIds = filteredStudents.map(s => s.id);
+        const allFilteredSelected = filteredStudentIds.every(id => selectedStudents.includes(id));
+        
+        if (allFilteredSelected) {
+            setSelectedStudents(prev => prev.filter(id => !filteredStudentIds.includes(id)));
+        } else {
+            setSelectedStudents(prev => [...new Set([...prev, ...filteredStudentIds])]);
+        }
+    };
+
+    // Filter students based on search term
+    const filteredStudents = students.filter(student => {
+        if (studentSearchTerm) {
+            const searchLower = studentSearchTerm.toLowerCase();
+            return (
+                student.matric_number.toLowerCase().includes(searchLower) ||
+                student.email.toLowerCase().includes(searchLower) ||
+                `${student.fname} ${student.lname}`.toLowerCase().includes(searchLower)
+            );
+        }
+        return true;
+    });
+
     const handleAllocate = async () => {
         if (!selectedSemester) {
             toast.error('Please select a semester');
@@ -211,6 +282,12 @@ export default function CourseAllocationDialog({
                 return;
             }
             allocationData.level = selectedLevel;
+        } else if (allocationType === 'individual') {
+            if (selectedStudents.length === 0) {
+                toast.error('Please select at least one student');
+                return;
+            }
+            allocationData.student_ids = selectedStudents;
         }
 
         setActionLoading(true);
@@ -226,10 +303,12 @@ export default function CourseAllocationDialog({
             
             // Reset form
             setSelectedCourses([]);
+            setSelectedStudents([]);
             setSelectedProgram("");
             setSelectedFaculty("");
             setSelectedLevel("");
             setCourseSearchTerm("");
+            setStudentSearchTerm("");
         } catch (error) {
             console.error('Error allocating courses:', error);
             toast.error('Failed to allocate courses');
@@ -244,7 +323,7 @@ export default function CourseAllocationDialog({
                 <DialogHeader>
                     <DialogTitle>Allocate Courses to Students</DialogTitle>
                     <DialogDescription>
-                        Allocate courses to students by program, level, or faculty
+                        Allocate courses to students by program, level, faculty, or individual selection
                     </DialogDescription>
                 </DialogHeader>
 
@@ -423,6 +502,88 @@ export default function CourseAllocationDialog({
                         </div>
                     )}
 
+                    {allocationType === 'individual' && (
+                        <Card className="pt-3">
+                            <CardHeader>
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <CardTitle>Select Students</CardTitle>
+                                        <CardDescription>
+                                            Choose students to allocate courses ({selectedStudents.length} selected)
+                                            {studentSearchTerm && ` • Showing ${filteredStudents.length} of ${students.length} students`}
+                                        </CardDescription>
+                                    </div>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={handleSelectAllStudents}
+                                        disabled={filteredStudents.length === 0}
+                                    >
+                                        {filteredStudents.every(s => selectedStudents.includes(s.id)) && filteredStudents.length > 0
+                                            ? 'Deselect All'
+                                            : 'Select All'}
+                                    </Button>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                {/* Student Search Input */}
+                                <div className="mb-4">
+                                    <div className="relative">
+                                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                        <Input
+                                            placeholder="Search by matric number, name, or email..."
+                                            value={studentSearchTerm}
+                                            onChange={(e) => setStudentSearchTerm(e.target.value)}
+                                            className="pl-9 pr-9"
+                                        />
+                                        {studentSearchTerm && (
+                                            <button
+                                                onClick={() => setStudentSearchTerm("")}
+                                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                            >
+                                                <X className="h-4 w-4" />
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {studentsLoading ? (
+                                    <div className="flex items-center justify-center py-8">
+                                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                                    </div>
+                                ) : filteredStudents.length > 0 ? (
+                                    <div className="max-h-[300px] overflow-y-auto space-y-2 border rounded-md p-4">
+                                        {filteredStudents.map((student) => (
+                                            <div key={student.id} className="flex items-center space-x-2">
+                                                <Checkbox
+                                                    id={`student-${student.id}`}
+                                                    checked={selectedStudents.includes(student.id)}
+                                                    onCheckedChange={() => handleStudentToggle(student.id)}
+                                                />
+                                                <Label
+                                                    htmlFor={`student-${student.id}`}
+                                                    className="flex-1 cursor-pointer"
+                                                >
+                                                    <span className="font-medium">{student.matric_number}</span> -{' '}
+                                                    {student.fname} {student.lname} ({student.email})
+                                                    {student.program && ` • ${student.program.title}`}
+                                                </Label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : studentSearchTerm ? (
+                                    <div className="text-center py-8 text-muted-foreground">
+                                        No students found matching "{studentSearchTerm}"
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-8 text-muted-foreground">
+                                        No students available
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    )}
+
                     {/* Course Selection */}
                     <Card className="pt-3">
                         <CardHeader>
@@ -432,6 +593,10 @@ export default function CourseAllocationDialog({
                                     <CardDescription>
                                         Choose courses to allocate ({selectedCourses.length} selected)
                                         {(courseSearchTerm || selectedProgram || selectedFaculty) && ` • Showing ${filteredCourses.length} of ${courses.length} courses`}
+                                        <br />
+                                        <span className="text-amber-600 text-xs">
+                                            Note: Marketplace courses cannot be allocated - students must purchase them
+                                        </span>
                                     </CardDescription>
                                 </div>
                                 <Button
@@ -514,7 +679,7 @@ export default function CourseAllocationDialog({
                         </Button>
                         <Button
                             onClick={handleAllocate}
-                            disabled={actionLoading || selectedCourses.length === 0}
+                            disabled={actionLoading || selectedCourses.length === 0 || (allocationType === 'individual' && selectedStudents.length === 0)}
                         >
                             {actionLoading ? (
                                 <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Allocating...</>

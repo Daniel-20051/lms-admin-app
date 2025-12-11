@@ -41,6 +41,11 @@ const OWNER_TYPES = [
     { value: 'organization', label: 'Organization' },
 ];
 
+const MARKETPLACE_STATUSES = [
+    { value: 'draft', label: 'Draft' },
+    { value: 'published', label: 'Published' },
+];
+
 export default function EditCourseDialog({
     open,
     onOpenChange,
@@ -68,6 +73,7 @@ export default function EditCourseDialog({
         currency: 'NGN',
         owner_type: 'wpu',
         is_marketplace: false,
+        marketplace_status: null,
         owner_id: null,
     });
 
@@ -143,6 +149,7 @@ export default function EditCourseDialog({
                 currency: course.currency,
                 owner_type: course.owner_type as 'wpu' | 'sole_tutor' | 'organization',
                 is_marketplace: course.is_marketplace,
+                marketplace_status: course.marketplace_status as 'draft' | 'published' | null,
                 owner_id: course.owner_id,
             });
         } catch (error: any) {
@@ -171,6 +178,7 @@ export default function EditCourseDialog({
                 currency: 'NGN',
                 owner_type: 'wpu',
                 is_marketplace: false,
+                marketplace_status: null,
                 owner_id: null,
             });
             setErrors({});
@@ -208,9 +216,14 @@ export default function EditCourseDialog({
             newErrors.faculty_id = 'Please select a faculty';
         }
 
-        // If marketplace, require owner_id
-        if (formData.is_marketplace && !formData.owner_id) {
-            newErrors.owner_id = 'Owner ID is required for marketplace courses';
+        // Marketplace validation
+        if (formData.is_marketplace) {
+            // If publishing, require price > 0
+            if (formData.marketplace_status === 'published') {
+                if (formData.price !== undefined && (!formData.price || parseFloat(formData.price) <= 0)) {
+                    newErrors.price = 'Price must be greater than 0 for published marketplace courses';
+                }
+            }
         }
 
         setErrors(newErrors);
@@ -558,16 +571,18 @@ export default function EditCourseDialog({
 
                                 {/* Is Marketplace */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="is_marketplace">Marketplace</Label>
+                                    <Label htmlFor="is_marketplace">List on Marketplace</Label>
                                     <Select
                                         value={formData.is_marketplace ? 'true' : 'false'}
-                                        onValueChange={(value) => 
+                                        onValueChange={(value) => {
+                                            const isMarketplace = value === 'true';
                                             setFormData({ 
                                                 ...formData, 
-                                                is_marketplace: value === 'true',
-                                                owner_id: value === 'true' ? formData.owner_id : null
-                                            })
-                                        }
+                                                is_marketplace: isMarketplace,
+                                                marketplace_status: isMarketplace ? (formData.marketplace_status || 'draft') : null,
+                                                owner_id: isMarketplace ? formData.owner_id : null
+                                            });
+                                        }}
                                     >
                                         <SelectTrigger>
                                             <SelectValue />
@@ -577,11 +592,51 @@ export default function EditCourseDialog({
                                             <SelectItem value="true">Yes</SelectItem>
                                         </SelectContent>
                                     </Select>
+                                    {formData.is_marketplace && (
+                                        <p className="text-xs text-amber-600">
+                                            Marketplace courses require payment from all students
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 
-                            {/* Owner ID (only if marketplace) */}
+                            {/* Marketplace Status (only if marketplace) */}
                             {formData.is_marketplace && (
+                                <div className="space-y-2">
+                                    <Label htmlFor="marketplace_status">
+                                        Marketplace Status
+                                    </Label>
+                                    <Select
+                                        value={formData.marketplace_status || 'draft'}
+                                        onValueChange={(value) => {
+                                            const status = value === 'draft' ? 'draft' : value === 'published' ? 'published' : null;
+                                            setFormData({ 
+                                                ...formData, 
+                                                marketplace_status: status as 'draft' | 'published' | null
+                                            });
+                                        }}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {MARKETPLACE_STATUSES.map((status) => (
+                                                <SelectItem key={status.value} value={status.value}>
+                                                    {status.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    {formData.marketplace_status === 'published' && (
+                                        <p className="text-xs text-amber-600">
+                                            Published courses require price &gt; 0
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Owner ID (only if marketplace and not WPU) */}
+                            {formData.is_marketplace && formData.owner_type !== 'wpu' && (
                                 <div className="space-y-2">
                                     <Label htmlFor="owner_id">
                                         Owner ID <span className="text-destructive">*</span>
@@ -599,7 +654,7 @@ export default function EditCourseDialog({
                                         <p className="text-sm text-destructive">{errors.owner_id}</p>
                                     )}
                                     <p className="text-xs text-muted-foreground">
-                                        Required when course is in marketplace
+                                        Required when course is in marketplace (non-WPU)
                                     </p>
                                 </div>
                             )}
