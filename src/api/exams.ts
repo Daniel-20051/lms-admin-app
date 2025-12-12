@@ -109,9 +109,9 @@ export class ExamsApi {
   }
 
   // Get question bank for exam creation
-  async GetBankQuestions(courseId: number) {
+  async GetBankQuestions(courseId: number, page: number = 1, limit: number = 20) {
     try {
-      const response = await axios.get(`${BASE_URL}/api/exams/bank/questions/${courseId}`, {
+      const response = await axios.get(`${BASE_URL}/api/exams/bank/questions?course_id=${courseId}&page=${page}&limit=${limit}`, {
         headers: getAuthHeaders()
       });
       return response;
@@ -408,9 +408,9 @@ export async function GetExamById(examId: number) {
   return api.GetExamById(examId);
 }
 
-export async function GetBankQuestions(courseId: number) {
+export async function GetBankQuestions(courseId: number, page: number = 1, limit: number = 20) {
   const api = new ExamsApi();
-  return api.GetBankQuestions(courseId);
+  return api.GetBankQuestions(courseId, page, limit);
 }
 
 export async function AddObjectiveQuestion(data: {

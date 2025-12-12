@@ -266,13 +266,18 @@ export default function AddQuestionDialog({
                 <div className="space-y-2">
                   {options.map((option, index) => (
                     <div key={index} className="flex items-center gap-2">
-                      <Input
-                        placeholder={`Option ${option.id}`}
-                        value={option.text}
-                        onChange={(e) => updateOption(index, e.target.value)}
-                        required
-                        className="flex-1"
-                      />
+                      <div className="flex items-center gap-2 flex-1">
+                        <span className="font-medium text-sm w-6 text-muted-foreground">
+                          {option.id}.
+                        </span>
+                        <Input
+                          placeholder={`Enter option ${option.id} text`}
+                          value={option.text}
+                          onChange={(e) => updateOption(index, e.target.value)}
+                          required
+                          className="flex-1"
+                        />
+                      </div>
                       {options.length > 2 && (
                         <Button
                           type="button"
@@ -377,7 +382,7 @@ export default function AddQuestionDialog({
             </>
           )}
           </DialogBody>
-          <DialogFooter className="pb-6 pr-2">
+          <DialogFooter className="pb-6 pr-2d">
             <Button
               type="button"
               variant="outline"

@@ -9,7 +9,9 @@ import {
   Plus, 
   FileQuestion, 
   ArrowLeft,
-  Search
+  Search,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { GetBankQuestions } from "@/api/exams";
 import { GetStaffCoursesbyId } from "@/api/courses";
@@ -70,9 +72,19 @@ export default function QuestionBankPage() {
   const [difficultyFilter, setDifficultyFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    total: 0,
+    page: 1,
+    limit: 20,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPreviousPage: false,
+  });
 
   useEffect(() => {
     if (courseId) {
+      setCurrentPage(1); // Reset to first page when course changes
       loadCourseData();
       loadQuestions();
     } else {
@@ -80,6 +92,12 @@ export default function QuestionBankPage() {
       navigate("/super-admin/content/exams");
     }
   }, [courseId]);
+
+  useEffect(() => {
+    if (courseId && currentPage > 0) {
+      loadQuestions();
+    }
+  }, [currentPage]);
 
   const loadCourseData = async () => {
     if (!courseId) return;
@@ -99,14 +117,15 @@ export default function QuestionBankPage() {
 
   const loadQuestions = async () => {
     if (!courseId) return;
+    const limit = 20; // Default limit
     try {
       setLoading(true);
-      const response = await GetBankQuestions(Number(courseId));
+      const response = await GetBankQuestions(Number(courseId), currentPage, limit);
       const data = response.data as any;
       
-      // Handle different response structures
+      // Handle paginated response structure
       if (data?.status === true || data?.success === true) {
-        // Handle both array and single object responses
+        // Handle paginated response
         const questionsData = data.data;
         if (Array.isArray(questionsData)) {
           setQuestions(questionsData);
@@ -116,8 +135,20 @@ export default function QuestionBankPage() {
         } else {
           setQuestions([]);
         }
+
+        // Set pagination data
+        if (data.pagination) {
+          setPagination({
+            total: data.pagination.total || 0,
+            page: data.pagination.page || currentPage,
+            limit: data.pagination.limit || 20,
+            totalPages: data.pagination.totalPages || 1,
+            hasNextPage: data.pagination.hasNextPage || false,
+            hasPreviousPage: data.pagination.hasPreviousPage || false,
+          });
+        }
       } else if (Array.isArray(data?.data)) {
-        // Direct array in data.data
+        // Direct array in data.data (fallback for non-paginated responses)
         setQuestions(data.data);
       } else if (data?.data && typeof data.data === 'object' && data.data.id) {
         // Single question in data.data
@@ -166,16 +197,11 @@ export default function QuestionBankPage() {
     });
   }, [questions, searchTerm, typeFilter, difficultyFilter, statusFilter]);
 
-  // Total counts (all questions, not filtered)
+  // Total counts (current page only for type/status breakdowns, total from pagination for overall count)
   const totalObjectiveQuestions = questions.filter((q) => q.question_type === "objective").length;
   const totalTheoryQuestions = questions.filter((q) => q.question_type === "theory").length;
   const totalApprovedQuestions = questions.filter((q) => q.status === "approved").length;
-  const totalQuestions = questions.length;
-
-  // Filtered counts for display
-  const objectiveQuestions = filteredQuestions.filter((q) => q.question_type === "objective");
-  const theoryQuestions = filteredQuestions.filter((q) => q.question_type === "theory");
-  const approvedQuestions = filteredQuestions.filter((q) => q.status === "approved");
+  const totalQuestions = pagination.total > 0 ? pagination.total : questions.length;
 
   return (
     <div className="space-y-6">
@@ -288,7 +314,8 @@ export default function QuestionBankPage() {
 
           {/* Results Count */}
           <div className="text-sm text-muted-foreground">
-            Showing {filteredQuestions.length} of {questions.length} questions (Page 1 of 1)
+            Showing {filteredQuestions.length} of {questions.length} questions on this page
+            {pagination.total > 0 && ` (${pagination.total} total)`}
           </div>
         </CardContent>
       </Card>
@@ -370,6 +397,45 @@ export default function QuestionBankPage() {
               ))}
             </div>
           )}
+
+          {/* Pagination Controls */}
+          {pagination.totalPages > 1 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-4 border-t">
+              <div className="text-sm text-muted-foreground">
+                Showing <span className="font-medium">
+                  {((currentPage - 1) * pagination.limit) + 1}
+                </span> to{" "}
+                <span className="font-medium">
+                  {Math.min(currentPage * pagination.limit, pagination.total)}
+                </span> of{" "}
+                <span className="font-medium">{pagination.total}</span> questions
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={!pagination.hasPreviousPage || currentPage === 1}
+                >
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  Previous
+                </Button>
+                <div className="text-sm">
+                  Page <span className="font-medium">{currentPage}</span> of{" "}
+                  <span className="font-medium">{pagination.totalPages}</span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.min(pagination.totalPages, prev + 1))}
+                  disabled={!pagination.hasNextPage || currentPage >= pagination.totalPages}
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -380,6 +446,8 @@ export default function QuestionBankPage() {
           onOpenChange={setShowAddDialog}
           courseId={Number(courseId)}
           onQuestionAdded={() => {
+            // Reset to first page when a new question is added
+            setCurrentPage(1);
             loadQuestions();
           }}
         />
