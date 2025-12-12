@@ -22,6 +22,7 @@ import { createCourse, type CreateCourseData } from "@/api/courses";
 import { getPrograms } from "@/api/programs";
 import { getStaff } from "@/api/admin";
 import { getFaculties, type Faculty } from "@/api/base";
+import { Api } from "@/api";
 import { toast } from "sonner";
 
 interface CreateCourseDialogProps {
@@ -95,6 +96,7 @@ export default function CreateCourseDialog({
     useEffect(() => {
         if (open) {
             fetchProgramsStaffAndFaculties();
+            loadActiveSemester();
         }
     }, [open]);
 
@@ -116,6 +118,29 @@ export default function CreateCourseDialog({
             toast.error('Failed to load programs, staff, and faculties');
         } finally {
             setFetching(false);
+        }
+    };
+
+    const loadActiveSemester = async () => {
+        try {
+            const api = new Api();
+            const response = await api.Getsessions();
+            const items = response?.data?.data ?? response?.data ?? [];
+
+            if (Array.isArray(items) && items.length > 0) {
+                // Find active semester
+                const active = items.find((it: any) => it.status === "Active");
+                
+                if (active?.semester) {
+                    setFormData((prev) => ({
+                        ...prev,
+                        semester: active.semester,
+                    }));
+                }
+            }
+        } catch (error) {
+            // Silently fail - will default to '1ST' if active semester not found
+            console.error('Error loading active semester:', error);
         }
     };
 

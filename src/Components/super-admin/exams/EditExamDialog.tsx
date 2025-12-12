@@ -68,8 +68,8 @@ export default function EditExamDialog({
   useEffect(() => {
     if (open && examId) {
       loadExamData();
-    } else {
-      // Reset form when dialog closes
+    } else if (!open) {
+      // Only reset form when dialog closes (not when it opens)
       setFormData({
         title: "",
         duration_minutes: 60,
@@ -95,7 +95,16 @@ export default function EditExamDialog({
       const data = response?.data as any;
 
       if (data?.status || data?.success || response?.status === 200) {
-        const exam = data?.data || data;
+        // Handle different response structures
+        const exam = data?.data?.exam || data?.data || data;
+
+        // Debug: Log the exam data to verify visibility field
+        console.log('Exam data loaded:', { 
+          visibility: exam.visibility, 
+          status: exam.status,
+          responseData: data,
+          exam: exam
+        });
 
         // Format dates for datetime-local input
         const formatDateForInput = (dateString: string | null) => {
@@ -114,6 +123,20 @@ export default function EditExamDialog({
           }
         };
 
+        // Get status - prioritize visibility field (which is what we send to API)
+        // Handle empty strings, null, undefined, and ensure we get the correct value
+        let examStatus = "draft";
+        if (exam.visibility !== undefined && exam.visibility !== null && exam.visibility !== "") {
+          examStatus = exam.visibility;
+        } else if (exam.status !== undefined && exam.status !== null && exam.status !== "") {
+          examStatus = exam.status;
+        }
+        
+        // Ensure status is one of the valid values
+        if (examStatus !== "draft" && examStatus !== "published") {
+          examStatus = "draft";
+        }
+
         setFormData({
           title: exam.title || "",
           duration_minutes: exam.duration_minutes || 60,
@@ -122,7 +145,7 @@ export default function EditExamDialog({
           end_at: formatDateForInput(exam.end_at),
           exam_type: exam.exam_type || "mixed",
           selection_mode: exam.selection_mode || "manual",
-          status: exam.visibility || exam.status || "draft",
+          status: examStatus,
           randomize: exam.randomize || false,
           objective_count: exam.objective_count || 0,
           theory_count: exam.theory_count || 0,

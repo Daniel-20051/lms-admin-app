@@ -172,8 +172,8 @@ export default function CourseAllocationDialog({
         if (courseSearchTerm) {
             const searchLower = courseSearchTerm.toLowerCase();
             return (
-                course.course_code.toLowerCase().includes(searchLower) ||
-                course.title.toLowerCase().includes(searchLower)
+                (course.course_code?.toLowerCase() || '').includes(searchLower) ||
+                (course.title?.toLowerCase() || '').includes(searchLower)
             );
         }
         
@@ -229,9 +229,9 @@ export default function CourseAllocationDialog({
         if (studentSearchTerm) {
             const searchLower = studentSearchTerm.toLowerCase();
             return (
-                student.matric_number.toLowerCase().includes(searchLower) ||
-                student.email.toLowerCase().includes(searchLower) ||
-                `${student.fname} ${student.lname}`.toLowerCase().includes(searchLower)
+                (student.matric_number?.toLowerCase() || '').includes(searchLower) ||
+                (student.email?.toLowerCase() || '').includes(searchLower) ||
+                `${student.fname || ''} ${student.lname || ''}`.toLowerCase().includes(searchLower)
             );
         }
         return true;
