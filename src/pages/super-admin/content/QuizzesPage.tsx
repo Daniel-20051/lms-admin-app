@@ -312,7 +312,6 @@ export default function QuizzesPage() {
                       setSelectedQuiz(quiz);
                       setShowStatsDialog(true);
                     }}
-                    disabled={(quiz.total_attempts || 0) === 0}
                   >
                     <TrendingUp className="h-4 w-4 mr-1" />
                     Stats
