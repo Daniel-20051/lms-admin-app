@@ -28,9 +28,18 @@ interface Quiz {
   description?: string;
   duration_minutes: number;
   status: string;
-  total_questions?: number;
-  total_attempts?: number;
-  average_score?: number;
+  attempts_allowed?: number;
+  questions?: Array<{
+    id: number;
+    question_text: string;
+    question_type: string;
+    points: number;
+    options: Array<{
+      id: number;
+      text: string;
+      is_correct: boolean;
+    }>;
+  }>;
   course?: Course;
 }
 
@@ -192,23 +201,9 @@ export default function QuizzesPage() {
           </Card>
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription>Total Attempts</CardDescription>
+              <CardDescription>Total Questions</CardDescription>
               <CardTitle className="text-3xl">
-                {quizzes.reduce((acc, q) => acc + (q.total_attempts || 0), 0)}
-              </CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>Avg Score</CardDescription>
-              <CardTitle className="text-3xl">
-                {quizzes.length > 0
-                  ? (
-                      quizzes.reduce((acc, q) => acc + (q.average_score || 0), 0) /
-                      quizzes.filter((q) => q.average_score).length
-                    ).toFixed(1)
-                  : "0"}
-                %
+                {quizzes.reduce((acc, q) => acc + (q.questions?.length || 0), 0)}
               </CardTitle>
             </CardHeader>
           </Card>
@@ -291,19 +286,11 @@ export default function QuizzesPage() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Questions:</span>
-                    <span className="font-medium">{quiz.total_questions || 0}</span>
+                    <span className="font-medium">{quiz.questions?.length || 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Attempts:</span>
-                    <span className="font-medium">{quiz.total_attempts || 0}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Avg Score:</span>
-                    <span className="font-medium">
-                      {quiz.average_score
-                        ? `${quiz.average_score.toFixed(1)}%`
-                        : "N/A"}
-                    </span>
+                    <span className="text-muted-foreground">Attempts Allowed:</span>
+                    <span className="font-medium">{quiz.attempts_allowed || 0}</span>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">

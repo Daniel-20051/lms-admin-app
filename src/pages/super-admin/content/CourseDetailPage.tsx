@@ -470,8 +470,7 @@ export default function CourseDetailPage() {
                     <TableHead>Title</TableHead>
                     <TableHead>Duration</TableHead>
                     <TableHead>Questions</TableHead>
-                    <TableHead>Attempts</TableHead>
-                    <TableHead>Avg Score</TableHead>
+                    <TableHead>Attempts Allowed</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="w-[120px]">Actions</TableHead>
                   </TableRow>
@@ -486,13 +485,8 @@ export default function CourseDetailPage() {
                       </TableCell>
                       <TableCell className="font-medium">{quiz.title}</TableCell>
                       <TableCell>{quiz.duration_minutes} min</TableCell>
-                      <TableCell>{quiz.total_questions || 0}</TableCell>
-                      <TableCell>{quiz.total_attempts || 0}</TableCell>
-                      <TableCell>
-                        {quiz.average_score
-                          ? `${quiz.average_score.toFixed(1)}%`
-                          : "N/A"}
-                      </TableCell>
+                      <TableCell>{quiz.questions?.length || 0}</TableCell>
+                      <TableCell>{quiz.attempts_allowed || 0}</TableCell>
                       <TableCell>
                         <Badge
                           variant={quiz.status === "published" ? "default" : "secondary"}
