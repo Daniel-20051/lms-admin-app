@@ -851,6 +851,43 @@ export const bulkRemoveAllocations = async (data: BulkRemoveAllocationsData): Pr
   }
 };
 
+// ==================== AUTOMATIC COURSE ALLOCATION ====================
+
+export interface AllocateAllStudentsData {
+  academic_year?: string;
+  semester?: string;
+}
+
+export interface AllocateAllStudentsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    academic_year: string;
+    semester: string;
+    allocation: {
+      allocated: number;
+      skipped: number;
+      errors: number;
+    };
+    errors: any[] | null;
+  };
+}
+
+export const allocateAllStudents = async (data?: AllocateAllStudentsData): Promise<AllocateAllStudentsResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.post<AllocateAllStudentsResponse>(
+      `${BASE_URL}/api/admin/courses/allocate-all-students`,
+      data || {},
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'allocating courses to all students');
+    throw err;
+  }
+};
+
 // ==================== STUDENT COURSE ALLOCATION ====================
 
 export interface AllocatedCourse {

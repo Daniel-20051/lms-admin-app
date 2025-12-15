@@ -93113,6 +93113,20 @@ const bulkRemoveAllocations = async (data) => {
     throw err;
   }
 };
+const allocateAllStudents = async (data) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.post(
+      `${BASE_URL}/api/admin/courses/allocate-all-students`,
+      data || {},
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "allocating courses to all students");
+    throw err;
+  }
+};
 const getMyAllocatedCourses = async () => {
   try {
     const headers = getAuthHeaders();
@@ -96824,6 +96838,7 @@ function AllocationsView({ onAddAllocation, refreshKey }) {
   const [total, setTotal] = reactExports.useState(0);
   const [allocationToDelete, setAllocationToDelete] = reactExports.useState(null);
   const [deleteLoading, setDeleteLoading] = reactExports.useState(false);
+  const [allocating, setAllocating] = reactExports.useState(false);
   reactExports.useEffect(() => {
     const fetchSemesters = async () => {
       try {
@@ -96892,6 +96907,43 @@ function AllocationsView({ onAddAllocation, refreshKey }) {
       setDeleteLoading(false);
     }
   };
+  const handleAllocateAllStudents = async () => {
+    setAllocating(true);
+    try {
+      let data;
+      if (selectedSemester) {
+        const [academicYear, semester] = selectedSemester.split("|");
+        data = {
+          academic_year: academicYear,
+          semester
+        };
+      }
+      const response = await allocateAllStudents(data);
+      if (response.success) {
+        toast.success(
+          `Course allocation completed: ${response.data.allocation.allocated} courses allocated, ${response.data.allocation.skipped} skipped`
+        );
+        if (selectedSemester) {
+          const [academicYear, semester] = selectedSemester.split("|");
+          const allocationsResponse = await getAllocations({
+            academic_year: academicYear,
+            semester,
+            registration_status: statusFilter,
+            page: currentPage,
+            limit: 20
+          });
+          setAllocations(allocationsResponse.data.allocations);
+          setTotal(allocationsResponse.data.pagination.total);
+        }
+      }
+    } catch (error) {
+      console.error("Error allocating courses:", error);
+      const errorMessage = error?.response?.data?.message || error?.message || "Failed to allocate courses";
+      toast.error(errorMessage);
+    } finally {
+      setAllocating(false);
+    }
+  };
   const filteredAllocations = allocations.filter((allocation) => {
     if (!searchTerm) return true;
     const search = searchTerm.toLowerCase();
@@ -96916,9 +96968,26 @@ function AllocationsView({ onAddAllocation, refreshKey }) {
           /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold", children: "Course Allocations" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "View and manage all course allocations" })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: onAddAllocation, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "h-4 w-4 mr-2" }),
-          "Add Allocation"
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Button,
+            {
+              onClick: handleAllocateAllStudents,
+              disabled: allocating,
+              variant: "default",
+              children: allocating ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "h-4 w-4 mr-2 animate-spin" }),
+                "Allocating..."
+              ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Send, { className: "h-4 w-4 mr-2" }),
+                "Send Out Course Registration"
+              ] })
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: onAddAllocation, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "h-4 w-4 mr-2" }),
+            "Add Allocation"
+          ] })
         ] })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4", children: [
