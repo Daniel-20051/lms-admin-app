@@ -210,12 +210,12 @@ export default function AdminSidebar({
         <Button
           variant={location.pathname === "/super-admin/dashboard" ? "secondary" : "ghost"}
           className={cn(
-            "w-full justify-start gap-3",
+            "w-full justify-start gap-3 font-semibold text-[11px] uppercase tracking-wide text-muted-foreground hover:text-foreground",
             location.pathname === "/super-admin/dashboard" && "bg-primary/10 text-primary hover:bg-primary/20"
           )}
           onClick={() => handleNavigation("/super-admin/dashboard")}
         >
-          <LayoutDashboard className="h-5 w-5" />
+          <LayoutDashboard className="h-4 w-4" />
           Dashboard
           {location.pathname === "/super-admin/dashboard" && <ChevronRight className="ml-auto h-4 w-4" />}
         </Button>
@@ -232,7 +232,7 @@ export default function AdminSidebar({
               <Button
                 variant="ghost"
                 className={cn(
-                  "w-full justify-start gap-3 font-semibold text-xs uppercase tracking-wide text-muted-foreground hover:text-foreground",
+                  "w-full justify-start gap-3 font-semibold text-[11px] uppercase tracking-wide text-muted-foreground hover:text-foreground",
                   hasActiveItem && "text-primary"
                 )}
                 onClick={() => toggleCategory(category.title)}
