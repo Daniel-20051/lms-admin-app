@@ -35,7 +35,7 @@ interface CreateCourseDialogProps {
 const COURSE_TYPES = ['Core', 'Elective', 'General'];
 const LEVELS = [100, 200, 300, 400, 500, 600, 700];
 const SEMESTERS = ['1ST', '2ND'];
-const CURRENCIES = ['NGN', 'USD', 'EUR', 'GBP'];
+const CURRENCIES = ['NGN', 'USD'];
 const OWNER_TYPES = [
     { value: 'wpu', label: 'WPU' },
     { value: 'sole_tutor', label: 'Sole Tutor' },
