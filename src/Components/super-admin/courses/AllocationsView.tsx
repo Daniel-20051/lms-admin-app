@@ -17,11 +17,10 @@ import {
     AlertDialogTitle,
 } from "@/Components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Loader2, Trash2, Search, Plus, Send } from "lucide-react";
+import { Loader2, Trash2, Search, Plus } from "lucide-react";
 import {
     getAllocations,
     removeAllocation,
-    allocateAllStudents,
     type CourseAllocation,
 } from "@/api/courses";
 import { getSemesters, type Semester } from "@/api/semesters";
@@ -49,9 +48,6 @@ export default function AllocationsView({ onAddAllocation, refreshKey }: Allocat
     // Delete state
     const [allocationToDelete, setAllocationToDelete] = useState<CourseAllocation | null>(null);
     const [deleteLoading, setDeleteLoading] = useState(false);
-    
-    // Auto-allocation state
-    const [allocating, setAllocating] = useState(false);
 
     // Fetch semesters
     useEffect(() => {
@@ -137,50 +133,6 @@ export default function AllocationsView({ onAddAllocation, refreshKey }: Allocat
         }
     };
 
-    const handleAllocateAllStudents = async () => {
-        setAllocating(true);
-        try {
-            // If a semester is selected, use it; otherwise use current active semester
-            let data: { academic_year?: string; semester?: string } | undefined;
-            
-            if (selectedSemester) {
-                const [academicYear, semester] = selectedSemester.split('|');
-                data = {
-                    academic_year: academicYear,
-                    semester: semester,
-                };
-            }
-            
-            const response = await allocateAllStudents(data);
-            
-            if (response.success) {
-                toast.success(
-                    `Course allocation completed: ${response.data.allocation.allocated} courses allocated, ${response.data.allocation.skipped} skipped`
-                );
-                
-                // Refresh allocations if semester is selected
-                if (selectedSemester) {
-                    const [academicYear, semester] = selectedSemester.split('|');
-                    const allocationsResponse = await getAllocations({
-                        academic_year: academicYear,
-                        semester: semester,
-                        registration_status: statusFilter as any,
-                        page: currentPage,
-                        limit: 20,
-                    });
-                    setAllocations(allocationsResponse.data.allocations);
-                    setTotal(allocationsResponse.data.pagination.total);
-                }
-            }
-        } catch (error: any) {
-            console.error('Error allocating courses:', error);
-            const errorMessage = error?.response?.data?.message || error?.message || 'Failed to allocate courses';
-            toast.error(errorMessage);
-        } finally {
-            setAllocating(false);
-        }
-    };
-
     const filteredAllocations = allocations.filter(allocation => {
         if (!searchTerm) return true;
         
@@ -218,27 +170,10 @@ export default function AllocationsView({ onAddAllocation, refreshKey }: Allocat
                         </p>
                     </div>
                     <div className="flex gap-2">
-                        <Button 
-                            onClick={handleAllocateAllStudents}
-                            disabled={allocating}
-                            variant="default"
-                        >
-                            {allocating ? (
-                                <>
-                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                    Allocating...
-                                </>
-                            ) : (
-                                <>
-                                    <Send className="h-4 w-4 mr-2" />
-                                    Send Out Course Registration
-                                </>
-                            )}
+                        <Button onClick={onAddAllocation}>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Allocation
                         </Button>
-                    <Button onClick={onAddAllocation}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Allocation
-                    </Button>
                     </div>
                 </div>
 

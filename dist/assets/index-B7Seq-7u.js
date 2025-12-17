@@ -84007,7 +84007,7 @@ function useStudentsManagement() {
   const [loading, setLoading] = reactExports.useState(true);
   const [searchTerm, setSearchTerm] = reactExports.useState("");
   const [levelFilter, setLevelFilter] = reactExports.useState("all");
-  const [statusFilter, setStatusFilter] = reactExports.useState("all");
+  const [statusFilter, setStatusFilter] = reactExports.useState("active");
   const [currentPage, setCurrentPage] = reactExports.useState(1);
   const [selectedStudent, setSelectedStudent] = reactExports.useState(null);
   const [selectedStudentId, setSelectedStudentId] = reactExports.useState(null);
@@ -85916,7 +85916,8 @@ function StudentsFilters({
       /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Status" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "active", children: "Active" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "inactive", children: "Inactive" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "inactive", children: "Inactive" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "pending", children: "Pending" })
       ] })
     ] })
   ] });
@@ -86010,13 +86011,22 @@ function StudentsTable({
   onResetPassword
 }) {
   const getStatusBadge = (status) => {
-    return status === "active" || status === "Active" ? /* @__PURE__ */ jsxRuntimeExports.jsxs(Badge, { className: "bg-green-100 text-green-800 hover:bg-green-100", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(UserCheck, { className: "h-3 w-3 mr-1" }),
-      "Active"
-    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(Badge, { variant: "secondary", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(UserX, { className: "h-3 w-3 mr-1" }),
-      "Inactive"
-    ] });
+    if (status === "active" || status === "Active") {
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs(Badge, { className: "bg-green-100 text-green-800 hover:bg-green-100", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(UserCheck, { className: "h-3 w-3 mr-1" }),
+        "Active"
+      ] });
+    } else if (status === "pending" || status === "Pending") {
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs(Badge, { className: "bg-yellow-100 text-yellow-800 hover:bg-yellow-100", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Users, { className: "h-3 w-3 mr-1" }),
+        "Pending"
+      ] });
+    } else {
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs(Badge, { variant: "secondary", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(UserX, { className: "h-3 w-3 mr-1" }),
+        "Inactive"
+      ] });
+    }
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-md border", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table$1, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
@@ -87176,7 +87186,7 @@ function ManageWalletDialog({
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-bold text-lg", children: formatCurrency(newBalance, selectedCurrency) })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-3 pt-4", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-3 pt-4 pb-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             Button,
             {
@@ -87741,6 +87751,109 @@ function ViewStudentDialog({
   ] });
 }
 
+const getPrograms = async (params = {}) => {
+  try {
+    const headers = getAuthHeaders();
+    const queryParams = new URLSearchParams();
+    if (params.page) queryParams.append("page", params.page.toString());
+    if (params.limit) queryParams.append("limit", params.limit.toString());
+    if (params.search) queryParams.append("search", params.search);
+    if (params.facultyId) queryParams.append("facultyId", params.facultyId.toString());
+    if (params.status) queryParams.append("status", params.status);
+    const url = `${BASE_URL}/api/admin/programs${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+    const response = await axios.get(url, { headers });
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "getting programs");
+    throw err;
+  }
+};
+const getProgram = async (programId) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.get(
+      `${BASE_URL}/api/admin/programs/${programId}`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "getting program details");
+    throw err;
+  }
+};
+const createProgram = async (data) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.post(
+      `${BASE_URL}/api/admin/programs`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "creating program");
+    throw err;
+  }
+};
+const updateProgram = async (programId, data) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.put(
+      `${BASE_URL}/api/admin/programs/${programId}`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "updating program");
+    throw err;
+  }
+};
+const deleteProgram = async (programId) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.delete(
+      `${BASE_URL}/api/admin/programs/${programId}`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "deleting program");
+    throw err;
+  }
+};
+const activateProgram = async (programId) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.patch(
+      `${BASE_URL}/api/admin/programs/${programId}/activate`,
+      {},
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "activating program");
+    throw err;
+  }
+};
+const deactivateProgram = async (programId) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.patch(
+      `${BASE_URL}/api/admin/programs/${programId}/deactivate`,
+      {},
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "deactivating program");
+    throw err;
+  }
+};
+
+const LEVEL_OPTIONS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1e3];
+const CURRENCY_OPTIONS = ["NGN", "USD"];
+const GENDER_OPTIONS = ["Male", "Female", "Other"];
 function EditStudentDialog({
   open,
   onOpenChange,
@@ -87751,12 +87864,22 @@ function EditStudentDialog({
   const [loading, setLoading] = reactExports.useState(false);
   const [saving, setSaving] = reactExports.useState(false);
   const [error, setError] = reactExports.useState(null);
+  const [programs, setPrograms] = reactExports.useState([]);
+  const [fetchingPrograms, setFetchingPrograms] = reactExports.useState(false);
   const [formData, setFormData] = reactExports.useState({
     fname: "",
     lname: "",
     level: 100,
     phone: "",
-    matric_number: ""
+    matric_number: "",
+    program_id: void 0,
+    foreign_student: 0,
+    dob: null,
+    gender: null,
+    currency: "NGN",
+    state_origin: null,
+    address: null,
+    country: ""
   });
   reactExports.useEffect(() => {
     if (open && studentId) {
@@ -87769,8 +87892,17 @@ function EditStudentDialog({
         lname: "",
         level: 100,
         phone: "",
-        matric_number: ""
+        matric_number: "",
+        program_id: void 0,
+        foreign_student: 0,
+        dob: null,
+        gender: null,
+        currency: "NGN",
+        state_origin: null,
+        address: null,
+        country: ""
       });
+      fetchPrograms();
       const timer = setTimeout(() => {
         fetchStudentDetails();
       }, 50);
@@ -87789,6 +87921,20 @@ function EditStudentDialog({
       document.body.style.overflow = "";
     };
   }, [open, studentId]);
+  const fetchPrograms = async () => {
+    try {
+      setFetchingPrograms(true);
+      const response = await getPrograms({ limit: 1e3 });
+      if (response.success) {
+        setPrograms(response.data.programs);
+      }
+    } catch (error2) {
+      console.error("Error fetching programs:", error2);
+      toast.error("Failed to load programs");
+    } finally {
+      setFetchingPrograms(false);
+    }
+  };
   const fetchStudentDetails = async () => {
     if (!studentId) return;
     try {
@@ -87798,12 +87944,21 @@ function EditStudentDialog({
       if (response.success) {
         const studentData = response.data.student;
         setStudent(studentData);
+        const dobFormatted = studentData.dob ? new Date(studentData.dob).toISOString().split("T")[0] : null;
         setFormData({
-          fname: studentData.fname,
-          lname: studentData.lname,
-          level: studentData.level,
+          fname: studentData.fname || "",
+          lname: studentData.lname || "",
+          level: studentData.level || 100,
           phone: studentData.phone || "",
-          matric_number: studentData.matric_number || ""
+          matric_number: studentData.matric_number || "",
+          program_id: studentData.program_id || void 0,
+          foreign_student: studentData.foreign_student !== void 0 ? studentData.foreign_student : 0,
+          dob: dobFormatted,
+          gender: studentData.gender || null,
+          currency: studentData.currency || "NGN",
+          state_origin: studentData.state_origin || null,
+          address: studentData.address || null,
+          country: studentData.country || ""
         });
       }
     } catch (error2) {
@@ -87819,7 +87974,13 @@ function EditStudentDialog({
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "level" ? parseInt(value) || 100 : value
+      [name]: value
+    }));
+  };
+  const handleSelectChange = (name, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "level" || name === "program_id" || name === "foreign_student" ? value ? parseInt(value) : void 0 : value === "" ? null : value
     }));
   };
   const handleSubmit = async (e) => {
@@ -87927,20 +88088,16 @@ function EditStudentDialog({
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "level", children: "Level *" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  Input$1,
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  Select,
                   {
-                    id: "level",
-                    name: "level",
-                    type: "number",
-                    min: "100",
-                    max: "800",
-                    step: "100",
-                    value: formData.level,
-                    onChange: handleInputChange,
-                    placeholder: "e.g., 100, 200, 300",
-                    required: true,
-                    disabled: saving
+                    value: formData.level?.toString() || "",
+                    onValueChange: (value) => handleSelectChange("level", value),
+                    disabled: saving,
+                    children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Select level" }) }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContent, { children: LEVEL_OPTIONS.map((level) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: level.toString(), children: level }, level)) })
+                    ]
                   }
                 )
               ] }),
@@ -87958,6 +88115,131 @@ function EditStudentDialog({
                   }
                 )
               ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "program_id", children: "Program *" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  Select,
+                  {
+                    value: formData.program_id?.toString() || "",
+                    onValueChange: (value) => handleSelectChange("program_id", value),
+                    disabled: saving || fetchingPrograms,
+                    children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: fetchingPrograms ? "Loading programs..." : "Select program" }) }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContent, { children: programs.map((program) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: program.id.toString(), children: program.title }, program.id)) })
+                    ]
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "currency", children: "Currency *" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  Select,
+                  {
+                    value: formData.currency || "NGN",
+                    onValueChange: (value) => handleSelectChange("currency", value),
+                    disabled: saving,
+                    children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Select currency" }) }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContent, { children: CURRENCY_OPTIONS.map((currency) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: currency, children: currency }, currency)) })
+                    ]
+                  }
+                )
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "gender", children: "Gender" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  Select,
+                  {
+                    value: formData.gender || void 0,
+                    onValueChange: (value) => handleSelectChange("gender", value),
+                    disabled: saving,
+                    children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Select gender" }) }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContent, { children: GENDER_OPTIONS.map((gender) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: gender, children: gender }, gender)) })
+                    ]
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "dob", children: "Date of Birth" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  Input$1,
+                  {
+                    id: "dob",
+                    name: "dob",
+                    type: "date",
+                    value: formData.dob || "",
+                    onChange: handleInputChange,
+                    disabled: saving
+                  }
+                )
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "country", children: "Country" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  Input$1,
+                  {
+                    id: "country",
+                    name: "country",
+                    value: formData.country || "",
+                    onChange: handleInputChange,
+                    placeholder: "Enter country",
+                    disabled: saving
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "state_origin", children: "State of Origin" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  Input$1,
+                  {
+                    id: "state_origin",
+                    name: "state_origin",
+                    value: formData.state_origin || "",
+                    onChange: handleInputChange,
+                    placeholder: "Enter state of origin",
+                    disabled: saving
+                  }
+                )
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "address", children: "Address" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                Input$1,
+                {
+                  id: "address",
+                  name: "address",
+                  value: formData.address || "",
+                  onChange: handleInputChange,
+                  placeholder: "Enter address",
+                  disabled: saving
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "foreign_student", children: "Foreign Student" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                Select,
+                {
+                  value: formData.foreign_student?.toString() || "0",
+                  onValueChange: (value) => handleSelectChange("foreign_student", value),
+                  disabled: saving,
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Select" }) }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "0", children: "No" }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "1", children: "Yes" })
+                    ] })
+                  ]
+                }
+              )
             ] })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { className: "px-6 py-4", children: [
@@ -88002,106 +88284,6 @@ function EditStudentDialog({
     }
   ) });
 }
-
-const getPrograms = async (params = {}) => {
-  try {
-    const headers = getAuthHeaders();
-    const queryParams = new URLSearchParams();
-    if (params.page) queryParams.append("page", params.page.toString());
-    if (params.limit) queryParams.append("limit", params.limit.toString());
-    if (params.search) queryParams.append("search", params.search);
-    if (params.facultyId) queryParams.append("facultyId", params.facultyId.toString());
-    if (params.status) queryParams.append("status", params.status);
-    const url = `${BASE_URL}/api/admin/programs${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
-    const response = await axios.get(url, { headers });
-    return response.data;
-  } catch (err) {
-    handleApiError(err, "getting programs");
-    throw err;
-  }
-};
-const getProgram = async (programId) => {
-  try {
-    const headers = getAuthHeaders();
-    const response = await axios.get(
-      `${BASE_URL}/api/admin/programs/${programId}`,
-      { headers }
-    );
-    return response.data;
-  } catch (err) {
-    handleApiError(err, "getting program details");
-    throw err;
-  }
-};
-const createProgram = async (data) => {
-  try {
-    const headers = getAuthHeaders();
-    const response = await axios.post(
-      `${BASE_URL}/api/admin/programs`,
-      data,
-      { headers }
-    );
-    return response.data;
-  } catch (err) {
-    handleApiError(err, "creating program");
-    throw err;
-  }
-};
-const updateProgram = async (programId, data) => {
-  try {
-    const headers = getAuthHeaders();
-    const response = await axios.put(
-      `${BASE_URL}/api/admin/programs/${programId}`,
-      data,
-      { headers }
-    );
-    return response.data;
-  } catch (err) {
-    handleApiError(err, "updating program");
-    throw err;
-  }
-};
-const deleteProgram = async (programId) => {
-  try {
-    const headers = getAuthHeaders();
-    const response = await axios.delete(
-      `${BASE_URL}/api/admin/programs/${programId}`,
-      { headers }
-    );
-    return response.data;
-  } catch (err) {
-    handleApiError(err, "deleting program");
-    throw err;
-  }
-};
-const activateProgram = async (programId) => {
-  try {
-    const headers = getAuthHeaders();
-    const response = await axios.patch(
-      `${BASE_URL}/api/admin/programs/${programId}/activate`,
-      {},
-      { headers }
-    );
-    return response.data;
-  } catch (err) {
-    handleApiError(err, "activating program");
-    throw err;
-  }
-};
-const deactivateProgram = async (programId) => {
-  try {
-    const headers = getAuthHeaders();
-    const response = await axios.patch(
-      `${BASE_URL}/api/admin/programs/${programId}/deactivate`,
-      {},
-      { headers }
-    );
-    return response.data;
-  } catch (err) {
-    handleApiError(err, "deactivating program");
-    throw err;
-  }
-};
 
 function CreateStudentDialog({
   open,
@@ -93571,14 +93753,7 @@ function CoursesTable({
           }
         );
       })() }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "hidden md:table-cell", children: course.is_marketplace ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex flex-col gap-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Badge,
-        {
-          variant: "outline",
-          className: course.marketplace_status === "published" ? "border-green-500 text-green-700 bg-green-50" : "border-gray-300 text-gray-600 bg-gray-50",
-          children: course.marketplace_status === "published" ? "Published" : course.marketplace_status === "draft" ? "Draft" : course.marketplace_status || "Draft"
-        }
-      ) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-muted-foreground", children: "-" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "hidden md:table-cell", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm", children: course.is_marketplace ? "Yes" : "No" }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DropdownMenu, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(DropdownMenuTrigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", className: "h-8 w-8 p-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx(EllipsisVertical, { className: "h-4 w-4" }) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs(DropdownMenuContent, { align: "end", children: [
@@ -93703,10 +93878,14 @@ function ViewCourseDialog({
     setLoading(true);
     try {
       const response = await getCourse(courseId);
-      setCourse(response.data.course);
+      if (response.status && response.data) {
+        setCourse(response.data);
+      } else {
+        throw new Error("Invalid course data received");
+      }
     } catch (error) {
       console.error("Error fetching course:", error);
-      toast.error(error?.response?.data?.message || "Failed to fetch course details");
+      toast.error(error?.response?.data?.message || error?.message || "Failed to fetch course details");
       onOpenChange(false);
     } finally {
       setLoading(false);
@@ -93747,12 +93926,12 @@ function ViewCourseDialog({
         /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Program:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.program.title })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.program?.title || "N/A" })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Faculty:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.faculty.name })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.faculty?.name || "N/A" })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
@@ -94825,7 +95004,7 @@ class Api extends AuthApi {
 const COURSE_TYPES$1 = ["Core", "Elective", "General"];
 const LEVELS$2 = [100, 200, 300, 400, 500, 600, 700];
 const SEMESTERS$4 = ["1ST", "2ND"];
-const CURRENCIES$2 = ["NGN", "USD", "EUR", "GBP"];
+const CURRENCIES$2 = ["NGN", "USD"];
 const OWNER_TYPES$1 = [
   { value: "wpu", label: "WPU" },
   { value: "sole_tutor", label: "Sole Tutor" },
@@ -95399,27 +95578,31 @@ function EditCourseDialog({
     setFetchingCourse(true);
     try {
       const response = await getCourse(courseId);
-      const course = response.data.course;
-      setFormData({
-        title: course.title,
-        course_code: course.course_code,
-        course_unit: course.course_unit,
-        price: course.price,
-        course_type: course.course_type,
-        course_level: course.course_level,
-        semester: course.semester,
-        staff_id: course.staff_id,
-        program_id: course.program_id,
-        faculty_id: course.faculty_id,
-        currency: course.currency,
-        owner_type: course.owner_type,
-        is_marketplace: course.is_marketplace,
-        marketplace_status: course.marketplace_status,
-        owner_id: course.owner_id
-      });
+      if (response.status && response.data) {
+        const course = response.data;
+        setFormData({
+          title: course.title || "",
+          course_code: course.course_code || "",
+          course_unit: course.course_unit || 0,
+          price: course.price || "0",
+          course_type: course.course_type || "Core",
+          course_level: course.course_level || 100,
+          semester: course.semester || "1ST",
+          staff_id: course.staff_id || 0,
+          program_id: course.program_id || 0,
+          faculty_id: course.faculty_id || 0,
+          currency: course.currency || "NGN",
+          owner_type: course.owner_type || "wpu",
+          is_marketplace: course.is_marketplace || false,
+          marketplace_status: course.marketplace_status || null,
+          owner_id: course.owner_id || null
+        });
+      } else {
+        throw new Error("Invalid course data received");
+      }
     } catch (error) {
       console.error("Error fetching course:", error);
-      toast.error(error?.response?.data?.message || "Failed to fetch course details");
+      toast.error(error?.response?.data?.message || error?.message || "Failed to fetch course details");
       onOpenChange(false);
     } finally {
       setFetchingCourse(false);
@@ -95508,7 +95691,7 @@ function EditCourseDialog({
       /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { children: "Edit Course" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(DialogDescription, { children: "Update course information" })
     ] }),
-    isLoading ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "py-8 text-center", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(DialogBody, { children: isLoading ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "py-8 text-center", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-sm text-muted-foreground", children: fetchingCourse ? "Loading course details..." : "Loading programs and staff..." })
     ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, children: [
@@ -95825,7 +96008,7 @@ function EditCourseDialog({
         ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "submit", disabled: loading, children: loading ? "Updating..." : "Update Course" })
       ] })
-    ] })
+    ] }) })
   ] }) });
 }
 
@@ -96838,7 +97021,6 @@ function AllocationsView({ onAddAllocation, refreshKey }) {
   const [total, setTotal] = reactExports.useState(0);
   const [allocationToDelete, setAllocationToDelete] = reactExports.useState(null);
   const [deleteLoading, setDeleteLoading] = reactExports.useState(false);
-  const [allocating, setAllocating] = reactExports.useState(false);
   reactExports.useEffect(() => {
     const fetchSemesters = async () => {
       try {
@@ -96907,43 +97089,6 @@ function AllocationsView({ onAddAllocation, refreshKey }) {
       setDeleteLoading(false);
     }
   };
-  const handleAllocateAllStudents = async () => {
-    setAllocating(true);
-    try {
-      let data;
-      if (selectedSemester) {
-        const [academicYear, semester] = selectedSemester.split("|");
-        data = {
-          academic_year: academicYear,
-          semester
-        };
-      }
-      const response = await allocateAllStudents(data);
-      if (response.success) {
-        toast.success(
-          `Course allocation completed: ${response.data.allocation.allocated} courses allocated, ${response.data.allocation.skipped} skipped`
-        );
-        if (selectedSemester) {
-          const [academicYear, semester] = selectedSemester.split("|");
-          const allocationsResponse = await getAllocations({
-            academic_year: academicYear,
-            semester,
-            registration_status: statusFilter,
-            page: currentPage,
-            limit: 20
-          });
-          setAllocations(allocationsResponse.data.allocations);
-          setTotal(allocationsResponse.data.pagination.total);
-        }
-      }
-    } catch (error) {
-      console.error("Error allocating courses:", error);
-      const errorMessage = error?.response?.data?.message || error?.message || "Failed to allocate courses";
-      toast.error(errorMessage);
-    } finally {
-      setAllocating(false);
-    }
-  };
   const filteredAllocations = allocations.filter((allocation) => {
     if (!searchTerm) return true;
     const search = searchTerm.toLowerCase();
@@ -96968,27 +97113,10 @@ function AllocationsView({ onAddAllocation, refreshKey }) {
           /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold", children: "Course Allocations" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "View and manage all course allocations" })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Button,
-            {
-              onClick: handleAllocateAllStudents,
-              disabled: allocating,
-              variant: "default",
-              children: allocating ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "h-4 w-4 mr-2 animate-spin" }),
-                "Allocating..."
-              ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Send, { className: "h-4 w-4 mr-2" }),
-                "Send Out Course Registration"
-              ] })
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: onAddAllocation, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "h-4 w-4 mr-2" }),
-            "Add Allocation"
-          ] })
-        ] })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex gap-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: onAddAllocation, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "h-4 w-4 mr-2" }),
+          "Add Allocation"
+        ] }) })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
@@ -97200,17 +97328,19 @@ function UpdateCoursePriceDialog({
         setFetchingCourse(true);
         try {
           const response = await getCourse(courseId);
-          if (response.success && response.data.course) {
-            const course = response.data.course;
-            setCourseTitle(course.title);
-            setCourseCode(course.course_code);
+          if (response.status && response.data) {
+            const course = response.data;
+            setCourseTitle(course.title || "");
+            setCourseCode(course.course_code || "");
             setPrice(course.price || "0");
             setCurrency(course.currency || "NGN");
             setError("");
+          } else {
+            throw new Error("Invalid course data received");
           }
         } catch (error2) {
           console.error("Error fetching course:", error2);
-          toast.error("Failed to load course details");
+          toast.error(error2?.response?.data?.message || error2?.message || "Failed to load course details");
           onOpenChange(false);
         } finally {
           setFetchingCourse(false);
@@ -97258,10 +97388,12 @@ function UpdateCoursePriceDialog({
         currency
       };
       const response = await updateCoursePrice(courseId, updateData);
-      if (response.success) {
+      if (response.success || response.status) {
         toast.success("Course price updated successfully");
         onPriceUpdated();
         onOpenChange(false);
+      } else {
+        throw new Error(response.message || "Failed to update course price");
       }
     } catch (error2) {
       console.error("Error updating course price:", error2);
@@ -97281,11 +97413,11 @@ function UpdateCoursePriceDialog({
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(DialogDescription, { children: "Update the price for this course. The price will be used for all future registrations." })
     ] }),
-    fetchingCourse ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-center py-8", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(DialogBody, { children: fetchingCourse ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-center py-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "h-8 w-8 animate-spin text-muted-foreground" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-2 text-sm text-muted-foreground", children: "Loading course details..." })
     ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4 py-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-lg bg-muted p-4 space-y-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Course" }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-base font-semibold", children: [
@@ -97354,7 +97486,7 @@ function UpdateCoursePriceDialog({
           "Update Price"
         ] }) })
       ] })
-    ] })
+    ] }) })
   ] }) });
 }
 

@@ -348,13 +348,55 @@ export const getCourseStatistics = async (): Promise<GetCourseStatisticsResponse
 export interface StudentDetails extends Omit<Student, 'program'> {
   program?: {
     id: number;
-    program_name: string;
+    program_name?: string;
     title?: string;
+    faculty_id?: number;
+    description?: string;
+    date?: string;
+    token?: string;
+    status?: string;
   };
   enrolledCourses?: Array<{
     course_id: number;
     course_name: string;
   }>;
+  // Additional fields from API response
+  mname?: string | null;
+  gender?: string | null;
+  dob?: string | null;
+  address?: string | null;
+  state_origin?: string | null;
+  lcda?: string | null;
+  country?: string;
+  file?: string | null;
+  g_status?: string;
+  application_code?: string;
+  date?: string;
+  token?: string;
+  a_status?: string | null;
+  facaulty_id?: number | null;
+  study_mode?: string;
+  teller_no?: string | null;
+  wallet_balance?: string;
+  account_no?: string | null;
+  account_name?: string | null;
+  bank?: string | null;
+  currency?: string;
+  certificate_file?: string | null;
+  birth_certificate?: string | null;
+  ref_letter?: string | null;
+  valid_id?: string | null;
+  resume_cv?: string | null;
+  other_file?: string | null;
+  school1_date?: string | null;
+  school_date?: string | null;
+  school2?: string | null;
+  school2_date?: string | null;
+  application_fee?: string;
+  referral_code?: string;
+  designated_institute?: number;
+  foreign_student?: number;
+  courseRegistrations?: any[];
 }
 
 export interface GetStudentResponse {
@@ -750,6 +792,13 @@ export interface UpdateStudentData {
   phone?: string;
   matric_number?: string;
   program_id?: number;
+  foreign_student?: number;
+  dob?: string | null;
+  gender?: string | null;
+  currency?: string;
+  state_origin?: string | null;
+  address?: string | null;
+  country?: string;
 }
 
 export interface UpdateStudentResponse {

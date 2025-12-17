@@ -59,6 +59,7 @@ export default function StudentsFilters({
           <SelectItem value="all">All Status</SelectItem>
           <SelectItem value="active">Active</SelectItem>
           <SelectItem value="inactive">Inactive</SelectItem>
+          <SelectItem value="pending">Pending</SelectItem>
         </SelectContent>
       </Select>
     </div>

@@ -56,17 +56,28 @@ export default function StudentsTable({
   onResetPassword,
 }: StudentsTableProps) {
   const getStatusBadge = (status: string) => {
-    return status === "active" || status === "Active" ? (
-      <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-        <UserCheck className="h-3 w-3 mr-1" />
-        Active
-      </Badge>
-    ) : (
-      <Badge variant="secondary">
-        <UserX className="h-3 w-3 mr-1" />
-        Inactive
-      </Badge>
-    );
+    if (status === "active" || status === "Active") {
+      return (
+        <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+          <UserCheck className="h-3 w-3 mr-1" />
+          Active
+        </Badge>
+      );
+    } else if (status === "pending" || status === "Pending") {
+      return (
+        <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+          <Users className="h-3 w-3 mr-1" />
+          Pending
+        </Badge>
+      );
+    } else {
+      return (
+        <Badge variant="secondary">
+          <UserX className="h-3 w-3 mr-1" />
+          Inactive
+        </Badge>
+      );
+    }
   };
 
   return (

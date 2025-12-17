@@ -11,6 +11,13 @@ import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 import { Skeleton } from "@/Components/ui/skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 import { Loader2, Save, RefreshCw } from "lucide-react";
 import {
   getStudent,
@@ -18,6 +25,7 @@ import {
   type StudentDetails,
   type UpdateStudentData,
 } from "@/api/admin";
+import { getPrograms } from "@/api/programs";
 import { toast } from "sonner";
 
 interface EditStudentDialogProps {
@@ -26,6 +34,11 @@ interface EditStudentDialogProps {
   studentId: number | null;
   onStudentUpdated: (updatedData: UpdateStudentData & { id: number }) => void;
 }
+
+// Level options: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000
+const LEVEL_OPTIONS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+const CURRENCY_OPTIONS = ['NGN', 'USD'];
+const GENDER_OPTIONS = ['Male', 'Female', 'Other'];
 
 export default function EditStudentDialog({
   open,
@@ -37,12 +50,22 @@ export default function EditStudentDialog({
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [programs, setPrograms] = useState<Array<{ id: number; title: string }>>([]);
+  const [fetchingPrograms, setFetchingPrograms] = useState(false);
   const [formData, setFormData] = useState<UpdateStudentData>({
     fname: "",
     lname: "",
     level: 100,
     phone: "",
     matric_number: "",
+    program_id: undefined,
+    foreign_student: 0,
+    dob: null,
+    gender: null,
+    currency: "NGN",
+    state_origin: null,
+    address: null,
+    country: "",
   });
 
   useEffect(() => {
@@ -58,8 +81,18 @@ export default function EditStudentDialog({
         level: 100,
         phone: "",
         matric_number: "",
+        program_id: undefined,
+        foreign_student: 0,
+        dob: null,
+        gender: null,
+        currency: "NGN",
+        state_origin: null,
+        address: null,
+        country: "",
       });
       
+      // Fetch programs and student details
+      fetchPrograms();
       // Add a small delay to ensure dialog is fully mounted
       const timer = setTimeout(() => {
         fetchStudentDetails();
@@ -85,6 +118,21 @@ export default function EditStudentDialog({
     };
   }, [open, studentId]);
 
+  const fetchPrograms = async () => {
+    try {
+      setFetchingPrograms(true);
+      const response = await getPrograms({ limit: 1000 }); // Get all programs
+      if (response.success) {
+        setPrograms(response.data.programs);
+      }
+    } catch (error: any) {
+      console.error("Error fetching programs:", error);
+      toast.error("Failed to load programs");
+    } finally {
+      setFetchingPrograms(false);
+    }
+  };
+
   const fetchStudentDetails = async () => {
     if (!studentId) return;
 
@@ -95,12 +143,25 @@ export default function EditStudentDialog({
       if (response.success) {
         const studentData = response.data.student;
         setStudent(studentData);
+        // Format date of birth for input (YYYY-MM-DD)
+        const dobFormatted = studentData.dob 
+          ? new Date(studentData.dob).toISOString().split('T')[0]
+          : null;
+        
         setFormData({
-          fname: studentData.fname,
-          lname: studentData.lname,
-          level: studentData.level,
+          fname: studentData.fname || "",
+          lname: studentData.lname || "",
+          level: studentData.level || 100,
           phone: studentData.phone || "",
           matric_number: studentData.matric_number || "",
+          program_id: studentData.program_id || undefined,
+          foreign_student: studentData.foreign_student !== undefined ? studentData.foreign_student : 0,
+          dob: dobFormatted,
+          gender: studentData.gender || null,
+          currency: studentData.currency || "NGN",
+          state_origin: studentData.state_origin || null,
+          address: studentData.address || null,
+          country: studentData.country || "",
         });
       }
     } catch (error: any) {
@@ -113,11 +174,20 @@ export default function EditStudentDialog({
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "level" ? parseInt(value) || 100 : value,
+      [name]: value,
+    }));
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "level" || name === "program_id" || name === "foreign_student"
+        ? (value ? parseInt(value) : undefined)
+        : value === "" ? null : value,
     }));
   };
 
@@ -231,19 +301,22 @@ export default function EditStudentDialog({
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="level">Level *</Label>
-                  <Input
-                    id="level"
-                    name="level"
-                    type="number"
-                    min="100"
-                    max="800"
-                    step="100"
-                    value={formData.level}
-                    onChange={handleInputChange}
-                    placeholder="e.g., 100, 200, 300"
-                    required
+                  <Select
+                    value={formData.level?.toString() || ""}
+                    onValueChange={(value) => handleSelectChange("level", value)}
                     disabled={saving}
-                  />
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {LEVEL_OPTIONS.map((level) => (
+                        <SelectItem key={level} value={level.toString()}>
+                          {level}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
@@ -256,6 +329,134 @@ export default function EditStudentDialog({
                     disabled={saving}
                   />
                 </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="program_id">Program *</Label>
+                  <Select
+                    value={formData.program_id?.toString() || ""}
+                    onValueChange={(value) => handleSelectChange("program_id", value)}
+                    disabled={saving || fetchingPrograms}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={fetchingPrograms ? "Loading programs..." : "Select program"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {programs.map((program) => (
+                        <SelectItem key={program.id} value={program.id.toString()}>
+                          {program.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="currency">Currency *</Label>
+                  <Select
+                    value={formData.currency || "NGN"}
+                    onValueChange={(value) => handleSelectChange("currency", value)}
+                    disabled={saving}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select currency" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CURRENCY_OPTIONS.map((currency) => (
+                        <SelectItem key={currency} value={currency}>
+                          {currency}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="gender">Gender</Label>
+                  <Select
+                    value={formData.gender || undefined}
+                    onValueChange={(value) => handleSelectChange("gender", value)}
+                    disabled={saving}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {GENDER_OPTIONS.map((gender) => (
+                        <SelectItem key={gender} value={gender}>
+                          {gender}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="dob">Date of Birth</Label>
+                  <Input
+                    id="dob"
+                    name="dob"
+                    type="date"
+                    value={formData.dob || ""}
+                    onChange={handleInputChange}
+                    disabled={saving}
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="country">Country</Label>
+                  <Input
+                    id="country"
+                    name="country"
+                    value={formData.country || ""}
+                    onChange={handleInputChange}
+                    placeholder="Enter country"
+                    disabled={saving}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="state_origin">State of Origin</Label>
+                  <Input
+                    id="state_origin"
+                    name="state_origin"
+                    value={formData.state_origin || ""}
+                    onChange={handleInputChange}
+                    placeholder="Enter state of origin"
+                    disabled={saving}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="address">Address</Label>
+                <Input
+                  id="address"
+                  name="address"
+                  value={formData.address || ""}
+                  onChange={handleInputChange}
+                  placeholder="Enter address"
+                  disabled={saving}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="foreign_student">Foreign Student</Label>
+                <Select
+                  value={formData.foreign_student?.toString() || "0"}
+                  onValueChange={(value) => handleSelectChange("foreign_student", value)}
+                  disabled={saving}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">No</SelectItem>
+                    <SelectItem value="1">Yes</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
