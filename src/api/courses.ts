@@ -102,11 +102,10 @@ export const getCourses = async (params: GetCoursesParams = {}): Promise<GetCour
 
 // Get Single Course
 export interface GetCourseResponse {
-    success: boolean;
+    status: boolean;
+    code: number;
     message: string;
-    data: {
-        course: Course;
-    };
+    data: Course;
 }
 
 export const getCourse = async (courseId: number): Promise<GetCourseResponse> => {

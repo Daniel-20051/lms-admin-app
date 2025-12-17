@@ -6,6 +6,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
+    DialogBody,
 } from "@/Components/ui/dialog";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
@@ -51,17 +52,19 @@ export default function UpdateCoursePriceDialog({
                 setFetchingCourse(true);
                 try {
                     const response = await getCourse(courseId);
-                    if (response.success && response.data.course) {
-                        const course = response.data.course;
-                        setCourseTitle(course.title);
-                        setCourseCode(course.course_code);
+                    if (response.status && response.data) {
+                        const course = response.data;
+                        setCourseTitle(course.title || '');
+                        setCourseCode(course.course_code || '');
                         setPrice(course.price || '0');
                         setCurrency(course.currency || 'NGN');
                         setError('');
+                    } else {
+                        throw new Error('Invalid course data received');
                     }
                 } catch (error: any) {
                     console.error('Error fetching course:', error);
-                    toast.error('Failed to load course details');
+                    toast.error(error?.response?.data?.message || error?.message || 'Failed to load course details');
                     onOpenChange(false);
                 } finally {
                     setFetchingCourse(false);
@@ -122,10 +125,12 @@ export default function UpdateCoursePriceDialog({
 
             const response = await updateCoursePrice(courseId, updateData);
             
-            if (response.success) {
+            if (response.success || (response as any).status) {
                 toast.success('Course price updated successfully');
                 onPriceUpdated();
                 onOpenChange(false);
+            } else {
+                throw new Error(response.message || 'Failed to update course price');
             }
         } catch (error: any) {
             console.error('Error updating course price:', error);
@@ -152,6 +157,7 @@ export default function UpdateCoursePriceDialog({
                     </DialogDescription>
                 </DialogHeader>
 
+                <DialogBody>
                 {fetchingCourse ? (
                     <div className="flex items-center justify-center py-8">
                         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -159,7 +165,7 @@ export default function UpdateCoursePriceDialog({
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit}>
-                        <div className="space-y-4 py-4">
+                        <div className="space-y-4">
                             {/* Course Info Display */}
                             <div className="rounded-lg bg-muted p-4 space-y-2">
                                 <div className="text-sm font-medium text-muted-foreground">Course</div>
@@ -242,6 +248,7 @@ export default function UpdateCoursePriceDialog({
                         </DialogFooter>
                     </form>
                 )}
+                </DialogBody>
             </DialogContent>
         </Dialog>
     );

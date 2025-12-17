@@ -40,10 +40,14 @@ export default function ViewCourseDialog({
         setLoading(true);
         try {
             const response = await getCourse(courseId);
-            setCourse(response.data.course);
+            if (response.status && response.data) {
+                setCourse(response.data);
+            } else {
+                throw new Error('Invalid course data received');
+            }
         } catch (error: any) {
             console.error('Error fetching course:', error);
-            toast.error(error?.response?.data?.message || 'Failed to fetch course details');
+            toast.error(error?.response?.data?.message || error?.message || 'Failed to fetch course details');
             onOpenChange(false);
         } finally {
             setLoading(false);
@@ -97,12 +101,12 @@ export default function ViewCourseDialog({
                                 <Separator />
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="text-sm font-medium text-muted-foreground">Program:</div>
-                                    <div className="col-span-2 text-sm">{course.program.title}</div>
+                                    <div className="col-span-2 text-sm">{course.program?.title || 'N/A'}</div>
                                 </div>
                                 <Separator />
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="text-sm font-medium text-muted-foreground">Faculty:</div>
-                                    <div className="col-span-2 text-sm">{course.faculty.name}</div>
+                                    <div className="col-span-2 text-sm">{course.faculty?.name || 'N/A'}</div>
                                 </div>
                                 <Separator />
                                 <div className="grid grid-cols-3 gap-4">

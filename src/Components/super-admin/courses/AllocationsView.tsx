@@ -235,10 +235,10 @@ export default function AllocationsView({ onAddAllocation, refreshKey }: Allocat
                                 </>
                             )}
                         </Button>
-                        <Button onClick={onAddAllocation}>
-                            <Plus className="h-4 w-4 mr-2" />
-                            Add Allocation
-                        </Button>
+                    <Button onClick={onAddAllocation}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Allocation
+                    </Button>
                     </div>
                 </div>
 

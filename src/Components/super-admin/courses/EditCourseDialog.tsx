@@ -6,6 +6,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
+    DialogBody,
 } from "@/Components/ui/dialog";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
@@ -134,27 +135,31 @@ export default function EditCourseDialog({
         setFetchingCourse(true);
         try {
             const response = await getCourse(courseId);
-            const course = response.data.course;
-            setFormData({
-                title: course.title,
-                course_code: course.course_code,
-                course_unit: course.course_unit,
-                price: course.price,
-                course_type: course.course_type,
-                course_level: course.course_level,
-                semester: course.semester,
-                staff_id: course.staff_id,
-                program_id: course.program_id,
-                faculty_id: course.faculty_id,
-                currency: course.currency,
-                owner_type: course.owner_type as 'wpu' | 'sole_tutor' | 'organization',
-                is_marketplace: course.is_marketplace,
-                marketplace_status: course.marketplace_status as 'draft' | 'published' | null,
-                owner_id: course.owner_id,
-            });
+            if (response.status && response.data) {
+                const course = response.data;
+                setFormData({
+                    title: course.title || '',
+                    course_code: course.course_code || '',
+                    course_unit: course.course_unit || 0,
+                    price: course.price || '0',
+                    course_type: course.course_type || 'Core',
+                    course_level: course.course_level || 100,
+                    semester: course.semester || '1ST',
+                    staff_id: course.staff_id || 0,
+                    program_id: course.program_id || 0,
+                    faculty_id: course.faculty_id || 0,
+                    currency: course.currency || 'NGN',
+                    owner_type: (course.owner_type as 'wpu' | 'sole_tutor' | 'organization') || 'wpu',
+                    is_marketplace: course.is_marketplace || false,
+                    marketplace_status: (course.marketplace_status as 'draft' | 'published' | null) || null,
+                    owner_id: course.owner_id || null,
+                });
+            } else {
+                throw new Error('Invalid course data received');
+            }
         } catch (error: any) {
             console.error('Error fetching course:', error);
-            toast.error(error?.response?.data?.message || 'Failed to fetch course details');
+            toast.error(error?.response?.data?.message || error?.message || 'Failed to fetch course details');
             onOpenChange(false);
         } finally {
             setFetchingCourse(false);
@@ -267,6 +272,7 @@ export default function EditCourseDialog({
                     </DialogDescription>
                 </DialogHeader>
 
+                <DialogBody>
                 {isLoading ? (
                     <div className="py-8 text-center">
                         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]" />
@@ -675,6 +681,7 @@ export default function EditCourseDialog({
                         </DialogFooter>
                     </form>
                 )}
+                </DialogBody>
             </DialogContent>
         </Dialog>
     );
