@@ -66,6 +66,11 @@ const navigationCategories: NavigationCategory[] = [
         href: "/super-admin/admins",
         icon: Shield,
       },
+      {
+        title: "Creators",
+        href: "/super-admin/tutors",
+        icon: School,
+      },
     ],
   },
   {
@@ -134,11 +139,6 @@ const navigationCategories: NavigationCategory[] = [
         title: "School Fees Management",
         href: "/super-admin/school-fees",
         icon: Receipt,
-      },
-      {
-        title: "Tutor Management",
-        href: "/super-admin/tutors",
-        icon: School,
       },
       {
         title: "Revenue",

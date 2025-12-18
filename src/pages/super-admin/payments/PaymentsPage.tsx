@@ -127,18 +127,23 @@ export default function PaymentsPage() {
     }
   };
 
-  const formatCurrency = (amount: number | string, currency: string | null = "USD") => {
+  const formatCurrency = (amount: number | string, currency: string | null = null) => {
     const numAmount = typeof amount === "string" ? parseFloat(amount) : amount;
-    const currencyCode = currency || "USD";
+    const currencyCode = currency || "NGN";
     
-    // Handle numeric currency codes (likely currency IDs)
+    // Handle numeric currency codes (likely currency IDs) - default to NGN
     if (currencyCode && !isNaN(Number(currencyCode))) {
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(numAmount);
+      return `₦${numAmount.toLocaleString()}`;
     }
     
+    // Use custom formatting for USD and NGN
+    if (currencyCode === "USD") {
+      return `$${numAmount.toLocaleString()}`;
+    } else if (currencyCode === "NGN") {
+      return `₦${numAmount.toLocaleString()}`;
+    }
+    
+    // Fallback to Intl formatter for other currencies
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: currencyCode,
@@ -339,7 +344,6 @@ export default function PaymentsPage() {
                         <th className="text-left p-2 border-b">Type</th>
                         <th className="text-right p-2 border-b">Amount</th>
                         <th className="text-right p-2 border-b">Balance</th>
-                        <th className="text-left p-2 border-b">Currency</th>
                         <th className="text-left p-2 border-b">Semester</th>
                         <th className="text-left p-2 border-b">Academic Year</th>
                       </tr>
@@ -355,7 +359,6 @@ export default function PaymentsPage() {
                           <td className="p-2"><Skeleton className="h-4 w-16" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-20 ml-auto" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-20 ml-auto" /></td>
-                          <td className="p-2"><Skeleton className="h-4 w-16" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-16" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-24" /></td>
                         </tr>
@@ -377,7 +380,6 @@ export default function PaymentsPage() {
                           <th className="text-left p-2 font-medium">Type</th>
                           <th className="text-right p-2 font-medium">Amount</th>
                           <th className="text-right p-2 font-medium">Balance</th>
-                          <th className="text-left p-2 font-medium">Currency</th>
                           <th className="text-left p-2 font-medium">Semester</th>
                           <th className="text-left p-2 font-medium">Academic Year</th>
                         </tr>
@@ -420,7 +422,6 @@ export default function PaymentsPage() {
                             <td className="p-2 text-right">
                               {formatCurrency(parseFloat(funding.balance), funding.currency)}
                             </td>
-                            <td className="p-2">{funding.currency || "N/A"}</td>
                             <td className="p-2">{funding.semester}</td>
                             <td className="p-2">{funding.academic_year}</td>
                           </tr>
@@ -482,7 +483,6 @@ export default function PaymentsPage() {
                         <th className="text-left p-2 border-b">Type</th>
                         <th className="text-left p-2 border-b">Status</th>
                         <th className="text-right p-2 border-b">Amount</th>
-                        <th className="text-left p-2 border-b">Currency</th>
                         <th className="text-left p-2 border-b">Level</th>
                         <th className="text-left p-2 border-b">Semester</th>
                         <th className="text-left p-2 border-b">Academic Year</th>
@@ -499,7 +499,6 @@ export default function PaymentsPage() {
                           <td className="p-2"><Skeleton className="h-4 w-32" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-20" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-20 ml-auto" /></td>
-                          <td className="p-2"><Skeleton className="h-4 w-16" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-16" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-16" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-24" /></td>
@@ -522,7 +521,6 @@ export default function PaymentsPage() {
                           <th className="text-left p-2 font-medium">Type</th>
                           <th className="text-left p-2 font-medium">Status</th>
                           <th className="text-right p-2 font-medium">Amount</th>
-                          <th className="text-left p-2 font-medium">Currency</th>
                           <th className="text-left p-2 font-medium">Level</th>
                           <th className="text-left p-2 font-medium">Semester</th>
                           <th className="text-left p-2 font-medium">Academic Year</th>
@@ -557,7 +555,6 @@ export default function PaymentsPage() {
                             <td className="p-2 text-right font-medium">
                               {formatCurrency(fee.amount, fee.currency)}
                             </td>
-                            <td className="p-2">{fee.currency || "N/A"}</td>
                             <td className="p-2">{fee.student_level}</td>
                             <td className="p-2">{fee.semester}</td>
                             <td className="p-2">{fee.academic_year}</td>
@@ -616,7 +613,6 @@ export default function PaymentsPage() {
                         <th className="text-left p-2 border-b">Student</th>
                         <th className="text-left p-2 border-b">Date</th>
                         <th className="text-right p-2 border-b">Amount</th>
-                        <th className="text-left p-2 border-b">Currency</th>
                         <th className="text-left p-2 border-b">Level</th>
                         <th className="text-left p-2 border-b">Semester</th>
                         <th className="text-left p-2 border-b">Academic Year</th>
@@ -629,7 +625,6 @@ export default function PaymentsPage() {
                           <td className="p-2"><Skeleton className="h-4 w-32" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-24" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-20 ml-auto" /></td>
-                          <td className="p-2"><Skeleton className="h-4 w-16" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-16" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-16" /></td>
                           <td className="p-2"><Skeleton className="h-4 w-24" /></td>
@@ -648,7 +643,6 @@ export default function PaymentsPage() {
                           <th className="text-left p-2 font-medium">Student</th>
                           <th className="text-left p-2 font-medium">Date</th>
                           <th className="text-right p-2 font-medium">Amount</th>
-                          <th className="text-left p-2 font-medium">Currency</th>
                           <th className="text-left p-2 font-medium">Level</th>
                           <th className="text-left p-2 font-medium">Semester</th>
                           <th className="text-left p-2 font-medium">Academic Year</th>
@@ -671,7 +665,6 @@ export default function PaymentsPage() {
                             <td className="p-2 text-right font-medium">
                               {order.amount ? formatCurrency(parseFloat(order.amount), order.currency) : "N/A"}
                             </td>
-                            <td className="p-2">{order.currency || "N/A"}</td>
                             <td className="p-2">{order.level || "N/A"}</td>
                             <td className="p-2">{order.semester}</td>
                             <td className="p-2">{order.academic_year}</td>

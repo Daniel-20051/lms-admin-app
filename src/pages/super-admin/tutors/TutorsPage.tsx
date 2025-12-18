@@ -283,8 +283,8 @@ export default function TutorsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">Tutor Management</h1>
-        <p className="text-muted-foreground">Manage sole tutors and organizations</p>
+        <h1 className="text-3xl font-bold">Creators</h1>
+        <p className="text-muted-foreground">Manage creators and organizations</p>
       </div>
 
       {/* Statistics Cards */}
@@ -293,9 +293,9 @@ export default function TutorsPage() {
       {/* Tabs Section */}
       <Card className="pt-3">
         <CardHeader>
-          <CardTitle>Tutors</CardTitle>
+          <CardTitle>Creators</CardTitle>
           <CardDescription>
-            View and manage tutors by type
+            View and manage creators by type
           </CardDescription>
         </CardHeader>
         <CardContent>

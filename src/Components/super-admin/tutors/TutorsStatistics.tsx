@@ -54,10 +54,10 @@ export default function TutorsStatistics({
         </CardContent>
       </Card>
 
-      {/* Total Tutors */}
+      {/* Total Creators */}
       <Card className="pt-3">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium truncate">Total Tutors</CardTitle>
+          <CardTitle className="text-sm font-medium truncate">Total Creators</CardTitle>
           <User className="h-4 w-4 text-muted-foreground shrink-0" />
         </CardHeader>
         <CardContent>
@@ -69,15 +69,15 @@ export default function TutorsStatistics({
             </div>
           )}
           <p className="text-xs text-muted-foreground mt-1 truncate">
-            All tutor types
+            All creator types
           </p>
         </CardContent>
       </Card>
 
-      {/* Tutor Courses */}
+      {/* Creator Courses */}
       <Card className="pt-3">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium truncate">Tutor Courses</CardTitle>
+          <CardTitle className="text-sm font-medium truncate">Creator Courses</CardTitle>
           <BookOpen className="h-4 w-4 text-muted-foreground shrink-0" />
         </CardHeader>
         <CardContent>
