@@ -170,10 +170,10 @@ export default function AllocationsView({ onAddAllocation, refreshKey }: Allocat
                         </p>
                     </div>
                     <div className="flex gap-2">
-                        <Button onClick={onAddAllocation}>
-                            <Plus className="h-4 w-4 mr-2" />
-                            Add Allocation
-                        </Button>
+                    <Button onClick={onAddAllocation}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Allocation
+                    </Button>
                     </div>
                 </div>
 

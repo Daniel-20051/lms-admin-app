@@ -88560,7 +88560,7 @@ function CreateStudentDialog({
           /* @__PURE__ */ jsxRuntimeExports.jsx(DialogDescription, { children: "Create a new student account. All fields marked with * are required." })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4 py-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4 py-4 px-6", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "fname", children: "First Name *" }),
@@ -88655,6 +88655,7 @@ function CreateStudentDialog({
                     children: [
                       /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "level", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Select level" }) }),
                       /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "50", children: "50 Level" }),
                         /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "100", children: "100 Level" }),
                         /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "200", children: "200 Level" }),
                         /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "300", children: "300 Level" }),
@@ -88662,7 +88663,9 @@ function CreateStudentDialog({
                         /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "500", children: "500 Level" }),
                         /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "600", children: "600 Level" }),
                         /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "700", children: "700 Level" }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "800", children: "800 Level" })
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "800", children: "800 Level" }),
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "900", children: "900 Level" }),
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "1000", children: "1000 Level" })
                       ] })
                     ]
                   }
@@ -88738,26 +88741,26 @@ function CreateStudentDialog({
                 ] }),
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "foreign_student", children: "Foreign Student" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    Input$1,
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                    Select,
                     {
-                      id: "foreign_student",
-                      name: "foreign_student",
-                      type: "number",
-                      min: "0",
-                      max: "1",
-                      value: formData.foreign_student,
-                      onChange: handleInputChange,
-                      placeholder: "0 = Domestic, 1 = Foreign",
-                      disabled: creating
+                      value: formData.foreign_student?.toString() || "0",
+                      onValueChange: (value) => setFormData({ ...formData, foreign_student: parseInt(value) }),
+                      disabled: creating,
+                      children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "foreign_student", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Select option" }) }),
+                        /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+                          /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "0", children: "No (Domestic)" }),
+                          /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "1", children: "Yes (Foreign)" })
+                        ] })
+                      ]
                     }
-                  ),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground", children: "0 = Domestic, 1 = Foreign" })
+                  )
                 ] })
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { className: "px-6 pb-6", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               Button,
               {
@@ -89599,7 +89602,7 @@ function CreateStaffDialog({ open, onOpenChange, onStaffCreated }) {
       /* @__PURE__ */ jsxRuntimeExports.jsx(DialogDescription, { children: "Add a new staff member to the system. An email will be sent with login credentials." })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4 py-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4 py-4 px-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "fname", children: "First Name *" }),
@@ -89691,7 +89694,7 @@ function CreateStaffDialog({ open, onOpenChange, onStaffCreated }) {
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { className: "px-6 pb-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "button", variant: "outline", onClick: () => onOpenChange(false), children: "Cancel" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "submit", disabled: isLoading, children: isLoading ? "Creating..." : "Create Staff" })
       ] })
@@ -90798,7 +90801,7 @@ function CreateAdminDialog({ open, onOpenChange, onAdminCreated }) {
           /* @__PURE__ */ jsxRuntimeExports.jsx(AlertDescription, { children: "Admins have full access to the system. Create admin accounts carefully." })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4 py-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4 py-4 px-6", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "fname", children: "First Name *" }),
@@ -91180,7 +91183,7 @@ function CreateAdminDialog({ open, onOpenChange, onAdminCreated }) {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { className: "px-6 pb-6", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               Button,
               {
@@ -92222,7 +92225,8 @@ function ProgramsTable({
   statusFilter,
   onViewProgram,
   onEditProgram,
-  onDeleteProgram
+  onDeleteProgram,
+  onAddCourse
 }) {
   if (loading) {
     return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-md border", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-8 text-center", children: [
@@ -92270,6 +92274,16 @@ function ProgramsTable({
               children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(SquarePen, { className: "mr-2 h-4 w-4" }),
                 "Edit Program"
+              ]
+            }
+          ),
+          onAddCourse && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            DropdownMenuItem,
+            {
+              onClick: () => onAddCourse(program),
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "mr-2 h-4 w-4" }),
+                "Add Course"
               ]
             }
           ),
@@ -92559,7 +92573,7 @@ function CreateProgramDialog({
   });
   const [errors, setErrors] = reactExports.useState({});
   reactExports.useEffect(() => {
-    if (!open) {
+    if (open) {
       setFormData({
         title: "",
         description: "",
@@ -92859,167 +92873,6 @@ function EditProgramDialog({
       ] })
     ] })
   ] }) });
-}
-
-function ProgramsPage() {
-  const {
-    programs,
-    pagination,
-    loading,
-    searchTerm,
-    statusFilter,
-    facultyFilter,
-    currentPage,
-    selectedProgram,
-    selectedProgramId,
-    actionLoading,
-    showViewDialog,
-    showEditDialog,
-    showDeleteDialog,
-    showCreateDialog,
-    setSearchTerm,
-    setStatusFilter,
-    setFacultyFilter,
-    setSelectedProgram,
-    setSelectedProgramId,
-    setShowViewDialog,
-    setShowEditDialog,
-    setShowDeleteDialog,
-    setShowCreateDialog,
-    handlePreviousPage,
-    handleNextPage,
-    handleDeleteProgram,
-    handleProgramUpdated,
-    refetchPrograms
-  } = useProgramsManagement();
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4 md:space-y-6", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl md:text-3xl font-bold", children: "Programs Management" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm md:text-base text-muted-foreground", children: "Manage all academic programs in the system" })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        Button,
-        {
-          onClick: () => setShowCreateDialog(true),
-          className: "w-full sm:w-auto",
-          children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "h-4 w-4 mr-2" }),
-            "Add Program"
-          ]
-        }
-      )
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      ProgramsStatistics,
-      {
-        loading,
-        programs,
-        pagination,
-        currentPage
-      }
-    ),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { children: "All Programs" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(CardDescription, { children: "A list of all academic programs with their details" })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          ProgramsFilters,
-          {
-            searchTerm,
-            onSearchChange: setSearchTerm,
-            statusFilter,
-            onStatusChange: setStatusFilter,
-            facultyFilter,
-            onFacultyChange: setFacultyFilter
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          ProgramsTable,
-          {
-            loading,
-            programs,
-            searchTerm,
-            statusFilter,
-            onViewProgram: (id) => {
-              setSelectedProgramId(id);
-              setShowViewDialog(true);
-            },
-            onEditProgram: (id) => {
-              setSelectedProgramId(id);
-              setShowEditDialog(true);
-            },
-            onDeleteProgram: (program) => {
-              setSelectedProgram(program);
-              setShowDeleteDialog(true);
-            }
-          }
-        ),
-        !loading && programs.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          ProgramsPagination,
-          {
-            currentPage,
-            pagination,
-            onPreviousPage: handlePreviousPage,
-            onNextPage: handleNextPage
-          }
-        )
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      ProgramActionDialogs,
-      {
-        selectedProgram,
-        actionLoading,
-        showDeleteDialog,
-        onDeleteDialogChange: (open) => {
-          setShowDeleteDialog(open);
-          if (!open) {
-            setSelectedProgram(null);
-          }
-        },
-        onConfirmDelete: handleDeleteProgram
-      }
-    ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      ViewProgramDialog,
-      {
-        open: showViewDialog,
-        onOpenChange: (open) => {
-          if (!open) {
-            setShowViewDialog(false);
-            setSelectedProgramId(null);
-          }
-        },
-        programId: selectedProgramId
-      },
-      `view-${selectedProgramId}-${showViewDialog ? "open" : "closed"}`
-    ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      CreateProgramDialog,
-      {
-        open: showCreateDialog,
-        onOpenChange: setShowCreateDialog,
-        onProgramCreated: refetchPrograms
-      }
-    ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      EditProgramDialog,
-      {
-        open: showEditDialog,
-        onOpenChange: (open) => {
-          if (!open) {
-            setShowEditDialog(false);
-            setSelectedProgramId(null);
-          }
-        },
-        programId: selectedProgramId,
-        onProgramUpdated: handleProgramUpdated
-      }
-    )
-  ] });
 }
 
 const getCourses = async (params = {}) => {
@@ -93500,681 +93353,6 @@ const registerAllocatedCourses = async () => {
     throw err;
   }
 };
-
-const useCoursesManagement = () => {
-  const [courses, setCourses] = reactExports.useState([]);
-  const [pagination, setPagination] = reactExports.useState({
-    total: 0,
-    page: 1,
-    limit: 20,
-    totalPages: 0
-  });
-  const [searchTerm, setSearchTerm] = reactExports.useState("");
-  const [programFilter, setProgramFilter] = reactExports.useState(null);
-  const [facultyFilter, setFacultyFilter] = reactExports.useState(null);
-  const [staffFilter, setStaffFilter] = reactExports.useState(null);
-  const [levelFilter, setLevelFilter] = reactExports.useState(null);
-  const [semesterFilter, setSemesterFilter] = reactExports.useState(null);
-  const [academicYearFilter, setAcademicYearFilter] = reactExports.useState(null);
-  const [currentPage, setCurrentPage] = reactExports.useState(1);
-  const [loading, setLoading] = reactExports.useState(false);
-  const [selectedCourseId, setSelectedCourseId] = reactExports.useState(null);
-  const [selectedCourse, setSelectedCourse] = reactExports.useState(null);
-  const [showViewDialog, setShowViewDialog] = reactExports.useState(false);
-  const [showCreateDialog, setShowCreateDialog] = reactExports.useState(false);
-  const [showEditDialog, setShowEditDialog] = reactExports.useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = reactExports.useState(false);
-  const [actionLoading, setActionLoading] = reactExports.useState(false);
-  const fetchCourses = reactExports.useCallback(async () => {
-    setLoading(true);
-    try {
-      const params = {
-        page: currentPage,
-        limit: 20
-      };
-      if (searchTerm) {
-        params.search = searchTerm;
-      }
-      if (programFilter) {
-        params.programId = programFilter;
-      }
-      if (facultyFilter) {
-        params.facultyId = facultyFilter;
-      }
-      if (staffFilter) {
-        params.staffId = staffFilter;
-      }
-      if (levelFilter) {
-        params.level = levelFilter;
-      }
-      if (semesterFilter) {
-        params.semester = semesterFilter;
-      }
-      if (academicYearFilter) {
-        params.academic_year = academicYearFilter;
-      }
-      const response = await getCourses(params);
-      setCourses(response.data.courses);
-      setPagination(response.data.pagination);
-    } catch (error) {
-      console.error("Error fetching courses:", error);
-      toast.error(error?.response?.data?.message || "Failed to fetch courses");
-      setCourses([]);
-      setPagination({
-        total: 0,
-        page: 1,
-        limit: 20,
-        totalPages: 0
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage, searchTerm, programFilter, facultyFilter, staffFilter, levelFilter, semesterFilter, academicYearFilter]);
-  reactExports.useEffect(() => {
-    fetchCourses();
-  }, [fetchCourses]);
-  reactExports.useEffect(() => {
-    if (currentPage !== 1) {
-      setCurrentPage(1);
-    }
-  }, [searchTerm, programFilter, facultyFilter, staffFilter, levelFilter, semesterFilter, academicYearFilter]);
-  const handleNextPage = () => {
-    if (currentPage < pagination.totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-  const handleDeleteCourse = async () => {
-    if (!selectedCourse) return;
-    setActionLoading(true);
-    try {
-      await deleteCourse(selectedCourse.id);
-      toast.success("Course deleted successfully");
-      setShowDeleteDialog(false);
-      setSelectedCourse(null);
-      fetchCourses();
-    } catch (error) {
-      console.error("Error deleting course:", error);
-      toast.error(error?.response?.data?.message || "Failed to delete course");
-    } finally {
-      setActionLoading(false);
-    }
-  };
-  const handleCourseUpdated = () => {
-    toast.success("Course updated successfully");
-    setShowEditDialog(false);
-    setSelectedCourseId(null);
-    fetchCourses();
-  };
-  return {
-    // Data
-    courses,
-    pagination,
-    loading,
-    // Filters
-    searchTerm,
-    setSearchTerm,
-    programFilter,
-    setProgramFilter,
-    facultyFilter,
-    setFacultyFilter,
-    staffFilter,
-    setStaffFilter,
-    levelFilter,
-    setLevelFilter,
-    semesterFilter,
-    setSemesterFilter,
-    academicYearFilter,
-    setAcademicYearFilter,
-    currentPage,
-    // Selected items
-    selectedCourseId,
-    setSelectedCourseId,
-    selectedCourse,
-    setSelectedCourse,
-    // Dialog states
-    showViewDialog,
-    setShowViewDialog,
-    showCreateDialog,
-    setShowCreateDialog,
-    showEditDialog,
-    setShowEditDialog,
-    showDeleteDialog,
-    setShowDeleteDialog,
-    actionLoading,
-    // Handlers
-    handleNextPage,
-    handlePreviousPage,
-    handleDeleteCourse,
-    handleCourseUpdated,
-    fetchCourses,
-    refetchCourses: fetchCourses
-    // Alias for clarity
-  };
-};
-
-const SEMESTERS$5 = ["1ST", "2ND"];
-const LEVELS$3 = [100, 200, 300, 400, 500, 600, 700];
-const generateAcademicYears$1 = () => {
-  const currentYear = (/* @__PURE__ */ new Date()).getFullYear();
-  const years = [];
-  for (let i = -5; i <= 2; i++) {
-    const year = currentYear + i;
-    years.push(`${year}/${year + 1}`);
-  }
-  return years.reverse();
-};
-const ACADEMIC_YEARS$1 = generateAcademicYears$1();
-function CoursesFilters({
-  searchTerm,
-  onSearchChange,
-  semesterFilter,
-  onSemesterChange,
-  academicYearFilter,
-  onAcademicYearChange,
-  programFilter,
-  onProgramChange,
-  facultyFilter,
-  onFacultyChange,
-  staffFilter,
-  onStaffChange,
-  levelFilter,
-  onLevelChange
-}) {
-  const [programs, setPrograms] = reactExports.useState([]);
-  const [faculties, setFaculties] = reactExports.useState([]);
-  const [staff, setStaff] = reactExports.useState([]);
-  const [loadingPrograms, setLoadingPrograms] = reactExports.useState(false);
-  const [loadingFaculties, setLoadingFaculties] = reactExports.useState(false);
-  const [loadingStaff, setLoadingStaff] = reactExports.useState(false);
-  reactExports.useEffect(() => {
-    const fetchData = async () => {
-      setLoadingPrograms(true);
-      try {
-        const response = await getPrograms({ limit: 1e3 });
-        setPrograms(response.data.programs);
-      } catch (error) {
-        console.error("Error fetching programs:", error);
-      } finally {
-        setLoadingPrograms(false);
-      }
-      setLoadingFaculties(true);
-      try {
-        const response = await getFaculties$1({ limit: 1e3 });
-        setFaculties(response.data.faculties);
-      } catch (error) {
-        console.error("Error fetching faculties:", error);
-      } finally {
-        setLoadingFaculties(false);
-      }
-      setLoadingStaff(true);
-      try {
-        const response = await getStaff({ limit: 1e3 });
-        setStaff(response.data.staff);
-      } catch (error) {
-        console.error("Error fetching staff:", error);
-      } finally {
-        setLoadingStaff(false);
-      }
-    };
-    fetchData();
-  }, []);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col gap-4 mb-6", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative flex-1", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Input$1,
-        {
-          placeholder: "Search courses by title or code...",
-          value: searchTerm,
-          onChange: (e) => onSearchChange(e.target.value),
-          className: "pl-10"
-        }
-      )
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row gap-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        Select,
-        {
-          value: programFilter ? programFilter.toString() : "all",
-          onValueChange: (value) => onProgramChange(value === "all" ? null : parseInt(value)),
-          disabled: loadingPrograms,
-          children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-full sm:w-[200px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Programs" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { className: "max-h-[300px]", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Programs" }),
-              programs.map((program) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: program.id.toString(), children: program.title }, program.id))
-            ] })
-          ]
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        Select,
-        {
-          value: facultyFilter ? facultyFilter.toString() : "all",
-          onValueChange: (value) => onFacultyChange(value === "all" ? null : parseInt(value)),
-          disabled: loadingFaculties,
-          children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-full sm:w-[200px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Faculties" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { className: "max-h-[300px]", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Faculties" }),
-              faculties.map((faculty) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: faculty.id.toString(), children: faculty.name }, faculty.id))
-            ] })
-          ]
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        Select,
-        {
-          value: staffFilter ? staffFilter.toString() : "all",
-          onValueChange: (value) => onStaffChange(value === "all" ? null : parseInt(value)),
-          disabled: loadingStaff,
-          children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-full sm:w-[220px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Instructors" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { className: "max-h-[300px]", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Instructors" }),
-              staff.map((instructor) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: instructor.id.toString(), children: instructor.full_name }, instructor.id))
-            ] })
-          ]
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        Select,
-        {
-          value: levelFilter ? levelFilter.toString() : "all",
-          onValueChange: (value) => onLevelChange(value === "all" ? null : parseInt(value)),
-          children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-full sm:w-[150px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Levels" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Levels" }),
-              LEVELS$3.map((level) => /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectItem, { value: level.toString(), children: [
-                level,
-                " Level"
-              ] }, level))
-            ] })
-          ]
-        }
-      )
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row gap-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        Select,
-        {
-          value: academicYearFilter || "all",
-          onValueChange: (value) => onAcademicYearChange(value === "all" ? null : value),
-          children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-full sm:w-[180px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Academic Years" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { className: "max-h-[300px]", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Academic Years" }),
-              ACADEMIC_YEARS$1.map((year) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: year, children: year }, year))
-            ] })
-          ]
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        Select,
-        {
-          value: semesterFilter || "all",
-          onValueChange: (value) => onSemesterChange(value === "all" ? null : value),
-          children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-full sm:w-[180px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Semesters" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Semesters" }),
-              SEMESTERS$5.map((semester) => /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectItem, { value: semester, children: [
-                semester,
-                " Semester"
-              ] }, semester))
-            ] })
-          ]
-        }
-      )
-    ] })
-  ] });
-}
-
-function CoursesTable({
-  loading,
-  courses,
-  searchTerm,
-  onViewCourse,
-  onEditCourse,
-  onDeleteCourse,
-  onUpdatePrice
-}) {
-  if (loading) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-md border", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-8 text-center", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-sm text-muted-foreground", children: "Loading courses..." })
-    ] }) });
-  }
-  if (courses.length === 0) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-md border", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-8 text-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: searchTerm ? "No courses found matching your filters." : "No courses found." }) }) });
-  }
-  const formatCurrency = (amount, currency = "NGN") => {
-    const numAmount = typeof amount === "string" ? parseFloat(amount) : amount;
-    return new Intl.NumberFormat("en-NG", {
-      style: "currency",
-      currency
-    }).format(numAmount);
-  };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-md border overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table$1, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "w-[80px]", children: "S/N" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Course Code" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Title" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "hidden md:table-cell", children: "Program" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "hidden lg:table-cell", children: "Faculty" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "hidden md:table-cell", children: "Instructor" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Level" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "hidden lg:table-cell", children: "Semester" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "hidden md:table-cell", children: "Units" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "hidden lg:table-cell", children: "Price" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Owner Type" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "hidden md:table-cell", children: "Marketplace" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-right", children: "Actions" })
-    ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody$1, { children: courses.filter((course) => course != null).map((course, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "font-medium", children: index + 1 }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium", children: course.course_code || "N/A" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium max-w-xs", children: course.title || "N/A" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "hidden md:table-cell", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm", children: course.program?.title || "N/A" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "hidden lg:table-cell", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm", children: course.faculty?.name || "N/A" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "hidden md:table-cell", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm", children: course.instructor ? course.instructor.full_name : "N/A" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Badge, { variant: "outline", children: [
-        "Level ",
-        course.course_level
-      ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "hidden lg:table-cell", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm", children: course.semester }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "hidden md:table-cell", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm", children: course.course_unit }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "hidden lg:table-cell", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm", children: formatCurrency(course.price, course.currency) }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: (() => {
-        const getOwnerTypeDisplay = () => {
-          if (course.owner_type === "wpu") {
-            return { label: "WPU", variant: "default", className: "bg-blue-500 hover:bg-blue-600" };
-          }
-          if (course.owner_type === "marketplace" || course.is_marketplace) {
-            return { label: "Marketplace", variant: "secondary", className: "bg-purple-500 hover:bg-purple-600" };
-          }
-          if (course.owner_type === "sole_tutor") {
-            return { label: "Sole Tutor", variant: "secondary", className: "bg-green-500 hover:bg-green-600" };
-          }
-          if (course.owner_type === "organization") {
-            return { label: "Organization", variant: "secondary", className: "bg-orange-500 hover:bg-orange-600" };
-          }
-          return { label: course.owner_type || "Unknown", variant: "secondary", className: "bg-gray-500 hover:bg-gray-600" };
-        };
-        const display = getOwnerTypeDisplay();
-        return /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Badge,
-          {
-            variant: display.variant,
-            className: display.className,
-            children: display.label
-          }
-        );
-      })() }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "hidden md:table-cell", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm", children: course.is_marketplace ? "Yes" : "No" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DropdownMenu, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(DropdownMenuTrigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", className: "h-8 w-8 p-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx(EllipsisVertical, { className: "h-4 w-4" }) }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(DropdownMenuContent, { align: "end", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(DropdownMenuLabel, { children: "Actions" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(DropdownMenuSeparator, {}),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(DropdownMenuItem, { onClick: () => onViewCourse(course.id), children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Eye, { className: "mr-2 h-4 w-4" }),
-            "View Details"
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            DropdownMenuItem,
-            {
-              onClick: () => onEditCourse(course.id),
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(SquarePen, { className: "mr-2 h-4 w-4" }),
-                "Edit Course"
-              ]
-            }
-          ),
-          onUpdatePrice && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            DropdownMenuItem,
-            {
-              onClick: () => onUpdatePrice(course.id),
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(DollarSign, { className: "mr-2 h-4 w-4" }),
-                "Update Price"
-              ]
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(DropdownMenuSeparator, {}),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            DropdownMenuItem,
-            {
-              onClick: () => onDeleteCourse(course),
-              className: "text-red-600 focus:text-red-600",
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { className: "mr-2 h-4 w-4" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Delete Course" })
-              ]
-            }
-          )
-        ] })
-      ] }) })
-    ] }, course.id)) })
-  ] }) });
-}
-
-function CoursesPagination({
-  currentPage,
-  pagination,
-  onPreviousPage,
-  onNextPage
-}) {
-  const startIndex = (currentPage - 1) * pagination.limit + 1;
-  const endIndex = Math.min(currentPage * pagination.limit, pagination.total);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row items-center justify-between gap-4 mt-4", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm text-muted-foreground", children: [
-      "Showing ",
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: startIndex }),
-      " to",
-      " ",
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: endIndex }),
-      " of",
-      " ",
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: pagination.total }),
-      " courses"
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        Button,
-        {
-          variant: "outline",
-          size: "sm",
-          onClick: onPreviousPage,
-          disabled: currentPage === 1,
-          children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronLeft, { className: "h-4 w-4 mr-1" }),
-            "Previous"
-          ]
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm", children: [
-        "Page ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: currentPage }),
-        " of",
-        " ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: pagination.totalPages })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        Button,
-        {
-          variant: "outline",
-          size: "sm",
-          onClick: onNextPage,
-          disabled: currentPage === pagination.totalPages,
-          children: [
-            "Next",
-            /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { className: "h-4 w-4 ml-1" })
-          ]
-        }
-      )
-    ] })
-  ] });
-}
-
-function ViewCourseDialog({
-  open,
-  onOpenChange,
-  courseId
-}) {
-  const [course, setCourse] = reactExports.useState(null);
-  const [loading, setLoading] = reactExports.useState(false);
-  reactExports.useEffect(() => {
-    if (open && courseId) {
-      fetchCourse();
-    } else {
-      setCourse(null);
-    }
-  }, [open, courseId]);
-  const fetchCourse = async () => {
-    if (!courseId) return;
-    setLoading(true);
-    try {
-      const response = await getCourse(courseId);
-      if (response.status && response.data) {
-        setCourse(response.data);
-      } else {
-        throw new Error("Invalid course data received");
-      }
-    } catch (error) {
-      console.error("Error fetching course:", error);
-      toast.error(error?.response?.data?.message || error?.message || "Failed to fetch course details");
-      onOpenChange(false);
-    } finally {
-      setLoading(false);
-    }
-  };
-  const formatCurrency = (amount, currency = "NGN") => {
-    const numAmount = typeof amount === "string" ? parseFloat(amount) : amount;
-    return new Intl.NumberFormat("en-NG", {
-      style: "currency",
-      currency
-    }).format(numAmount);
-  };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "max-w-3xl max-h-[90vh]", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogHeader, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { children: "Course Details" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(DialogDescription, { children: "View detailed information about this course" })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(DialogBody, { children: loading ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "py-8 text-center", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-sm text-muted-foreground", children: "Loading course details..." })
-    ] }) : course ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold mb-4", children: "Course Information" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "ID:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.id })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Course Code:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm font-medium", children: course.course_code })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Title:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm font-medium", children: course.title })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Program:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.program?.title || "N/A" })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Faculty:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.faculty?.name || "N/A" })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Instructor:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.instructor ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium", children: course.instructor.full_name }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-muted-foreground", children: course.instructor.email })
-          ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-muted-foreground", children: "Not assigned" }) })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Level:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Badge, { variant: "outline", children: [
-            "Level ",
-            course.course_level
-          ] }) })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Semester:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.semester })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Course Units:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.course_unit })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Course Type:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.course_type })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Price:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm font-medium", children: formatCurrency(course.price, course.currency) })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Exam Fee:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm font-medium", children: formatCurrency(course.exam_fee, course.currency) })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Owner Type:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Badge,
-            {
-              variant: course.owner_type === "wpu" ? "default" : "secondary",
-              className: course.owner_type === "wpu" ? "bg-blue-500 hover:bg-blue-600" : "bg-purple-500 hover:bg-purple-600",
-              children: course.owner_type === "wpu" ? "WPU" : "Marketplace"
-            }
-          ) })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Marketplace Status:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.is_marketplace ? /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "outline", children: course.marketplace_status || "Active" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-muted-foreground", children: "Not in marketplace" }) })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Date Created:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: new Date(course.date).toLocaleString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
-          }) })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Token:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm font-mono break-all", children: course.token })
-        ] })
-      ] })
-    ] }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "py-8 text-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "No course data available" }) }) })
-  ] }) });
-}
 
 class NotesApi {
   async GetModuleNotes(moduleId) {
@@ -95166,8 +94344,8 @@ class Api extends AuthApi {
 }
 
 const COURSE_TYPES$1 = ["Core", "Elective", "General"];
-const LEVELS$2 = [100, 200, 300, 400, 500, 600, 700];
-const SEMESTERS$4 = ["1ST", "2ND"];
+const LEVELS$3 = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1e3];
+const SEMESTERS$5 = ["1ST", "2ND"];
 const CURRENCIES$2 = ["NGN", "USD"];
 const OWNER_TYPES$1 = [
   { value: "wpu", label: "WPU" },
@@ -95181,7 +94359,9 @@ const MARKETPLACE_STATUSES$1 = [
 function CreateCourseDialog({
   open,
   onOpenChange,
-  onCourseCreated
+  onCourseCreated,
+  initialProgramId,
+  initialFacultyId
 }) {
   const [loading, setLoading] = reactExports.useState(false);
   const [fetching, setFetching] = reactExports.useState(false);
@@ -95223,6 +94403,13 @@ function CreateCourseDialog({
       setPrograms(programsResponse.data.programs.map((p) => ({ id: p.id, title: p.title })));
       setStaff(staffResponse.data.staff.map((s) => ({ id: s.id, full_name: s.full_name })));
       setFaculties(facultiesResponse.data.faculties);
+      if (initialProgramId || initialFacultyId) {
+        setFormData((prev) => ({
+          ...prev,
+          program_id: initialProgramId || prev.program_id,
+          faculty_id: initialFacultyId || prev.faculty_id
+        }));
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Failed to load programs, staff, and faculties");
@@ -95268,8 +94455,14 @@ function CreateCourseDialog({
         owner_id: null
       });
       setErrors({});
+    } else if (open && (initialProgramId || initialFacultyId)) {
+      setFormData((prev) => ({
+        ...prev,
+        program_id: initialProgramId || prev.program_id,
+        faculty_id: initialFacultyId || prev.faculty_id
+      }));
     }
-  }, [open]);
+  }, [open, initialProgramId, initialFacultyId]);
   const validateForm = () => {
     const newErrors = {};
     if (!formData.title.trim()) {
@@ -95416,7 +94609,7 @@ function CreateCourseDialog({
                 onValueChange: (value) => setFormData({ ...formData, course_level: parseInt(value) }),
                 children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: errors.course_level ? "border-destructive" : "", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Select level" }) }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContent, { children: LEVELS$2.map((level) => /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectItem, { value: level.toString(), children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContent, { children: LEVELS$3.map((level) => /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectItem, { value: level.toString(), children: [
                     "Level ",
                     level
                   ] }, level)) })
@@ -95437,7 +94630,7 @@ function CreateCourseDialog({
                 onValueChange: (value) => setFormData({ ...formData, semester: value }),
                 children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: errors.semester ? "border-destructive" : "", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Select semester" }) }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContent, { children: SEMESTERS$4.map((semester) => /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectItem, { value: semester, children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContent, { children: SEMESTERS$5.map((semester) => /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectItem, { value: semester, children: [
                     semester,
                     " Semester"
                   ] }, semester)) })
@@ -95663,6 +94856,866 @@ function CreateCourseDialog({
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "submit", disabled: loading, children: loading ? "Creating..." : "Create Course" })
       ] })
     ] }) })
+  ] }) });
+}
+
+function ProgramsPage() {
+  const {
+    programs,
+    pagination,
+    loading,
+    searchTerm,
+    statusFilter,
+    facultyFilter,
+    currentPage,
+    selectedProgram,
+    selectedProgramId,
+    actionLoading,
+    showViewDialog,
+    showEditDialog,
+    showDeleteDialog,
+    showCreateDialog,
+    setSearchTerm,
+    setStatusFilter,
+    setFacultyFilter,
+    setSelectedProgram,
+    setSelectedProgramId,
+    setShowViewDialog,
+    setShowEditDialog,
+    setShowDeleteDialog,
+    setShowCreateDialog,
+    handlePreviousPage,
+    handleNextPage,
+    handleDeleteProgram,
+    handleProgramUpdated,
+    refetchPrograms
+  } = useProgramsManagement();
+  const [showCourseDialog, setShowCourseDialog] = reactExports.useState(false);
+  const [selectedProgramForCourse, setSelectedProgramForCourse] = reactExports.useState(null);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4 md:space-y-6", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl md:text-3xl font-bold", children: "Programs Management" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm md:text-base text-muted-foreground", children: "Manage all academic programs in the system" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        Button,
+        {
+          onClick: () => setShowCreateDialog(true),
+          className: "w-full sm:w-auto",
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "h-4 w-4 mr-2" }),
+            "Add Program"
+          ]
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      ProgramsStatistics,
+      {
+        loading,
+        programs,
+        pagination,
+        currentPage
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { children: "All Programs" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardDescription, { children: "A list of all academic programs with their details" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          ProgramsFilters,
+          {
+            searchTerm,
+            onSearchChange: setSearchTerm,
+            statusFilter,
+            onStatusChange: setStatusFilter,
+            facultyFilter,
+            onFacultyChange: setFacultyFilter
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          ProgramsTable,
+          {
+            loading,
+            programs,
+            searchTerm,
+            statusFilter,
+            onViewProgram: (id) => {
+              setSelectedProgramId(id);
+              setShowViewDialog(true);
+            },
+            onEditProgram: (id) => {
+              setSelectedProgramId(id);
+              setShowEditDialog(true);
+            },
+            onDeleteProgram: (program) => {
+              setSelectedProgram(program);
+              setShowDeleteDialog(true);
+            },
+            onAddCourse: (program) => {
+              setSelectedProgramForCourse(program);
+              setShowCourseDialog(true);
+            }
+          }
+        ),
+        !loading && programs.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          ProgramsPagination,
+          {
+            currentPage,
+            pagination,
+            onPreviousPage: handlePreviousPage,
+            onNextPage: handleNextPage
+          }
+        )
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      ProgramActionDialogs,
+      {
+        selectedProgram,
+        actionLoading,
+        showDeleteDialog,
+        onDeleteDialogChange: (open) => {
+          setShowDeleteDialog(open);
+          if (!open) {
+            setSelectedProgram(null);
+          }
+        },
+        onConfirmDelete: handleDeleteProgram
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      ViewProgramDialog,
+      {
+        open: showViewDialog,
+        onOpenChange: (open) => {
+          if (!open) {
+            setShowViewDialog(false);
+            setSelectedProgramId(null);
+          }
+        },
+        programId: selectedProgramId
+      },
+      `view-${selectedProgramId}-${showViewDialog ? "open" : "closed"}`
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      CreateProgramDialog,
+      {
+        open: showCreateDialog,
+        onOpenChange: setShowCreateDialog,
+        onProgramCreated: refetchPrograms
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      EditProgramDialog,
+      {
+        open: showEditDialog,
+        onOpenChange: (open) => {
+          if (!open) {
+            setShowEditDialog(false);
+            setSelectedProgramId(null);
+          }
+        },
+        programId: selectedProgramId,
+        onProgramUpdated: handleProgramUpdated
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      CreateCourseDialog,
+      {
+        open: showCourseDialog,
+        onOpenChange: (open) => {
+          setShowCourseDialog(open);
+          if (!open) {
+            setSelectedProgramForCourse(null);
+          }
+        },
+        onCourseCreated: () => {
+          setShowCourseDialog(false);
+          setSelectedProgramForCourse(null);
+        },
+        initialProgramId: selectedProgramForCourse?.id,
+        initialFacultyId: selectedProgramForCourse?.faculty_id
+      }
+    )
+  ] });
+}
+
+const useCoursesManagement = () => {
+  const [courses, setCourses] = reactExports.useState([]);
+  const [pagination, setPagination] = reactExports.useState({
+    total: 0,
+    page: 1,
+    limit: 20,
+    totalPages: 0
+  });
+  const [searchTerm, setSearchTerm] = reactExports.useState("");
+  const [programFilter, setProgramFilter] = reactExports.useState(null);
+  const [facultyFilter, setFacultyFilter] = reactExports.useState(null);
+  const [staffFilter, setStaffFilter] = reactExports.useState(null);
+  const [levelFilter, setLevelFilter] = reactExports.useState(null);
+  const [semesterFilter, setSemesterFilter] = reactExports.useState(null);
+  const [academicYearFilter, setAcademicYearFilter] = reactExports.useState(null);
+  const [currentPage, setCurrentPage] = reactExports.useState(1);
+  const [loading, setLoading] = reactExports.useState(false);
+  const [selectedCourseId, setSelectedCourseId] = reactExports.useState(null);
+  const [selectedCourse, setSelectedCourse] = reactExports.useState(null);
+  const [showViewDialog, setShowViewDialog] = reactExports.useState(false);
+  const [showCreateDialog, setShowCreateDialog] = reactExports.useState(false);
+  const [showEditDialog, setShowEditDialog] = reactExports.useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = reactExports.useState(false);
+  const [actionLoading, setActionLoading] = reactExports.useState(false);
+  const fetchCourses = reactExports.useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = {
+        page: currentPage,
+        limit: 20
+      };
+      if (searchTerm) {
+        params.search = searchTerm;
+      }
+      if (programFilter) {
+        params.programId = programFilter;
+      }
+      if (facultyFilter) {
+        params.facultyId = facultyFilter;
+      }
+      if (staffFilter) {
+        params.staffId = staffFilter;
+      }
+      if (levelFilter) {
+        params.level = levelFilter;
+      }
+      if (semesterFilter) {
+        params.semester = semesterFilter;
+      }
+      if (academicYearFilter) {
+        params.academic_year = academicYearFilter;
+      }
+      const response = await getCourses(params);
+      setCourses(response.data.courses);
+      setPagination(response.data.pagination);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+      toast.error(error?.response?.data?.message || "Failed to fetch courses");
+      setCourses([]);
+      setPagination({
+        total: 0,
+        page: 1,
+        limit: 20,
+        totalPages: 0
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, searchTerm, programFilter, facultyFilter, staffFilter, levelFilter, semesterFilter, academicYearFilter]);
+  reactExports.useEffect(() => {
+    fetchCourses();
+  }, [fetchCourses]);
+  reactExports.useEffect(() => {
+    if (currentPage !== 1) {
+      setCurrentPage(1);
+    }
+  }, [searchTerm, programFilter, facultyFilter, staffFilter, levelFilter, semesterFilter, academicYearFilter]);
+  const handleNextPage = () => {
+    if (currentPage < pagination.totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+  const handleDeleteCourse = async () => {
+    if (!selectedCourse) return;
+    setActionLoading(true);
+    try {
+      await deleteCourse(selectedCourse.id);
+      toast.success("Course deleted successfully");
+      setShowDeleteDialog(false);
+      setSelectedCourse(null);
+      fetchCourses();
+    } catch (error) {
+      console.error("Error deleting course:", error);
+      toast.error(error?.response?.data?.message || "Failed to delete course");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+  const handleCourseUpdated = () => {
+    toast.success("Course updated successfully");
+    setShowEditDialog(false);
+    setSelectedCourseId(null);
+    fetchCourses();
+  };
+  return {
+    // Data
+    courses,
+    pagination,
+    loading,
+    // Filters
+    searchTerm,
+    setSearchTerm,
+    programFilter,
+    setProgramFilter,
+    facultyFilter,
+    setFacultyFilter,
+    staffFilter,
+    setStaffFilter,
+    levelFilter,
+    setLevelFilter,
+    semesterFilter,
+    setSemesterFilter,
+    academicYearFilter,
+    setAcademicYearFilter,
+    currentPage,
+    // Selected items
+    selectedCourseId,
+    setSelectedCourseId,
+    selectedCourse,
+    setSelectedCourse,
+    // Dialog states
+    showViewDialog,
+    setShowViewDialog,
+    showCreateDialog,
+    setShowCreateDialog,
+    showEditDialog,
+    setShowEditDialog,
+    showDeleteDialog,
+    setShowDeleteDialog,
+    actionLoading,
+    // Handlers
+    handleNextPage,
+    handlePreviousPage,
+    handleDeleteCourse,
+    handleCourseUpdated,
+    fetchCourses,
+    refetchCourses: fetchCourses
+    // Alias for clarity
+  };
+};
+
+const SEMESTERS$4 = ["1ST", "2ND"];
+const LEVELS$2 = [100, 200, 300, 400, 500, 600, 700];
+const generateAcademicYears$1 = () => {
+  const currentYear = (/* @__PURE__ */ new Date()).getFullYear();
+  const years = [];
+  for (let i = -5; i <= 2; i++) {
+    const year = currentYear + i;
+    years.push(`${year}/${year + 1}`);
+  }
+  return years.reverse();
+};
+const ACADEMIC_YEARS$1 = generateAcademicYears$1();
+function CoursesFilters({
+  searchTerm,
+  onSearchChange,
+  semesterFilter,
+  onSemesterChange,
+  academicYearFilter,
+  onAcademicYearChange,
+  programFilter,
+  onProgramChange,
+  facultyFilter,
+  onFacultyChange,
+  staffFilter,
+  onStaffChange,
+  levelFilter,
+  onLevelChange
+}) {
+  const [programs, setPrograms] = reactExports.useState([]);
+  const [faculties, setFaculties] = reactExports.useState([]);
+  const [staff, setStaff] = reactExports.useState([]);
+  const [loadingPrograms, setLoadingPrograms] = reactExports.useState(false);
+  const [loadingFaculties, setLoadingFaculties] = reactExports.useState(false);
+  const [loadingStaff, setLoadingStaff] = reactExports.useState(false);
+  reactExports.useEffect(() => {
+    const fetchData = async () => {
+      setLoadingPrograms(true);
+      try {
+        const response = await getPrograms({ limit: 1e3 });
+        setPrograms(response.data.programs);
+      } catch (error) {
+        console.error("Error fetching programs:", error);
+      } finally {
+        setLoadingPrograms(false);
+      }
+      setLoadingFaculties(true);
+      try {
+        const response = await getFaculties$1({ limit: 1e3 });
+        setFaculties(response.data.faculties);
+      } catch (error) {
+        console.error("Error fetching faculties:", error);
+      } finally {
+        setLoadingFaculties(false);
+      }
+      setLoadingStaff(true);
+      try {
+        const response = await getStaff({ limit: 1e3 });
+        setStaff(response.data.staff);
+      } catch (error) {
+        console.error("Error fetching staff:", error);
+      } finally {
+        setLoadingStaff(false);
+      }
+    };
+    fetchData();
+  }, []);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col gap-4 mb-6", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative flex-1", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Input$1,
+        {
+          placeholder: "Search courses by title or code...",
+          value: searchTerm,
+          onChange: (e) => onSearchChange(e.target.value),
+          className: "pl-10"
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row gap-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        Select,
+        {
+          value: programFilter ? programFilter.toString() : "all",
+          onValueChange: (value) => onProgramChange(value === "all" ? null : parseInt(value)),
+          disabled: loadingPrograms,
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-full sm:w-[200px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Programs" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { className: "max-h-[300px]", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Programs" }),
+              programs.map((program) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: program.id.toString(), children: program.title }, program.id))
+            ] })
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        Select,
+        {
+          value: facultyFilter ? facultyFilter.toString() : "all",
+          onValueChange: (value) => onFacultyChange(value === "all" ? null : parseInt(value)),
+          disabled: loadingFaculties,
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-full sm:w-[200px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Faculties" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { className: "max-h-[300px]", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Faculties" }),
+              faculties.map((faculty) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: faculty.id.toString(), children: faculty.name }, faculty.id))
+            ] })
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        Select,
+        {
+          value: staffFilter ? staffFilter.toString() : "all",
+          onValueChange: (value) => onStaffChange(value === "all" ? null : parseInt(value)),
+          disabled: loadingStaff,
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-full sm:w-[220px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Instructors" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { className: "max-h-[300px]", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Instructors" }),
+              staff.map((instructor) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: instructor.id.toString(), children: instructor.full_name }, instructor.id))
+            ] })
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        Select,
+        {
+          value: levelFilter ? levelFilter.toString() : "all",
+          onValueChange: (value) => onLevelChange(value === "all" ? null : parseInt(value)),
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-full sm:w-[150px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Levels" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Levels" }),
+              LEVELS$2.map((level) => /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectItem, { value: level.toString(), children: [
+                level,
+                " Level"
+              ] }, level))
+            ] })
+          ]
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row gap-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        Select,
+        {
+          value: academicYearFilter || "all",
+          onValueChange: (value) => onAcademicYearChange(value === "all" ? null : value),
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-full sm:w-[180px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Academic Years" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { className: "max-h-[300px]", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Academic Years" }),
+              ACADEMIC_YEARS$1.map((year) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: year, children: year }, year))
+            ] })
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        Select,
+        {
+          value: semesterFilter || "all",
+          onValueChange: (value) => onSemesterChange(value === "all" ? null : value),
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-full sm:w-[180px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Semesters" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Semesters" }),
+              SEMESTERS$4.map((semester) => /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectItem, { value: semester, children: [
+                semester,
+                " Semester"
+              ] }, semester))
+            ] })
+          ]
+        }
+      )
+    ] })
+  ] });
+}
+
+function CoursesTable({
+  loading,
+  courses,
+  searchTerm,
+  onViewCourse,
+  onEditCourse,
+  onDeleteCourse,
+  onUpdatePrice
+}) {
+  if (loading) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-md border", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-8 text-center", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-sm text-muted-foreground", children: "Loading courses..." })
+    ] }) });
+  }
+  if (courses.length === 0) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-md border", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-8 text-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: searchTerm ? "No courses found matching your filters." : "No courses found." }) }) });
+  }
+  const formatCurrency = (amount, currency = "NGN") => {
+    const numAmount = typeof amount === "string" ? parseFloat(amount) : amount;
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency
+    }).format(numAmount);
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-md border overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table$1, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "w-[80px]", children: "S/N" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Course Code" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Title" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "hidden md:table-cell", children: "Program" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "hidden lg:table-cell", children: "Faculty" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "hidden md:table-cell", children: "Instructor" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Level" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "hidden lg:table-cell", children: "Semester" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "hidden md:table-cell", children: "Units" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "hidden lg:table-cell", children: "Price" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Owner Type" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "hidden md:table-cell", children: "Marketplace" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-right", children: "Actions" })
+    ] }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody$1, { children: courses.filter((course) => course != null).map((course, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "font-medium", children: index + 1 }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium", children: course.course_code || "N/A" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium max-w-xs", children: course.title || "N/A" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "hidden md:table-cell", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm", children: course.program?.title || "N/A" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "hidden lg:table-cell", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm", children: course.faculty?.name || "N/A" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "hidden md:table-cell", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm", children: course.instructor ? course.instructor.full_name : "N/A" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Badge, { variant: "outline", children: [
+        "Level ",
+        course.course_level
+      ] }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "hidden lg:table-cell", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm", children: course.semester }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "hidden md:table-cell", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm", children: course.course_unit }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "hidden lg:table-cell", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm", children: formatCurrency(course.price, course.currency) }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: (() => {
+        const getOwnerTypeDisplay = () => {
+          if (course.owner_type === "wpu") {
+            return { label: "WPU", variant: "default", className: "bg-blue-500 hover:bg-blue-600" };
+          }
+          if (course.owner_type === "marketplace" || course.is_marketplace) {
+            return { label: "Marketplace", variant: "secondary", className: "bg-purple-500 hover:bg-purple-600" };
+          }
+          if (course.owner_type === "sole_tutor") {
+            return { label: "Sole Tutor", variant: "secondary", className: "bg-green-500 hover:bg-green-600" };
+          }
+          if (course.owner_type === "organization") {
+            return { label: "Organization", variant: "secondary", className: "bg-orange-500 hover:bg-orange-600" };
+          }
+          return { label: course.owner_type || "Unknown", variant: "secondary", className: "bg-gray-500 hover:bg-gray-600" };
+        };
+        const display = getOwnerTypeDisplay();
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Badge,
+          {
+            variant: display.variant,
+            className: display.className,
+            children: display.label
+          }
+        );
+      })() }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "hidden md:table-cell", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm", children: course.is_marketplace ? "Yes" : "No" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DropdownMenu, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(DropdownMenuTrigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", className: "h-8 w-8 p-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx(EllipsisVertical, { className: "h-4 w-4" }) }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(DropdownMenuContent, { align: "end", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(DropdownMenuLabel, { children: "Actions" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(DropdownMenuSeparator, {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(DropdownMenuItem, { onClick: () => onViewCourse(course.id), children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Eye, { className: "mr-2 h-4 w-4" }),
+            "View Details"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            DropdownMenuItem,
+            {
+              onClick: () => onEditCourse(course.id),
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SquarePen, { className: "mr-2 h-4 w-4" }),
+                "Edit Course"
+              ]
+            }
+          ),
+          onUpdatePrice && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            DropdownMenuItem,
+            {
+              onClick: () => onUpdatePrice(course.id),
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(DollarSign, { className: "mr-2 h-4 w-4" }),
+                "Update Price"
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(DropdownMenuSeparator, {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            DropdownMenuItem,
+            {
+              onClick: () => onDeleteCourse(course),
+              className: "text-red-600 focus:text-red-600",
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { className: "mr-2 h-4 w-4" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Delete Course" })
+              ]
+            }
+          )
+        ] })
+      ] }) })
+    ] }, course.id)) })
+  ] }) });
+}
+
+function CoursesPagination({
+  currentPage,
+  pagination,
+  onPreviousPage,
+  onNextPage
+}) {
+  const startIndex = (currentPage - 1) * pagination.limit + 1;
+  const endIndex = Math.min(currentPage * pagination.limit, pagination.total);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row items-center justify-between gap-4 mt-4", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm text-muted-foreground", children: [
+      "Showing ",
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: startIndex }),
+      " to",
+      " ",
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: endIndex }),
+      " of",
+      " ",
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: pagination.total }),
+      " courses"
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        Button,
+        {
+          variant: "outline",
+          size: "sm",
+          onClick: onPreviousPage,
+          disabled: currentPage === 1,
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronLeft, { className: "h-4 w-4 mr-1" }),
+            "Previous"
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm", children: [
+        "Page ",
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: currentPage }),
+        " of",
+        " ",
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: pagination.totalPages })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        Button,
+        {
+          variant: "outline",
+          size: "sm",
+          onClick: onNextPage,
+          disabled: currentPage === pagination.totalPages,
+          children: [
+            "Next",
+            /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { className: "h-4 w-4 ml-1" })
+          ]
+        }
+      )
+    ] })
+  ] });
+}
+
+function ViewCourseDialog({
+  open,
+  onOpenChange,
+  courseId
+}) {
+  const [course, setCourse] = reactExports.useState(null);
+  const [loading, setLoading] = reactExports.useState(false);
+  reactExports.useEffect(() => {
+    if (open && courseId) {
+      fetchCourse();
+    } else {
+      setCourse(null);
+    }
+  }, [open, courseId]);
+  const fetchCourse = async () => {
+    if (!courseId) return;
+    setLoading(true);
+    try {
+      const response = await getCourse(courseId);
+      if (response.status && response.data) {
+        setCourse(response.data);
+      } else {
+        throw new Error("Invalid course data received");
+      }
+    } catch (error) {
+      console.error("Error fetching course:", error);
+      toast.error(error?.response?.data?.message || error?.message || "Failed to fetch course details");
+      onOpenChange(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const formatCurrency = (amount, currency = "NGN") => {
+    const numAmount = typeof amount === "string" ? parseFloat(amount) : amount;
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency
+    }).format(numAmount);
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "max-w-3xl max-h-[90vh]", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogHeader, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { children: "Course Details" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DialogDescription, { children: "View detailed information about this course" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(DialogBody, { children: loading ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "py-8 text-center", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-sm text-muted-foreground", children: "Loading course details..." })
+    ] }) : course ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold mb-4", children: "Course Information" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "ID:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.id })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Course Code:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm font-medium", children: course.course_code })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Title:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm font-medium", children: course.title })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Program:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.program?.title || "N/A" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Faculty:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.faculty?.name || "N/A" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Instructor:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.instructor ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium", children: course.instructor.full_name }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-muted-foreground", children: course.instructor.email })
+          ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-muted-foreground", children: "Not assigned" }) })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Level:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Badge, { variant: "outline", children: [
+            "Level ",
+            course.course_level
+          ] }) })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Semester:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.semester })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Course Units:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.course_unit })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Course Type:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.course_type })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Price:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm font-medium", children: formatCurrency(course.price, course.currency) })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Exam Fee:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm font-medium", children: formatCurrency(course.exam_fee, course.currency) })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Owner Type:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Badge,
+            {
+              variant: course.owner_type === "wpu" ? "default" : "secondary",
+              className: course.owner_type === "wpu" ? "bg-blue-500 hover:bg-blue-600" : "bg-purple-500 hover:bg-purple-600",
+              children: course.owner_type === "wpu" ? "WPU" : "Marketplace"
+            }
+          ) })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Marketplace Status:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: course.is_marketplace ? /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "outline", children: course.marketplace_status || "Active" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-muted-foreground", children: "Not in marketplace" }) })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Date Created:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm", children: new Date(course.date).toLocaleString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+          }) })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-muted-foreground", children: "Token:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "col-span-2 text-sm font-mono break-all", children: course.token })
+        ] })
+      ] })
+    ] }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "py-8 text-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "No course data available" }) }) })
   ] }) });
 }
 
@@ -96632,7 +96685,7 @@ const ALLOCATION_TYPES = [
   { value: "faculty", label: "By Faculty" },
   { value: "individual", label: "Individual" }
 ];
-const LEVELS = ["100", "200", "300", "400", "500", "600", "700"];
+const LEVELS = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "1000"];
 function CourseAllocationDialog({
   open,
   onOpenChange,
@@ -99934,7 +99987,7 @@ function CreateFacultyDialog({
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { className: "px-6 pb-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           Button,
           {
@@ -102109,7 +102162,7 @@ function PaymentSetupDialog({
       /* @__PURE__ */ jsxRuntimeExports.jsx(DialogDescription, { children: item ? "Update the payment setup item details" : "Create a new itemized fee item for students" })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4 px-6 py-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6 px-6 py-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "item", children: "Item Name *" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -102851,7 +102904,7 @@ function SchoolFeesConfigurationDialog({
       /* @__PURE__ */ jsxRuntimeExports.jsx(DialogDescription, { children: configuration ? "Update the school fees configuration for specific student groups" : "Create a new school fees configuration override for student groups" })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4 py-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6 px-6 py-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "academic_year", children: "Academic Year *" }),
@@ -102998,7 +103051,7 @@ function SchoolFeesConfigurationDialog({
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { className: "px-6 pb-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           Button,
           {
@@ -103023,6 +103076,7 @@ function SchoolFeesConfiguration({ onRefresh }) {
   const [configurations, setConfigurations] = reactExports.useState([]);
   const [programs, setPrograms] = reactExports.useState([]);
   const [faculties, setFaculties] = reactExports.useState([]);
+  const [semesters, setSemesters] = reactExports.useState([]);
   const [showDialog, setShowDialog] = reactExports.useState(false);
   const [editingConfig, setEditingConfig] = reactExports.useState(null);
   const [togglingId, setTogglingId] = reactExports.useState(null);
@@ -103034,7 +103088,16 @@ function SchoolFeesConfiguration({ onRefresh }) {
   reactExports.useEffect(() => {
     fetchPrograms();
     fetchFaculties();
+    fetchSemesters();
   }, []);
+  const fetchSemesters = async () => {
+    try {
+      const response = await getSemesters({ limit: 100 });
+      setSemesters(response.data.semesters);
+    } catch (error) {
+      console.error("Error fetching semesters:", error);
+    }
+  };
   reactExports.useEffect(() => {
     fetchConfigurations();
   }, [academicYearFilter, levelFilter, programFilter, facultyFilter, activeFilter]);
@@ -103122,81 +103185,58 @@ function SchoolFeesConfiguration({ onRefresh }) {
       /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { children: "Filters" }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-sm font-medium", children: "Academic Year" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "input",
-            {
-              type: "text",
-              className: "w-full rounded-md border border-input bg-background px-3 py-2 text-sm",
-              placeholder: "e.g., 2025/2026",
-              value: academicYearFilter,
-              onChange: (e) => setAcademicYearFilter(e.target.value)
-            }
-          )
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { children: "Academic Year" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: academicYearFilter || "all", onValueChange: (value) => setAcademicYearFilter(value === "all" ? "" : value), children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Years" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Years" }),
+              Array.from(new Set(semesters.map((s) => s.academic_year))).sort().map((year) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: year, children: year }, year))
+            ] })
+          ] })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-sm font-medium", children: "Level" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            "select",
-            {
-              className: "w-full rounded-md border border-input bg-background px-3 py-2 text-sm",
-              value: levelFilter,
-              onChange: (e) => setLevelFilter(e.target.value),
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: "All Levels" }),
-                [100, 200, 300, 400, 500, 600, 700].map((level) => /* @__PURE__ */ jsxRuntimeExports.jsxs("option", { value: level.toString(), children: [
-                  level,
-                  " Level"
-                ] }, level))
-              ]
-            }
-          )
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { children: "Level" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: levelFilter || "all", onValueChange: (value) => setLevelFilter(value === "all" ? "" : value), children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Levels" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Levels" }),
+              [100, 200, 300, 400, 500, 600, 700].map((level) => /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectItem, { value: level.toString(), children: [
+                level,
+                " Level"
+              ] }, level))
+            ] })
+          ] })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-sm font-medium", children: "Program" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            "select",
-            {
-              className: "w-full rounded-md border border-input bg-background px-3 py-2 text-sm",
-              value: programFilter,
-              onChange: (e) => setProgramFilter(e.target.value),
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: "All Programs" }),
-                programs.map((program) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: program.id.toString(), children: program.title }, program.id))
-              ]
-            }
-          )
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { children: "Program" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: programFilter || "all", onValueChange: (value) => setProgramFilter(value === "all" ? "" : value), children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Programs" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Programs" }),
+              programs.map((program) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: program.id.toString(), children: program.title }, program.id))
+            ] })
+          ] })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-sm font-medium", children: "Faculty" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            "select",
-            {
-              className: "w-full rounded-md border border-input bg-background px-3 py-2 text-sm",
-              value: facultyFilter,
-              onChange: (e) => setFacultyFilter(e.target.value),
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: "All Faculties" }),
-                faculties.map((faculty) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: faculty.id.toString(), children: faculty.name }, faculty.id))
-              ]
-            }
-          )
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { children: "Faculty" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: facultyFilter || "all", onValueChange: (value) => setFacultyFilter(value === "all" ? "" : value), children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Faculties" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Faculties" }),
+              faculties.map((faculty) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: faculty.id.toString(), children: faculty.name }, faculty.id))
+            ] })
+          ] })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-sm font-medium", children: "Status" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            "select",
-            {
-              className: "w-full rounded-md border border-input bg-background px-3 py-2 text-sm",
-              value: activeFilter,
-              onChange: (e) => setActiveFilter(e.target.value),
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "all", children: "All" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "active", children: "Active" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "inactive", children: "Inactive" })
-              ]
-            }
-          )
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { children: "Status" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: activeFilter, onValueChange: setActiveFilter, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "active", children: "Active" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "inactive", children: "Inactive" })
+            ] })
+          ] })
         ] })
       ] }) })
     ] }),

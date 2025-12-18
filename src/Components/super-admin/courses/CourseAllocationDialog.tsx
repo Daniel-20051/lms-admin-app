@@ -31,7 +31,7 @@ const ALLOCATION_TYPES = [
     { value: 'individual', label: 'Individual' },
 ];
 
-const LEVELS = ['100', '200', '300', '400', '500', '600', '700'];
+const LEVELS = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '1000'];
 
 export default function CourseAllocationDialog({ 
     open, 

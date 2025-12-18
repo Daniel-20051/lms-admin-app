@@ -123,7 +123,7 @@ export default function CreateFacultyDialog({
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="px-6 pb-6">
             <Button
               type="button"
               variant="outline"

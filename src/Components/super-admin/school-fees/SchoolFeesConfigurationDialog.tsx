@@ -136,7 +136,7 @@ export default function SchoolFeesConfigurationDialog({
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <div className="space-y-4 py-4">
+          <div className="space-y-6 px-6 py-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="academic_year">Academic Year *</Label>
@@ -297,7 +297,7 @@ export default function SchoolFeesConfigurationDialog({
               />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="px-6 pb-6">
             <Button
               type="button"
               variant="outline"

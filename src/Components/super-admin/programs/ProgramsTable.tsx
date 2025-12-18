@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/Components/ui/table";
 import { Button } from "@/Components/ui/button";
 import { Badge } from "@/Components/ui/badge";
-import { Eye, Edit, Trash2, MoreVertical } from "lucide-react";
+import { Eye, Edit, Trash2, MoreVertical, Plus } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -20,6 +20,7 @@ interface ProgramsTableProps {
     onViewProgram: (id: number) => void;
     onEditProgram: (id: number) => void;
     onDeleteProgram: (program: Program) => void;
+    onAddCourse?: (program: Program) => void;
 }
 
 export default function ProgramsTable({
@@ -30,6 +31,7 @@ export default function ProgramsTable({
     onViewProgram,
     onEditProgram,
     onDeleteProgram,
+    onAddCourse,
 }: ProgramsTableProps) {
     if (loading) {
         return (
@@ -126,6 +128,14 @@ export default function ProgramsTable({
                                             <Edit className="mr-2 h-4 w-4" />
                                             Edit Program
                                         </DropdownMenuItem>
+                                        {onAddCourse && (
+                                            <DropdownMenuItem
+                                                onClick={() => onAddCourse(program)}
+                                            >
+                                                <Plus className="mr-2 h-4 w-4" />
+                                                Add Course
+                                            </DropdownMenuItem>
+                                        )}
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem
                                             onClick={() => onDeleteProgram(program)}

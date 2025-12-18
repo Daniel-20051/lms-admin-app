@@ -29,11 +29,13 @@ interface CreateCourseDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onCourseCreated: () => void;
+    initialProgramId?: number;
+    initialFacultyId?: number;
 }
 
 
 const COURSE_TYPES = ['Core', 'Elective', 'General'];
-const LEVELS = [100, 200, 300, 400, 500, 600, 700];
+const LEVELS = [50,100, 200, 300, 400, 500, 600,700 ,800,900,1000];
 const SEMESTERS = ['1ST', '2ND'];
 const CURRENCIES = ['NGN', 'USD'];
 const OWNER_TYPES = [
@@ -51,6 +53,8 @@ export default function CreateCourseDialog({
     open,
     onOpenChange,
     onCourseCreated,
+    initialProgramId,
+    initialFacultyId,
 }: CreateCourseDialogProps) {
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(false);
@@ -113,6 +117,15 @@ export default function CreateCourseDialog({
             setPrograms(programsResponse.data.programs.map(p => ({ id: p.id, title: p.title })));
             setStaff(staffResponse.data.staff.map(s => ({ id: s.id, full_name: s.full_name })));
             setFaculties(facultiesResponse.data.faculties);
+            
+            // Set initial values after data is loaded
+            if (initialProgramId || initialFacultyId) {
+                setFormData((prev) => ({
+                    ...prev,
+                    program_id: initialProgramId || prev.program_id,
+                    faculty_id: initialFacultyId || prev.faculty_id,
+                }));
+            }
         } catch (error: any) {
             console.error('Error fetching data:', error);
             toast.error('Failed to load programs, staff, and faculties');
@@ -144,7 +157,7 @@ export default function CreateCourseDialog({
         }
     };
 
-    // Reset form when dialog opens/closes
+    // Reset form when dialog opens/closes or set initial values
     useEffect(() => {
         if (!open) {
             setFormData({
@@ -165,8 +178,15 @@ export default function CreateCourseDialog({
                 owner_id: null,
             });
             setErrors({});
+        } else if (open && (initialProgramId || initialFacultyId)) {
+            // Set initial values when dialog opens with prefilled data
+            setFormData((prev) => ({
+                ...prev,
+                program_id: initialProgramId || prev.program_id,
+                faculty_id: initialFacultyId || prev.faculty_id,
+            }));
         }
-    }, [open]);
+    }, [open, initialProgramId, initialFacultyId]);
 
     const validateForm = () => {
         const newErrors: typeof errors = {};

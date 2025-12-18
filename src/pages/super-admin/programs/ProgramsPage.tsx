@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
 import { Plus } from "lucide-react";
 import { useProgramsManagement } from "@/hooks/useProgramsManagement";
+import type { Program } from "@/api/programs";
 import ProgramsStatistics from "@/Components/super-admin/programs/ProgramsStatistics";
 import ProgramsFilters from "@/Components/super-admin/programs/ProgramsFilters";
 import ProgramsTable from "@/Components/super-admin/programs/ProgramsTable";
@@ -10,6 +12,7 @@ import ProgramActionDialogs from "@/Components/super-admin/programs/ProgramActio
 import ViewProgramDialog from "@/Components/super-admin/programs/ViewProgramDialog";
 import CreateProgramDialog from "@/Components/super-admin/programs/CreateProgramDialog";
 import EditProgramDialog from "@/Components/super-admin/programs/EditProgramDialog";
+import CreateCourseDialog from "@/Components/super-admin/courses/CreateCourseDialog";
 
 export default function ProgramsPage() {
     const {
@@ -42,6 +45,9 @@ export default function ProgramsPage() {
         handleProgramUpdated,
         refetchPrograms,
     } = useProgramsManagement();
+    
+    const [showCourseDialog, setShowCourseDialog] = useState(false);
+    const [selectedProgramForCourse, setSelectedProgramForCourse] = useState<Program | null>(null);
 
     return (
         <div className="space-y-4 md:space-y-6">
@@ -103,6 +109,10 @@ export default function ProgramsPage() {
                             setSelectedProgram(program);
                             setShowDeleteDialog(true);
                         }}
+                        onAddCourse={(program) => {
+                            setSelectedProgramForCourse(program);
+                            setShowCourseDialog(true);
+                        }}
                     />
 
                     {/* Pagination */}
@@ -162,6 +172,23 @@ export default function ProgramsPage() {
                 }}
                 programId={selectedProgramId}
                 onProgramUpdated={handleProgramUpdated}
+            />
+
+            {/* Create Course Dialog */}
+            <CreateCourseDialog
+                open={showCourseDialog}
+                onOpenChange={(open) => {
+                    setShowCourseDialog(open);
+                    if (!open) {
+                        setSelectedProgramForCourse(null);
+                    }
+                }}
+                onCourseCreated={() => {
+                    setShowCourseDialog(false);
+                    setSelectedProgramForCourse(null);
+                }}
+                initialProgramId={selectedProgramForCourse?.id}
+                initialFacultyId={selectedProgramForCourse?.faculty_id}
             />
         </div>
     );

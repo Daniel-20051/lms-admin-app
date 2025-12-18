@@ -163,7 +163,6 @@
     --color-purple-600: oklch(55.8% .288 302.321);
     --color-purple-950: oklch(29.1% .149 302.717);
     --color-pink-500: oklch(65.6% .241 354.308);
-    --color-gray-50: oklch(98.5% .002 247.839);
     --color-gray-100: oklch(96.7% .003 264.542);
     --color-gray-200: oklch(92.8% .006 264.531);
     --color-gray-300: oklch(87.2% .01 258.338);
@@ -2730,6 +2729,10 @@
 
   .py-5 {
     padding-block: calc(var(--spacing) * 5);
+  }
+
+  .py-6 {
+    padding-block: calc(var(--spacing) * 6);
   }
 
   .py-8 {

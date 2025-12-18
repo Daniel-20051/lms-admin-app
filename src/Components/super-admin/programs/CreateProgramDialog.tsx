@@ -58,7 +58,8 @@ export default function CreateProgramDialog({
 
     // Reset form when dialog opens/closes
     useEffect(() => {
-        if (!open) {
+        if (open) {
+            // Set default values when dialog opens
             setFormData({
                 title: '',
                 description: '',

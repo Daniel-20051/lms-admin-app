@@ -12,8 +12,11 @@ import {
 } from "@/api/admin";
 import { getPrograms } from "@/api/programs";
 import { getFaculties } from "@/api/base";
+import { getSemesters, type Semester } from "@/api/semesters";
 import { toast } from "sonner";
 import SchoolFeesConfigurationDialog from "./SchoolFeesConfigurationDialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
+import { Label } from "@/Components/ui/label";
 
 interface SchoolFeesConfigurationProps {
   onRefresh?: () => void;
@@ -24,6 +27,7 @@ export default function SchoolFeesConfiguration({ onRefresh }: SchoolFeesConfigu
   const [configurations, setConfigurations] = useState<SchoolFeesConfiguration[]>([]);
   const [programs, setPrograms] = useState<any[]>([]);
   const [faculties, setFaculties] = useState<any[]>([]);
+  const [semesters, setSemesters] = useState<Semester[]>([]);
   const [showDialog, setShowDialog] = useState(false);
   const [editingConfig, setEditingConfig] = useState<SchoolFeesConfiguration | null>(null);
   const [togglingId, setTogglingId] = useState<number | null>(null);
@@ -38,7 +42,17 @@ export default function SchoolFeesConfiguration({ onRefresh }: SchoolFeesConfigu
   useEffect(() => {
     fetchPrograms();
     fetchFaculties();
+    fetchSemesters();
   }, []);
+
+  const fetchSemesters = async () => {
+    try {
+      const response = await getSemesters({ limit: 100 });
+      setSemesters(response.data.semesters);
+    } catch (error) {
+      console.error('Error fetching semesters:', error);
+    }
+  };
 
   useEffect(() => {
     fetchConfigurations();
@@ -143,75 +157,85 @@ export default function SchoolFeesConfiguration({ onRefresh }: SchoolFeesConfigu
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Academic Year</label>
-              <input
-                type="text"
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                placeholder="e.g., 2025/2026"
-                value={academicYearFilter}
-                onChange={(e) => setAcademicYearFilter(e.target.value)}
-              />
+              <Label>Academic Year</Label>
+              <Select value={academicYearFilter || "all"} onValueChange={(value) => setAcademicYearFilter(value === "all" ? "" : value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Years" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Years</SelectItem>
+                  {Array.from(new Set(semesters.map(s => s.academic_year))).sort().map((year) => (
+                    <SelectItem key={year} value={year}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Level</label>
-              <select
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={levelFilter}
-                onChange={(e) => setLevelFilter(e.target.value)}
-              >
-                <option value="">All Levels</option>
-                {[100, 200, 300, 400, 500, 600, 700].map((level) => (
-                  <option key={level} value={level.toString()}>
-                    {level} Level
-                  </option>
-                ))}
-              </select>
+              <Label>Level</Label>
+              <Select value={levelFilter || "all"} onValueChange={(value) => setLevelFilter(value === "all" ? "" : value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Levels" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Levels</SelectItem>
+                  {[100, 200, 300, 400, 500, 600, 700].map((level) => (
+                    <SelectItem key={level} value={level.toString()}>
+                      {level} Level
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Program</label>
-              <select
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={programFilter}
-                onChange={(e) => setProgramFilter(e.target.value)}
-              >
-                <option value="">All Programs</option>
-                {programs.map((program) => (
-                  <option key={program.id} value={program.id.toString()}>
-                    {program.title}
-                  </option>
-                ))}
-              </select>
+              <Label>Program</Label>
+              <Select value={programFilter || "all"} onValueChange={(value) => setProgramFilter(value === "all" ? "" : value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Programs" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Programs</SelectItem>
+                  {programs.map((program) => (
+                    <SelectItem key={program.id} value={program.id.toString()}>
+                      {program.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Faculty</label>
-              <select
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={facultyFilter}
-                onChange={(e) => setFacultyFilter(e.target.value)}
-              >
-                <option value="">All Faculties</option>
-                {faculties.map((faculty) => (
-                  <option key={faculty.id} value={faculty.id.toString()}>
-                    {faculty.name}
-                  </option>
-                ))}
-              </select>
+              <Label>Faculty</Label>
+              <Select value={facultyFilter || "all"} onValueChange={(value) => setFacultyFilter(value === "all" ? "" : value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Faculties" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Faculties</SelectItem>
+                  {faculties.map((faculty) => (
+                    <SelectItem key={faculty.id} value={faculty.id.toString()}>
+                      {faculty.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Status</label>
-              <select
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={activeFilter}
-                onChange={(e) => setActiveFilter(e.target.value)}
-              >
-                <option value="all">All</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
+              <Label>Status</Label>
+              <Select value={activeFilter} onValueChange={setActiveFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </CardContent>

@@ -142,7 +142,7 @@ export default function CreateAdminDialog({ open, onOpenChange, onAdminCreated }
           </AlertDescription>
         </Alert>
         <form onSubmit={handleSubmit}>
-          <div className="space-y-4 py-4">
+          <div className="space-y-4 py-4 px-6">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="fname">First Name *</Label>
@@ -525,7 +525,7 @@ export default function CreateAdminDialog({ open, onOpenChange, onAdminCreated }
               </div>
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="px-6 pb-6">
             <Button 
               type="button" 
               variant="outline" 

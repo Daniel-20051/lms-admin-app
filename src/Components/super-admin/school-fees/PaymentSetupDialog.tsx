@@ -113,7 +113,7 @@ export default function PaymentSetupDialog({
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <div className="space-y-4 px-6 py-4">
+          <div className="space-y-6 px-6 py-6">
             <div className="space-y-2">
               <Label htmlFor="item">Item Name *</Label>
               <Input

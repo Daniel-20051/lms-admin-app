@@ -161,7 +161,7 @@ export default function CreateStudentDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
-          <div className="space-y-4 py-4">
+          <div className="space-y-4 py-4 px-6">
             {/* Personal Information */}
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
@@ -250,7 +250,8 @@ export default function CreateStudentDialog({
                     <SelectValue placeholder="Select level" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="100">100 Level</SelectItem>
+                  <SelectItem value="50">50 Level</SelectItem>
+                   <SelectItem value="100">100 Level</SelectItem>
                     <SelectItem value="200">200 Level</SelectItem>
                     <SelectItem value="300">300 Level</SelectItem>
                     <SelectItem value="400">400 Level</SelectItem>
@@ -258,6 +259,8 @@ export default function CreateStudentDialog({
                     <SelectItem value="600">600 Level</SelectItem>
                     <SelectItem value="700">700 Level</SelectItem>
                     <SelectItem value="800">800 Level</SelectItem>
+                    <SelectItem value="900">900 Level</SelectItem>
+                    <SelectItem value="1000">1000 Level</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -333,26 +336,25 @@ export default function CreateStudentDialog({
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="foreign_student">Foreign Student</Label>
-                  <Input
-                    id="foreign_student"
-                    name="foreign_student"
-                    type="number"
-                    min="0"
-                    max="1"
-                    value={formData.foreign_student}
-                    onChange={handleInputChange}
-                    placeholder="0 = Domestic, 1 = Foreign"
+                  <Select
+                    value={formData.foreign_student?.toString() || "0"}
+                    onValueChange={(value) => setFormData({ ...formData, foreign_student: parseInt(value) })}
                     disabled={creating}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    0 = Domestic, 1 = Foreign
-                  </p>
+                  >
+                    <SelectTrigger id="foreign_student">
+                      <SelectValue placeholder="Select option" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">No (Domestic)</SelectItem>
+                      <SelectItem value="1">Yes (Foreign)</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="px-6 pb-6">
             <Button
               type="button"
               variant="outline"
