@@ -102273,6 +102273,8 @@ function PaymentSetupManagement({ onRefresh }) {
   const [editingItem, setEditingItem] = reactExports.useState(null);
   const [itemToDelete, setItemToDelete] = reactExports.useState(null);
   const [deleteLoading, setDeleteLoading] = reactExports.useState(false);
+  const [selectedSemester, setSelectedSemester] = reactExports.useState("all");
+  const [selectedCurrency, setSelectedCurrency] = reactExports.useState("all");
   reactExports.useEffect(() => {
     fetchItems();
   }, []);
@@ -102325,81 +102327,150 @@ function PaymentSetupManagement({ onRefresh }) {
       if (onRefresh) onRefresh();
     }
   };
-  const groupedItems = (items || []).reduce((acc, item) => {
-    const key = `${item.semester}-${item.currency}`;
-    if (!acc[key]) {
-      acc[key] = [];
+  const uniqueSemesters = reactExports.useMemo(() => {
+    const semesters = new Set(items.map((item) => item.semester));
+    return Array.from(semesters).sort();
+  }, [items]);
+  const uniqueCurrencies = reactExports.useMemo(() => {
+    const currencies = new Set(items.map((item) => item.currency));
+    return Array.from(currencies).sort();
+  }, [items]);
+  const filteredItems = reactExports.useMemo(() => {
+    return items.filter((item) => {
+      const matchesSemester = selectedSemester === "all" || item.semester === selectedSemester;
+      const matchesCurrency = selectedCurrency === "all" || item.currency === selectedCurrency;
+      return matchesSemester && matchesCurrency;
+    });
+  }, [items, selectedSemester, selectedCurrency]);
+  const groupedItemsWithTotals = reactExports.useMemo(() => {
+    const grouped = filteredItems.reduce((acc, item) => {
+      const key = `${item.semester}-${item.currency}`;
+      if (!acc[key]) {
+        acc[key] = {
+          semester: item.semester,
+          currency: item.currency,
+          items: [],
+          total: 0
+        };
+      }
+      acc[key].items.push(item);
+      acc[key].total += item.amount;
+      return acc;
+    }, {});
+    return Object.values(grouped).sort((a, b) => {
+      if (a.semester !== b.semester) {
+        return a.semester.localeCompare(b.semester);
+      }
+      return a.currency.localeCompare(b.currency);
+    });
+  }, [filteredItems]);
+  const formatAmount = (amount, currency) => {
+    if (currency === "USD") {
+      return `$${amount.toLocaleString()}`;
+    } else if (currency === "NGN") {
+      return `₦${amount.toLocaleString()}`;
     }
-    acc[key].push(item);
-    return acc;
-  }, {});
+    return `${amount.toLocaleString()}`;
+  };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-end", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: handleCreate, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "h-4 w-4 mr-2" }),
-      "Add Fee Item"
-    ] }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-4 items-center", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-sm font-medium", children: "Semester:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: selectedSemester, onValueChange: setSelectedSemester, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-[150px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Semesters" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Semesters" }),
+              uniqueSemesters.map((semester) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: semester, children: semester }, semester))
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-sm font-medium", children: "Currency:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: selectedCurrency, onValueChange: setSelectedCurrency, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-[150px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Currencies" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Currencies" }),
+              uniqueCurrencies.map((currency) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: currency, children: currency }, currency))
+            ] })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: handleCreate, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "h-4 w-4 mr-2" }),
+        "Add Fee Item"
+      ] })
+    ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { children: "Payment Setup Items" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(CardDescription, { children: "Manage itemized fee breakdown for students" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: loading ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: Array.from({ length: 5 }).map((_, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-12 w-full" }, i)) }) : !items || items.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-8 text-muted-foreground", children: 'No payment setup items found. Click "Add Fee Item" to create one.' }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-6", children: Object.entries(groupedItems).map(([key, groupItems]) => {
-        const [semester, currency] = key.split("-");
-        const total = groupItems.reduce((sum, item) => sum + item.amount, 0);
-        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between pb-2 border-b", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "outline", children: semester }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "secondary", children: currency }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-sm text-muted-foreground", children: [
-                groupItems.length,
-                " item",
-                groupItems.length !== 1 ? "s" : ""
-              ] })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm font-medium", children: [
-              "Total: ₦",
-              total.toLocaleString()
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-md border", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table$1, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Item" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Description" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Amount" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Actions" })
+      /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: loading ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: Array.from({ length: 5 }).map((_, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-12 w-full" }, i)) }) : !items || items.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-8 text-muted-foreground", children: 'No payment setup items found. Click "Add Fee Item" to create one.' }) : filteredItems.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-8 text-muted-foreground", children: "No items match the selected filters." }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-md border", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table$1, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Semester" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Currency" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Item" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Description" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Amount" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Actions" })
+        ] }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody$1, { children: groupedItemsWithTotals.map((group, groupIndex) => /* @__PURE__ */ jsxRuntimeExports.jsxs(React.Fragment, { children: [
+          group.items.map((item, itemIndex) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
+            itemIndex === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+              TableCell$1,
+              {
+                rowSpan: group.items.length,
+                className: "font-medium align-top border-r bg-muted/30",
+                style: { verticalAlign: "top" },
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "py-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "outline", className: "text-sm", children: group.semester }) })
+              }
+            ),
+            itemIndex === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+              TableCell$1,
+              {
+                rowSpan: group.items.length,
+                className: "font-medium align-top border-r bg-muted/30",
+                style: { verticalAlign: "top" },
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "py-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "secondary", className: "text-sm", children: group.currency }) })
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "font-medium", children: item.item }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "text-muted-foreground", children: item.description || "-" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "font-medium", children: formatAmount(item.amount, item.currency) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                Button,
+                {
+                  variant: "ghost",
+                  size: "sm",
+                  onClick: () => handleEdit(item),
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(SquarePen, { className: "h-4 w-4" })
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                Button,
+                {
+                  variant: "ghost",
+                  size: "sm",
+                  onClick: () => setItemToDelete(item),
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { className: "h-4 w-4 text-destructive" })
+                }
+              )
+            ] }) })
+          ] }, item.id)),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { className: "bg-muted/50 font-semibold border-t-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { colSpan: 4, className: "text-right pr-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-2 justify-end", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "outline", children: group.semester }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "secondary", children: group.currency }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Total:" })
             ] }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody$1, { children: groupItems.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "font-medium", children: item.item }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "text-muted-foreground", children: item.description || "-" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(TableCell$1, { children: [
-                "₦",
-                item.amount.toLocaleString()
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  Button,
-                  {
-                    variant: "ghost",
-                    size: "sm",
-                    onClick: () => handleEdit(item),
-                    children: /* @__PURE__ */ jsxRuntimeExports.jsx(SquarePen, { className: "h-4 w-4" })
-                  }
-                ),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  Button,
-                  {
-                    variant: "ghost",
-                    size: "sm",
-                    onClick: () => setItemToDelete(item),
-                    children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { className: "h-4 w-4 text-destructive" })
-                  }
-                )
-              ] }) })
-            ] }, item.id)) })
-          ] }) })
-        ] }, key);
-      }) }) })
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "font-bold text-lg", children: formatAmount(group.total, group.currency) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, {})
+          ] }),
+          groupIndex < groupedItemsWithTotals.length - 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(TableRow$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { colSpan: 6, className: "h-3 p-0 bg-transparent border-0" }) })
+        ] }, `${group.semester}-${group.currency}-${groupIndex}`)) })
+      ] }) }) })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       PaymentSetupDialog,
