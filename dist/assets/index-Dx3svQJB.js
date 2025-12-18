@@ -75951,6 +75951,11 @@ const navigationCategories = [
         icon: CreditCard
       },
       {
+        title: "School Fees Management",
+        href: "/super-admin/school-fees",
+        icon: Receipt
+      },
+      {
         title: "Tutor Management",
         href: "/super-admin/tutors",
         icon: School
@@ -76017,12 +76022,12 @@ function AdminSidebar({
         {
           variant: location.pathname === "/super-admin/dashboard" ? "secondary" : "ghost",
           className: cn$1(
-            "w-full justify-start gap-3",
+            "w-full justify-start gap-3 font-semibold text-[11px] uppercase tracking-wide text-muted-foreground hover:text-foreground",
             location.pathname === "/super-admin/dashboard" && "bg-primary/10 text-primary hover:bg-primary/20"
           ),
           onClick: () => handleNavigation("/super-admin/dashboard"),
           children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(LayoutDashboard, { className: "h-5 w-5" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(LayoutDashboard, { className: "h-4 w-4" }),
             "Dashboard",
             location.pathname === "/super-admin/dashboard" && /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { className: "ml-auto h-4 w-4" })
           ]
@@ -76038,7 +76043,7 @@ function AdminSidebar({
             {
               variant: "ghost",
               className: cn$1(
-                "w-full justify-start gap-3 font-semibold text-xs uppercase tracking-wide text-muted-foreground hover:text-foreground",
+                "w-full justify-start gap-3 font-semibold text-[11px] uppercase tracking-wide text-muted-foreground hover:text-foreground",
                 hasActiveItem && "text-primary"
               ),
               onClick: () => toggleCategory(category.title),
@@ -83081,14 +83086,23 @@ const getFundings = async (page = 1, limit = 20) => {
     throw err;
   }
 };
-const getSchoolFees = async (page = 1, limit = 20) => {
+const getSchoolFees = async (params = {}) => {
   try {
     const headers = getAuthHeaders();
+    const queryParams = {};
+    if (params.page) queryParams.page = params.page;
+    if (params.limit) queryParams.limit = params.limit;
+    if (params.student_id) queryParams.student_id = params.student_id;
+    if (params.status) queryParams.status = params.status;
+    if (params.semester) queryParams.semester = params.semester;
+    if (params.academic_year) queryParams.academic_year = params.academic_year;
+    if (params.start_date) queryParams.start_date = params.start_date;
+    if (params.end_date) queryParams.end_date = params.end_date;
     const response = await axios.get(
       `${BASE_URL}/api/admin/payments/school-fees`,
       {
         headers,
-        params: { page, limit }
+        params: queryParams
       }
     );
     return response.data;
@@ -83136,6 +83150,156 @@ const getSchoolFeesStats = async () => {
     return response.data;
   } catch (err) {
     handleApiError(err, "getting school fees statistics");
+    throw err;
+  }
+};
+const getSchoolFeesPayments = async (params = {}) => {
+  try {
+    const headers = getAuthHeaders();
+    const queryParams = new URLSearchParams();
+    if (params.page) queryParams.append("page", params.page.toString());
+    if (params.limit) queryParams.append("limit", params.limit.toString());
+    if (params.student_id) queryParams.append("student_id", params.student_id.toString());
+    if (params.status) queryParams.append("status", params.status);
+    if (params.semester) queryParams.append("semester", params.semester);
+    if (params.academic_year) queryParams.append("academic_year", params.academic_year);
+    if (params.start_date) queryParams.append("start_date", params.start_date);
+    if (params.end_date) queryParams.append("end_date", params.end_date);
+    const response = await axios.get(
+      `${BASE_URL}/api/admin/payments/school-fees?${queryParams.toString()}`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "getting school fees payments");
+    throw err;
+  }
+};
+const getPaymentSetup = async () => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.get(
+      `${BASE_URL}/api/admin/payment-setup`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "getting payment setup");
+    throw err;
+  }
+};
+const createPaymentSetupItem = async (data) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.post(
+      `${BASE_URL}/api/admin/payment-setup`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "creating payment setup item");
+    throw err;
+  }
+};
+const updatePaymentSetupItem = async (id, data) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.put(
+      `${BASE_URL}/api/admin/payment-setup/${id}`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "updating payment setup item");
+    throw err;
+  }
+};
+const deletePaymentSetupItem = async (id) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.delete(
+      `${BASE_URL}/api/admin/payment-setup/${id}`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "deleting payment setup item");
+    throw err;
+  }
+};
+const getPaymentSetupStats = async () => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.get(
+      `${BASE_URL}/api/admin/payment-setup/stats`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "getting payment setup statistics");
+    throw err;
+  }
+};
+const getSchoolFeesConfiguration = async (params = {}) => {
+  try {
+    const headers = getAuthHeaders();
+    const queryParams = new URLSearchParams();
+    if (params.academic_year) queryParams.append("academic_year", params.academic_year);
+    if (params.level) queryParams.append("level", params.level);
+    if (params.program_id) queryParams.append("program_id", params.program_id.toString());
+    if (params.faculty_id) queryParams.append("faculty_id", params.faculty_id.toString());
+    if (params.is_active !== void 0) queryParams.append("is_active", params.is_active.toString());
+    const response = await axios.get(
+      `${BASE_URL}/api/admin/school-fees/configuration?${queryParams.toString()}`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "getting school fees configuration");
+    throw err;
+  }
+};
+const createSchoolFeesConfiguration = async (data) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.post(
+      `${BASE_URL}/api/admin/school-fees/configuration`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "creating school fees configuration");
+    throw err;
+  }
+};
+const updateSchoolFeesConfiguration = async (id, data) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.put(
+      `${BASE_URL}/api/admin/school-fees/configuration/${id}`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "updating school fees configuration");
+    throw err;
+  }
+};
+const toggleSchoolFeesConfiguration = async (id, is_active) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.patch(
+      `${BASE_URL}/api/admin/school-fees/configuration/${id}/toggle`,
+      { is_active },
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "toggling school fees configuration");
     throw err;
   }
 };
@@ -101184,7 +101348,7 @@ function PaymentsPage() {
   const fetchSchoolFees = async () => {
     try {
       setSchoolFeesLoading(true);
-      const response = await getSchoolFees(schoolFeesPage, 20);
+      const response = await getSchoolFees({ page: schoolFeesPage, limit: 20 });
       if (response.success) {
         setSchoolFees(response.data.schoolFees);
         setSchoolFeesPagination(response.data.pagination);
@@ -101657,6 +101821,1614 @@ function PaymentsPage() {
           /* @__PURE__ */ jsxRuntimeExports.jsx(BookOpen, { className: "h-12 w-12 text-muted-foreground mx-auto mb-2" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-muted-foreground", children: "No course orders data available" })
         ] }) })
+      ] }) })
+    ] })
+  ] });
+}
+
+function SchoolFeesPaymentsList({ onRefresh: _onRefresh }) {
+  const [loading, setLoading] = reactExports.useState(false);
+  const [payments, setPayments] = reactExports.useState([]);
+  const [semesters, setSemesters] = reactExports.useState([]);
+  const [searchTerm, setSearchTerm] = reactExports.useState("");
+  const [statusFilter, setStatusFilter] = reactExports.useState("all");
+  const [semesterFilter, setSemesterFilter] = reactExports.useState("all");
+  const [currentPage, setCurrentPage] = reactExports.useState(1);
+  const [totalPages, setTotalPages] = reactExports.useState(1);
+  const [total, setTotal] = reactExports.useState(0);
+  const limit = 20;
+  reactExports.useEffect(() => {
+    const fetchSemesters = async () => {
+      try {
+        const response = await getSemesters({ limit: 100 });
+        setSemesters(response.data.semesters);
+      } catch (error) {
+        console.error("Error fetching semesters:", error);
+      }
+    };
+    fetchSemesters();
+  }, []);
+  reactExports.useEffect(() => {
+    fetchPayments();
+  }, [currentPage, statusFilter, semesterFilter]);
+  reactExports.useEffect(() => {
+    const timer = setTimeout(() => {
+      if (currentPage === 1) {
+        fetchPayments();
+      } else {
+        setCurrentPage(1);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+  const fetchPayments = async () => {
+    try {
+      setLoading(true);
+      const params = {
+        page: currentPage,
+        limit
+      };
+      if (statusFilter !== "all") {
+        params.status = statusFilter;
+      }
+      if (semesterFilter !== "all") {
+        const [academicYear, semester] = semesterFilter.split("|");
+        params.semester = semester;
+        params.academic_year = academicYear;
+      }
+      const response = await getSchoolFees(params);
+      if (response.success) {
+        let filteredPayments = response.data?.schoolFees || [];
+        if (searchTerm) {
+          const search = searchTerm.toLowerCase();
+          filteredPayments = filteredPayments.filter(
+            (p) => p.matric_number?.toLowerCase().includes(search) || p.student?.fname?.toLowerCase().includes(search) || p.student?.lname?.toLowerCase().includes(search) || p.student?.email?.toLowerCase().includes(search)
+          );
+        }
+        setPayments(filteredPayments);
+        setTotalPages(response.data?.pagination?.totalPages || 1);
+        setTotal(response.data?.pagination?.total || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching payments:", error);
+      toast.error(error.response?.data?.message || "Failed to load payments");
+      setPayments([]);
+      setTotalPages(1);
+      setTotal(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const getStatusBadge = (status) => {
+    if (status === "Paid") {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { className: "bg-green-100 text-green-800 hover:bg-green-100", children: "Paid" });
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "secondary", children: "Pending" });
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { children: "Filters" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { children: "Search" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { className: "absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Input$1,
+              {
+                placeholder: "Search by name or email...",
+                value: searchTerm,
+                onChange: (e) => setSearchTerm(e.target.value),
+                className: "pl-8"
+              }
+            )
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { children: "Status" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: statusFilter, onValueChange: setStatusFilter, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, {}) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Status" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "Paid", children: "Paid" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "Pending", children: "Pending" })
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { children: "Semester" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: semesterFilter, onValueChange: setSemesterFilter, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, {}) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Semesters" }),
+              semesters.map((sem) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                SelectItem,
+                {
+                  value: `${sem.academic_year}|${sem.semester}`,
+                  children: [
+                    sem.academic_year,
+                    " - ",
+                    sem.semester,
+                    " ",
+                    sem.status === "Active" && "(Active)"
+                  ]
+                },
+                sem.id
+              ))
+            ] })
+          ] })
+        ] })
+      ] }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { children: "School Fees Payments" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(CardDescription, { children: [
+          "Total: ",
+          total,
+          " payment",
+          total !== 1 ? "s" : ""
+        ] })
+      ] }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: loading ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: Array.from({ length: 5 }).map((_, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-12 w-full" }, i)) }) : !payments || payments.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-8 text-muted-foreground", children: "No payments found" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-md border", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table$1, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Student Name" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Matric Number" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Amount" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Status" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Semester" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Academic Year" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Payment Date" })
+          ] }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody$1, { children: payments.map((payment) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "font-medium", children: payment.student ? `${payment.student.fname} ${payment.student.lname}` : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-muted-foreground italic", children: "N/A" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: payment.matric_number || /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-muted-foreground italic", children: "Not assigned" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(TableCell$1, { children: [
+              payment.currency === "NGN" ? "₦" : payment.currency === "USD" ? "$" : payment.currency === "GBP" ? "£" : payment.currency === "EUR" ? "€" : "",
+              payment.amount.toLocaleString()
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: getStatusBadge(payment.status) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: payment.semester }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: payment.academic_year }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: payment.date ? new Date(payment.date).toLocaleDateString() : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-muted-foreground italic", children: "N/A" }) })
+          ] }, payment.id)) })
+        ] }) }),
+        totalPages > 1 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mt-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm text-muted-foreground", children: [
+            "Page ",
+            currentPage,
+            " of ",
+            totalPages
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              Button,
+              {
+                variant: "outline",
+                size: "sm",
+                onClick: () => setCurrentPage((p) => Math.max(1, p - 1)),
+                disabled: currentPage === 1,
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronLeft, { className: "h-4 w-4" }),
+                  "Previous"
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              Button,
+              {
+                variant: "outline",
+                size: "sm",
+                onClick: () => setCurrentPage((p) => Math.min(totalPages, p + 1)),
+                disabled: currentPage === totalPages,
+                children: [
+                  "Next",
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { className: "h-4 w-4" })
+                ]
+              }
+            )
+          ] })
+        ] })
+      ] }) })
+    ] })
+  ] });
+}
+
+function PaymentSetupDialog({
+  open,
+  onOpenChange,
+  item,
+  onSuccess
+}) {
+  const [loading, setLoading] = reactExports.useState(false);
+  const [formData, setFormData] = reactExports.useState({
+    item: "",
+    amount: "",
+    description: "",
+    semester: "1ST",
+    currency: "NGN"
+  });
+  reactExports.useEffect(() => {
+    if (item) {
+      setFormData({
+        item: item.item,
+        amount: item.amount.toString(),
+        description: item.description || "",
+        semester: item.semester,
+        currency: item.currency
+      });
+    } else {
+      setFormData({
+        item: "",
+        amount: "",
+        description: "",
+        semester: "1ST",
+        currency: "NGN"
+      });
+    }
+  }, [item, open]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.item.trim()) {
+      toast.error("Item name is required");
+      return;
+    }
+    if (!formData.amount || Number(formData.amount) <= 0) {
+      toast.error("Amount must be a positive number");
+      return;
+    }
+    try {
+      setLoading(true);
+      const data = {
+        item: formData.item.trim(),
+        amount: Number(formData.amount),
+        description: formData.description.trim() || void 0,
+        semester: formData.semester,
+        currency: formData.currency.toUpperCase()
+      };
+      if (item) {
+        await updatePaymentSetupItem(item.id, data);
+        toast.success("Payment setup item updated successfully");
+      } else {
+        await createPaymentSetupItem(data);
+        toast.success("Payment setup item created successfully");
+      }
+      onOpenChange(false);
+      if (onSuccess) onSuccess(true);
+    } catch (error) {
+      console.error("Error saving payment setup item:", error);
+      toast.error(error.response?.data?.message || "Failed to save item");
+    } finally {
+      setLoading(false);
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogHeader, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { children: item ? "Edit Payment Setup Item" : "Add Payment Setup Item" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DialogDescription, { children: item ? "Update the payment setup item details" : "Create a new itemized fee item for students" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4 px-6 py-4", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "item", children: "Item Name *" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Input$1,
+            {
+              id: "item",
+              value: formData.item,
+              onChange: (e) => setFormData({ ...formData, item: e.target.value }),
+              placeholder: "e.g., Semester Registration Fee",
+              required: true
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "amount", children: "Amount *" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Input$1,
+            {
+              id: "amount",
+              type: "number",
+              min: "0",
+              step: "0.01",
+              value: formData.amount,
+              onChange: (e) => setFormData({ ...formData, amount: e.target.value }),
+              placeholder: "0.00",
+              required: true
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "description", children: "Description" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Textarea,
+            {
+              id: "description",
+              value: formData.description,
+              onChange: (e) => setFormData({ ...formData, description: e.target.value }),
+              placeholder: "Optional description",
+              rows: 3
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "semester", children: "Semester *" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              Select,
+              {
+                value: formData.semester,
+                onValueChange: (value) => setFormData({ ...formData, semester: value }),
+                required: true,
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, {}) }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "1ST", children: "1ST Semester" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "2ND", children: "2ND Semester" })
+                  ] })
+                ]
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "currency", children: "Currency *" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              Select,
+              {
+                value: formData.currency,
+                onValueChange: (value) => setFormData({ ...formData, currency: value }),
+                required: true,
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, {}) }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "NGN", children: "NGN" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "USD", children: "USD" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "GBP", children: "GBP" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "EUR", children: "EUR" })
+                  ] })
+                ]
+              }
+            )
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { className: "px-6 pb-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Button,
+          {
+            type: "button",
+            variant: "outline",
+            onClick: () => onOpenChange(false),
+            disabled: loading,
+            children: "Cancel"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "submit", disabled: loading, children: loading ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "mr-2 h-4 w-4 animate-spin" }),
+          item ? "Updating..." : "Creating..."
+        ] }) : item ? "Update" : "Create" })
+      ] })
+    ] })
+  ] }) });
+}
+
+function PaymentSetupManagement({ onRefresh }) {
+  const [loading, setLoading] = reactExports.useState(false);
+  const [items, setItems] = reactExports.useState([]);
+  const [showDialog, setShowDialog] = reactExports.useState(false);
+  const [editingItem, setEditingItem] = reactExports.useState(null);
+  const [itemToDelete, setItemToDelete] = reactExports.useState(null);
+  const [deleteLoading, setDeleteLoading] = reactExports.useState(false);
+  reactExports.useEffect(() => {
+    fetchItems();
+  }, []);
+  const fetchItems = async () => {
+    try {
+      setLoading(true);
+      const response = await getPaymentSetup();
+      if (response.success) {
+        setItems(response.data?.paymentSetup || []);
+      }
+    } catch (error) {
+      console.error("Error fetching payment setup:", error);
+      toast.error(error.response?.data?.message || "Failed to load payment setup");
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleCreate = () => {
+    setEditingItem(null);
+    setShowDialog(true);
+  };
+  const handleEdit = (item) => {
+    setEditingItem(item);
+    setShowDialog(true);
+  };
+  const handleDelete = async () => {
+    if (!itemToDelete) return;
+    try {
+      setDeleteLoading(true);
+      const response = await deletePaymentSetupItem(itemToDelete.id);
+      if (response.success) {
+        toast.success("Payment setup item deleted successfully");
+        setItemToDelete(null);
+        fetchItems();
+        if (onRefresh) onRefresh();
+      }
+    } catch (error) {
+      console.error("Error deleting payment setup item:", error);
+      toast.error(error.response?.data?.message || "Failed to delete item");
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+  const handleDialogClose = (success) => {
+    setShowDialog(false);
+    setEditingItem(null);
+    if (success) {
+      fetchItems();
+      if (onRefresh) onRefresh();
+    }
+  };
+  const groupedItems = (items || []).reduce((acc, item) => {
+    const key = `${item.semester}-${item.currency}`;
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(item);
+    return acc;
+  }, {});
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-end", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: handleCreate, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "h-4 w-4 mr-2" }),
+      "Add Fee Item"
+    ] }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { children: "Payment Setup Items" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardDescription, { children: "Manage itemized fee breakdown for students" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: loading ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: Array.from({ length: 5 }).map((_, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-12 w-full" }, i)) }) : !items || items.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-8 text-muted-foreground", children: 'No payment setup items found. Click "Add Fee Item" to create one.' }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-6", children: Object.entries(groupedItems).map(([key, groupItems]) => {
+        const [semester, currency] = key.split("-");
+        const total = groupItems.reduce((sum, item) => sum + item.amount, 0);
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between pb-2 border-b", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "outline", children: semester }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "secondary", children: currency }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-sm text-muted-foreground", children: [
+                groupItems.length,
+                " item",
+                groupItems.length !== 1 ? "s" : ""
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm font-medium", children: [
+              "Total: ₦",
+              total.toLocaleString()
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-md border", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table$1, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Item" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Description" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Amount" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Actions" })
+            ] }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody$1, { children: groupItems.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "font-medium", children: item.item }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "text-muted-foreground", children: item.description || "-" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(TableCell$1, { children: [
+                "₦",
+                item.amount.toLocaleString()
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  Button,
+                  {
+                    variant: "ghost",
+                    size: "sm",
+                    onClick: () => handleEdit(item),
+                    children: /* @__PURE__ */ jsxRuntimeExports.jsx(SquarePen, { className: "h-4 w-4" })
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  Button,
+                  {
+                    variant: "ghost",
+                    size: "sm",
+                    onClick: () => setItemToDelete(item),
+                    children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { className: "h-4 w-4 text-destructive" })
+                  }
+                )
+              ] }) })
+            ] }, item.id)) })
+          ] }) })
+        ] }, key);
+      }) }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      PaymentSetupDialog,
+      {
+        open: showDialog,
+        onOpenChange: setShowDialog,
+        item: editingItem,
+        onSuccess: handleDialogClose
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      AlertDialog,
+      {
+        open: !!itemToDelete,
+        onOpenChange: (open) => !open && setItemToDelete(null),
+        children: /* @__PURE__ */ jsxRuntimeExports.jsxs(AlertDialogContent, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(AlertDialogHeader, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(AlertDialogTitle, { children: "Delete Payment Setup Item" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(AlertDialogDescription, { children: [
+              'Are you sure you want to delete "',
+              itemToDelete?.item,
+              '"? This action cannot be undone.'
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(AlertDialogFooter, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(AlertDialogCancel, { disabled: deleteLoading, children: "Cancel" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              AlertDialogAction,
+              {
+                onClick: handleDelete,
+                disabled: deleteLoading,
+                className: "bg-destructive hover:bg-destructive/90",
+                children: deleteLoading ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "mr-2 h-4 w-4 animate-spin" }),
+                  "Deleting..."
+                ] }) : "Delete"
+              }
+            )
+          ] })
+        ] })
+      }
+    )
+  ] });
+}
+
+// packages/react/context/src/create-context.tsx
+function createContext2(rootComponentName, defaultContext) {
+  const Context = reactExports.createContext(defaultContext);
+  const Provider = (props) => {
+    const { children, ...context } = props;
+    const value = reactExports.useMemo(() => context, Object.values(context));
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
+  };
+  Provider.displayName = rootComponentName + "Provider";
+  function useContext2(consumerName) {
+    const context = reactExports.useContext(Context);
+    if (context) return context;
+    if (defaultContext !== void 0) return defaultContext;
+    throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
+  }
+  return [Provider, useContext2];
+}
+function createContextScope(scopeName, createContextScopeDeps = []) {
+  let defaultContexts = [];
+  function createContext3(rootComponentName, defaultContext) {
+    const BaseContext = reactExports.createContext(defaultContext);
+    const index = defaultContexts.length;
+    defaultContexts = [...defaultContexts, defaultContext];
+    const Provider = (props) => {
+      const { scope, children, ...context } = props;
+      const Context = scope?.[scopeName]?.[index] || BaseContext;
+      const value = reactExports.useMemo(() => context, Object.values(context));
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
+    };
+    Provider.displayName = rootComponentName + "Provider";
+    function useContext2(consumerName, scope) {
+      const Context = scope?.[scopeName]?.[index] || BaseContext;
+      const context = reactExports.useContext(Context);
+      if (context) return context;
+      if (defaultContext !== void 0) return defaultContext;
+      throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
+    }
+    return [Provider, useContext2];
+  }
+  const createScope = () => {
+    const scopeContexts = defaultContexts.map((defaultContext) => {
+      return reactExports.createContext(defaultContext);
+    });
+    return function useScope(scope) {
+      const contexts = scope?.[scopeName] || scopeContexts;
+      return reactExports.useMemo(
+        () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
+        [scope, contexts]
+      );
+    };
+  };
+  createScope.scopeName = scopeName;
+  return [createContext3, composeContextScopes(createScope, ...createContextScopeDeps)];
+}
+function composeContextScopes(...scopes) {
+  const baseScope = scopes[0];
+  if (scopes.length === 1) return baseScope;
+  const createScope = () => {
+    const scopeHooks = scopes.map((createScope2) => ({
+      useScope: createScope2(),
+      scopeName: createScope2.scopeName
+    }));
+    return function useComposedScopes(overrideScopes) {
+      const nextScopes = scopeHooks.reduce((nextScopes2, { useScope, scopeName }) => {
+        const scopeProps = useScope(overrideScopes);
+        const currentScope = scopeProps[`__scope${scopeName}`];
+        return { ...nextScopes2, ...currentScope };
+      }, {});
+      return reactExports.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
+    };
+  };
+  createScope.scopeName = baseScope.scopeName;
+  return createScope;
+}
+
+// src/slot.tsx
+// @__NO_SIDE_EFFECTS__
+function createSlot(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone(ownerName);
+  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    const childrenArray = reactExports.Children.toArray(children);
+    const slottable = childrenArray.find(isSlottable);
+    if (slottable) {
+      const newElement = slottable.props.children;
+      const newChildren = childrenArray.map((child) => {
+        if (child === slottable) {
+          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
+          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
+        } else {
+          return child;
+        }
+      });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
+  });
+  Slot2.displayName = `${ownerName}.Slot`;
+  return Slot2;
+}
+var Slot = /* @__PURE__ */ createSlot("Slot");
+// @__NO_SIDE_EFFECTS__
+function createSlotClone(ownerName) {
+  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    if (reactExports.isValidElement(children)) {
+      const childrenRef = getElementRef(children);
+      const props2 = mergeProps(slotProps, children.props);
+      if (children.type !== reactExports.Fragment) {
+        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
+      }
+      return reactExports.cloneElement(children, props2);
+    }
+    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
+  });
+  SlotClone.displayName = `${ownerName}.SlotClone`;
+  return SlotClone;
+}
+var SLOTTABLE_IDENTIFIER = Symbol("radix.slottable");
+// @__NO_SIDE_EFFECTS__
+function createSlottable(ownerName) {
+  const Slottable2 = ({ children }) => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
+  };
+  Slottable2.displayName = `${ownerName}.Slottable`;
+  Slottable2.__radixId = SLOTTABLE_IDENTIFIER;
+  return Slottable2;
+}
+var Slottable = /* @__PURE__ */ createSlottable("Slottable");
+function isSlottable(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER;
+}
+function mergeProps(slotProps, childProps) {
+  const overrideProps = { ...childProps };
+  for (const propName in childProps) {
+    const slotPropValue = slotProps[propName];
+    const childPropValue = childProps[propName];
+    const isHandler = /^on[A-Z]/.test(propName);
+    if (isHandler) {
+      if (slotPropValue && childPropValue) {
+        overrideProps[propName] = (...args) => {
+          const result = childPropValue(...args);
+          slotPropValue(...args);
+          return result;
+        };
+      } else if (slotPropValue) {
+        overrideProps[propName] = slotPropValue;
+      }
+    } else if (propName === "style") {
+      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
+    } else if (propName === "className") {
+      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
+    }
+  }
+  return { ...slotProps, ...overrideProps };
+}
+function getElementRef(element) {
+  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
+  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.ref;
+  }
+  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
+  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.props.ref;
+  }
+  return element.props.ref || element.ref;
+}
+
+// src/primitive.tsx
+var NODES = [
+  "a",
+  "button",
+  "div",
+  "form",
+  "h2",
+  "h3",
+  "img",
+  "input",
+  "label",
+  "li",
+  "nav",
+  "ol",
+  "p",
+  "select",
+  "span",
+  "svg",
+  "ul"
+];
+var Primitive = NODES.reduce((primitive, node) => {
+  const Slot = createSlot(`Primitive.${node}`);
+  const Node = reactExports.forwardRef((props, forwardedRef) => {
+    const { asChild, ...primitiveProps } = props;
+    const Comp = asChild ? Slot : node;
+    if (typeof window !== "undefined") {
+      window[Symbol.for("radix-ui")] = true;
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
+  });
+  Node.displayName = `Primitive.${node}`;
+  return { ...primitive, [node]: Node };
+}, {});
+function dispatchDiscreteCustomEvent(target, event) {
+  if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
+}
+var Root$2 = Primitive;
+
+"use client";
+var SWITCH_NAME = "Switch";
+var [createSwitchContext, createSwitchScope] = createContextScope(SWITCH_NAME);
+var [SwitchProvider, useSwitchContext] = createSwitchContext(SWITCH_NAME);
+var Switch$1 = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const {
+      __scopeSwitch,
+      name,
+      checked: checkedProp,
+      defaultChecked,
+      required,
+      disabled,
+      value = "on",
+      onCheckedChange,
+      form,
+      ...switchProps
+    } = props;
+    const [button, setButton] = reactExports.useState(null);
+    const composedRefs = useComposedRefs(forwardedRef, (node) => setButton(node));
+    const hasConsumerStoppedPropagationRef = reactExports.useRef(false);
+    const isFormControl = button ? form || !!button.closest("form") : true;
+    const [checked, setChecked] = useControllableState({
+      prop: checkedProp,
+      defaultProp: defaultChecked ?? false,
+      onChange: onCheckedChange,
+      caller: SWITCH_NAME
+    });
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(SwitchProvider, { scope: __scopeSwitch, checked, disabled, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Primitive.button,
+        {
+          type: "button",
+          role: "switch",
+          "aria-checked": checked,
+          "aria-required": required,
+          "data-state": getState(checked),
+          "data-disabled": disabled ? "" : void 0,
+          disabled,
+          value,
+          ...switchProps,
+          ref: composedRefs,
+          onClick: composeEventHandlers(props.onClick, (event) => {
+            setChecked((prevChecked) => !prevChecked);
+            if (isFormControl) {
+              hasConsumerStoppedPropagationRef.current = event.isPropagationStopped();
+              if (!hasConsumerStoppedPropagationRef.current) event.stopPropagation();
+            }
+          })
+        }
+      ),
+      isFormControl && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        SwitchBubbleInput,
+        {
+          control: button,
+          bubbles: !hasConsumerStoppedPropagationRef.current,
+          name,
+          value,
+          checked,
+          required,
+          disabled,
+          form,
+          style: { transform: "translateX(-100%)" }
+        }
+      )
+    ] });
+  }
+);
+Switch$1.displayName = SWITCH_NAME;
+var THUMB_NAME = "SwitchThumb";
+var SwitchThumb = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeSwitch, ...thumbProps } = props;
+    const context = useSwitchContext(THUMB_NAME, __scopeSwitch);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Primitive.span,
+      {
+        "data-state": getState(context.checked),
+        "data-disabled": context.disabled ? "" : void 0,
+        ...thumbProps,
+        ref: forwardedRef
+      }
+    );
+  }
+);
+SwitchThumb.displayName = THUMB_NAME;
+var BUBBLE_INPUT_NAME = "SwitchBubbleInput";
+var SwitchBubbleInput = reactExports.forwardRef(
+  ({
+    __scopeSwitch,
+    control,
+    checked,
+    bubbles = true,
+    ...props
+  }, forwardedRef) => {
+    const ref = reactExports.useRef(null);
+    const composedRefs = useComposedRefs(ref, forwardedRef);
+    const prevChecked = usePrevious(checked);
+    const controlSize = useSize(control);
+    reactExports.useEffect(() => {
+      const input = ref.current;
+      if (!input) return;
+      const inputProto = window.HTMLInputElement.prototype;
+      const descriptor = Object.getOwnPropertyDescriptor(
+        inputProto,
+        "checked"
+      );
+      const setChecked = descriptor.set;
+      if (prevChecked !== checked && setChecked) {
+        const event = new Event("click", { bubbles });
+        setChecked.call(input, checked);
+        input.dispatchEvent(event);
+      }
+    }, [prevChecked, checked, bubbles]);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "input",
+      {
+        type: "checkbox",
+        "aria-hidden": true,
+        defaultChecked: checked,
+        ...props,
+        tabIndex: -1,
+        ref: composedRefs,
+        style: {
+          ...props.style,
+          ...controlSize,
+          position: "absolute",
+          pointerEvents: "none",
+          opacity: 0,
+          margin: 0
+        }
+      }
+    );
+  }
+);
+SwitchBubbleInput.displayName = BUBBLE_INPUT_NAME;
+function getState(checked) {
+  return checked ? "checked" : "unchecked";
+}
+var Root$1 = Switch$1;
+var Thumb = SwitchThumb;
+
+const Switch = reactExports.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+  Root$1,
+  {
+    className: cn$1(
+      "peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input",
+      className
+    ),
+    ...props,
+    ref,
+    children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Thumb,
+      {
+        className: cn$1(
+          "pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0"
+        )
+      }
+    )
+  }
+));
+Switch.displayName = Root$1.displayName;
+
+function SchoolFeesConfigurationDialog({
+  open,
+  onOpenChange,
+  configuration,
+  programs,
+  faculties,
+  onSuccess
+}) {
+  const [loading, setLoading] = reactExports.useState(false);
+  const [formData, setFormData] = reactExports.useState({
+    academic_year: "",
+    level: "",
+    program_id: "",
+    faculty_id: "",
+    amount: "",
+    currency: "NGN",
+    description: "",
+    is_active: true
+  });
+  reactExports.useEffect(() => {
+    if (configuration) {
+      setFormData({
+        academic_year: configuration.academic_year,
+        level: configuration.level || "",
+        program_id: configuration.program_id ? configuration.program_id.toString() : "",
+        faculty_id: configuration.faculty_id ? configuration.faculty_id.toString() : "",
+        amount: configuration.amount.toString(),
+        currency: configuration.currency,
+        description: configuration.description || "",
+        is_active: configuration.is_active
+      });
+    } else {
+      setFormData({
+        academic_year: "",
+        level: "",
+        program_id: "",
+        faculty_id: "",
+        amount: "",
+        currency: "NGN",
+        description: "",
+        is_active: true
+      });
+    }
+  }, [configuration, open]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.academic_year.trim()) {
+      toast.error("Academic year is required");
+      return;
+    }
+    if (!formData.amount || Number(formData.amount) <= 0) {
+      toast.error("Amount must be a positive number");
+      return;
+    }
+    try {
+      setLoading(true);
+      const data = {
+        academic_year: formData.academic_year.trim(),
+        level: formData.level === "" ? null : formData.level,
+        program_id: formData.program_id === "" || formData.program_id === "all" ? null : Number(formData.program_id),
+        faculty_id: formData.faculty_id === "" || formData.faculty_id === "all" ? null : Number(formData.faculty_id),
+        amount: Number(formData.amount),
+        currency: formData.currency.toUpperCase(),
+        description: formData.description.trim() || void 0,
+        is_active: formData.is_active
+      };
+      if (configuration) {
+        await updateSchoolFeesConfiguration(configuration.id, data);
+        toast.success("School fees configuration updated successfully");
+      } else {
+        await createSchoolFeesConfiguration(data);
+        toast.success("School fees configuration created successfully");
+      }
+      onOpenChange(false);
+      if (onSuccess) onSuccess(true);
+    } catch (error) {
+      console.error("Error saving configuration:", error);
+      toast.error(error.response?.data?.message || "Failed to save configuration");
+    } finally {
+      setLoading(false);
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "max-w-2xl max-h-[90vh] overflow-y-auto", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogHeader, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { children: configuration ? "Edit School Fees Configuration" : "Add School Fees Configuration" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DialogDescription, { children: configuration ? "Update the school fees configuration for specific student groups" : "Create a new school fees configuration override for student groups" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4 py-4", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "academic_year", children: "Academic Year *" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Input$1,
+              {
+                id: "academic_year",
+                value: formData.academic_year,
+                onChange: (e) => setFormData({ ...formData, academic_year: e.target.value }),
+                placeholder: "e.g., 2025/2026",
+                required: true
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "amount", children: "Amount *" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Input$1,
+              {
+                id: "amount",
+                type: "number",
+                min: "0",
+                step: "0.01",
+                value: formData.amount,
+                onChange: (e) => setFormData({ ...formData, amount: e.target.value }),
+                placeholder: "0.00",
+                required: true
+              }
+            )
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "level", children: "Level" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              Select,
+              {
+                value: formData.level || "all",
+                onValueChange: (value) => setFormData({
+                  ...formData,
+                  level: value === "all" ? null : value
+                }),
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, {}) }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Levels" }),
+                    [100, 200, 300, 400, 500, 600, 700].map((level) => /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectItem, { value: level.toString(), children: [
+                      level,
+                      " Level"
+                    ] }, level))
+                  ] })
+                ]
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "currency", children: "Currency *" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              Select,
+              {
+                value: formData.currency,
+                onValueChange: (value) => setFormData({ ...formData, currency: value }),
+                required: true,
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, {}) }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "NGN", children: "NGN" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "USD", children: "USD" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "GBP", children: "GBP" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "EUR", children: "EUR" })
+                  ] })
+                ]
+              }
+            )
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "program", children: "Program" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              Select,
+              {
+                value: formData.program_id === "" || formData.program_id === null ? "all" : formData.program_id,
+                onValueChange: (value) => setFormData({
+                  ...formData,
+                  program_id: value === "all" ? "" : value
+                }),
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, {}) }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Programs" }),
+                    programs.map((program) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: program.id.toString(), children: program.title }, program.id))
+                  ] })
+                ]
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "faculty", children: "Faculty" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              Select,
+              {
+                value: formData.faculty_id === "" || formData.faculty_id === null ? "all" : formData.faculty_id,
+                onValueChange: (value) => setFormData({
+                  ...formData,
+                  faculty_id: value === "all" ? "" : value
+                }),
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, {}) }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Faculties" }),
+                    faculties.map((faculty) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: faculty.id.toString(), children: faculty.name }, faculty.id))
+                  ] })
+                ]
+              }
+            )
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "description", children: "Description" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Textarea,
+            {
+              id: "description",
+              value: formData.description,
+              onChange: (e) => setFormData({ ...formData, description: e.target.value }),
+              placeholder: "Optional description",
+              rows: 3
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-0.5", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { htmlFor: "is_active", children: "Active" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Only active configurations are used for fee calculation" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Switch,
+            {
+              id: "is_active",
+              checked: formData.is_active,
+              onCheckedChange: (checked) => setFormData({ ...formData, is_active: checked })
+            }
+          )
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Button,
+          {
+            type: "button",
+            variant: "outline",
+            onClick: () => onOpenChange(false),
+            disabled: loading,
+            children: "Cancel"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "submit", disabled: loading, children: loading ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "mr-2 h-4 w-4 animate-spin" }),
+          configuration ? "Updating..." : "Creating..."
+        ] }) : configuration ? "Update" : "Create" })
+      ] })
+    ] })
+  ] }) });
+}
+
+function SchoolFeesConfiguration({ onRefresh }) {
+  const [loading, setLoading] = reactExports.useState(false);
+  const [configurations, setConfigurations] = reactExports.useState([]);
+  const [programs, setPrograms] = reactExports.useState([]);
+  const [faculties, setFaculties] = reactExports.useState([]);
+  const [showDialog, setShowDialog] = reactExports.useState(false);
+  const [editingConfig, setEditingConfig] = reactExports.useState(null);
+  const [togglingId, setTogglingId] = reactExports.useState(null);
+  const [academicYearFilter, setAcademicYearFilter] = reactExports.useState("");
+  const [levelFilter, setLevelFilter] = reactExports.useState("");
+  const [programFilter, setProgramFilter] = reactExports.useState("");
+  const [facultyFilter, setFacultyFilter] = reactExports.useState("");
+  const [activeFilter, setActiveFilter] = reactExports.useState("all");
+  reactExports.useEffect(() => {
+    fetchPrograms();
+    fetchFaculties();
+  }, []);
+  reactExports.useEffect(() => {
+    fetchConfigurations();
+  }, [academicYearFilter, levelFilter, programFilter, facultyFilter, activeFilter]);
+  const fetchPrograms = async () => {
+    try {
+      const response = await getPrograms({ limit: 1e3 });
+      setPrograms(response.data.programs);
+    } catch (error) {
+      console.error("Error fetching programs:", error);
+    }
+  };
+  const fetchFaculties = async () => {
+    try {
+      const response = await getFaculties$1({ limit: 1e3 });
+      setFaculties(response.data.faculties);
+    } catch (error) {
+      console.error("Error fetching faculties:", error);
+    }
+  };
+  const fetchConfigurations = async () => {
+    try {
+      setLoading(true);
+      const params = {};
+      if (academicYearFilter) params.academic_year = academicYearFilter;
+      if (levelFilter) params.level = levelFilter;
+      if (programFilter) params.program_id = parseInt(programFilter);
+      if (facultyFilter) params.faculty_id = parseInt(facultyFilter);
+      if (activeFilter !== "all") params.is_active = activeFilter === "active";
+      const response = await getSchoolFeesConfiguration(params);
+      if (response.success) {
+        setConfigurations(response.data?.configurations || []);
+      }
+    } catch (error) {
+      console.error("Error fetching configurations:", error);
+      toast.error(error.response?.data?.message || "Failed to load configurations");
+      setConfigurations([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleCreate = () => {
+    setEditingConfig(null);
+    setShowDialog(true);
+  };
+  const handleEdit = (config) => {
+    setEditingConfig(config);
+    setShowDialog(true);
+  };
+  const handleToggle = async (id, currentStatus) => {
+    try {
+      setTogglingId(id);
+      const response = await toggleSchoolFeesConfiguration(id, !currentStatus);
+      if (response.success) {
+        toast.success(
+          `Configuration ${!currentStatus ? "activated" : "deactivated"} successfully`
+        );
+        fetchConfigurations();
+        if (onRefresh) onRefresh();
+      }
+    } catch (error) {
+      console.error("Error toggling configuration:", error);
+      toast.error(error.response?.data?.message || "Failed to toggle configuration");
+    } finally {
+      setTogglingId(null);
+    }
+  };
+  const handleDialogClose = (success) => {
+    setShowDialog(false);
+    setEditingConfig(null);
+    if (success) {
+      fetchConfigurations();
+      if (onRefresh) onRefresh();
+    }
+  };
+  const getScopeDescription = (config) => {
+    const parts = [];
+    if (config.level) parts.push(`Level ${config.level}`);
+    if (config.program) parts.push(config.program.title);
+    if (config.faculty) parts.push(config.faculty.name);
+    if (parts.length === 0) return "All Students";
+    return parts.join(" • ");
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { children: "Filters" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-sm font-medium", children: "Academic Year" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "input",
+            {
+              type: "text",
+              className: "w-full rounded-md border border-input bg-background px-3 py-2 text-sm",
+              placeholder: "e.g., 2025/2026",
+              value: academicYearFilter,
+              onChange: (e) => setAcademicYearFilter(e.target.value)
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-sm font-medium", children: "Level" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "select",
+            {
+              className: "w-full rounded-md border border-input bg-background px-3 py-2 text-sm",
+              value: levelFilter,
+              onChange: (e) => setLevelFilter(e.target.value),
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: "All Levels" }),
+                [100, 200, 300, 400, 500, 600, 700].map((level) => /* @__PURE__ */ jsxRuntimeExports.jsxs("option", { value: level.toString(), children: [
+                  level,
+                  " Level"
+                ] }, level))
+              ]
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-sm font-medium", children: "Program" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "select",
+            {
+              className: "w-full rounded-md border border-input bg-background px-3 py-2 text-sm",
+              value: programFilter,
+              onChange: (e) => setProgramFilter(e.target.value),
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: "All Programs" }),
+                programs.map((program) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: program.id.toString(), children: program.title }, program.id))
+              ]
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-sm font-medium", children: "Faculty" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "select",
+            {
+              className: "w-full rounded-md border border-input bg-background px-3 py-2 text-sm",
+              value: facultyFilter,
+              onChange: (e) => setFacultyFilter(e.target.value),
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: "All Faculties" }),
+                faculties.map((faculty) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: faculty.id.toString(), children: faculty.name }, faculty.id))
+              ]
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-sm font-medium", children: "Status" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "select",
+            {
+              className: "w-full rounded-md border border-input bg-background px-3 py-2 text-sm",
+              value: activeFilter,
+              onChange: (e) => setActiveFilter(e.target.value),
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "all", children: "All" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "active", children: "Active" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "inactive", children: "Inactive" })
+              ]
+            }
+          )
+        ] })
+      ] }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-end", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: handleCreate, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "h-4 w-4 mr-2" }),
+      "Add Configuration"
+    ] }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { children: "School Fees Configurations" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardDescription, { children: "Configure school fees overrides for specific student groups" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: loading ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: Array.from({ length: 5 }).map((_, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-12 w-full" }, i)) }) : !configurations || configurations.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-8 text-muted-foreground", children: 'No configurations found. Click "Add Configuration" to create one.' }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-md border", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table$1, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Academic Year" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Scope" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Amount" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Currency" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Status" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Actions" })
+        ] }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody$1, { children: configurations.map((config) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { className: "font-medium", children: config.academic_year }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm", children: getScopeDescription(config) }),
+            config.description && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-muted-foreground", children: config.description })
+          ] }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(TableCell$1, { children: [
+            "₦",
+            config.amount.toLocaleString()
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: config.currency }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Badge,
+            {
+              variant: config.is_active ? "default" : "secondary",
+              children: config.is_active ? "Active" : "Inactive"
+            }
+          ) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Button,
+              {
+                variant: "ghost",
+                size: "sm",
+                onClick: () => handleEdit(config),
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx(SquarePen, { className: "h-4 w-4" })
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Button,
+              {
+                variant: "ghost",
+                size: "sm",
+                onClick: () => handleToggle(config.id, config.is_active),
+                disabled: togglingId === config.id,
+                children: togglingId === config.id ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "h-4 w-4 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Power, { className: `h-4 w-4 ${config.is_active ? "text-yellow-600" : "text-green-600"}` })
+              }
+            )
+          ] }) })
+        ] }, config.id)) })
+      ] }) }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      SchoolFeesConfigurationDialog,
+      {
+        open: showDialog,
+        onOpenChange: setShowDialog,
+        configuration: editingConfig,
+        programs,
+        faculties,
+        onSuccess: handleDialogClose
+      }
+    )
+  ] });
+}
+
+function SchoolFeesDashboard() {
+  const [loading, setLoading] = reactExports.useState(true);
+  const [stats, setStats] = reactExports.useState(null);
+  reactExports.useEffect(() => {
+    fetchStats();
+  }, []);
+  const fetchStats = async () => {
+    try {
+      setLoading(true);
+      const response = await getSchoolFeesStats();
+      if (response.success) {
+        setStats(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching school fees stats:", error);
+      toast.error(error.response?.data?.message || "Failed to load statistics");
+    } finally {
+      setLoading(false);
+    }
+  };
+  if (loading) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid gap-4 md:grid-cols-2 lg:grid-cols-4", children: Array.from({ length: 4 }).map((_, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { className: "flex flex-row items-center justify-between space-y-0 pb-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-24" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-4" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-8 w-32 mb-2" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-20" })
+      ] })
+    ] }, i)) }) });
+  }
+  if (!stats) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-8 text-muted-foreground", children: "No statistics available" });
+  }
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-4 md:grid-cols-2 lg:grid-cols-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { className: "flex flex-row items-center justify-between space-y-0 pb-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { className: "text-sm font-medium", children: "Total Fees" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(DollarSign, { className: "h-4 w-4 text-muted-foreground" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl font-bold", children: stats.total || 0 }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground", children: "Total fee records" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { className: "flex flex-row items-center justify-between space-y-0 pb-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { className: "text-sm font-medium", children: "Total Amount" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TrendingUp, { className: "h-4 w-4 text-muted-foreground" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-2xl font-bold", children: [
+            "₦",
+            Number(stats.totalAmount || 0).toLocaleString()
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground", children: "Total amount across all fees" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { className: "flex flex-row items-center justify-between space-y-0 pb-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { className: "text-sm font-medium", children: "Paid Amount" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { className: "h-4 w-4 text-green-600" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-2xl font-bold text-green-600", children: [
+            "₦",
+            Number(stats.paidAmount || 0).toLocaleString()
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground", children: "Total paid fees" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { className: "flex flex-row items-center justify-between space-y-0 pb-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { className: "text-sm font-medium", children: "Pending Amount" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { className: "h-4 w-4 text-yellow-600" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-2xl font-bold text-yellow-600", children: [
+            "₦",
+            Number(stats.pendingAmount || 0).toLocaleString()
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground", children: "Total pending fees" })
+        ] })
+      ] })
+    ] }),
+    stats.byStatus && stats.byStatus.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { children: "Breakdown by Status" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardDescription, { children: "Fee distribution by payment status" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: stats.byStatus.map((item, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: item.status === "Paid" ? "default" : "secondary", children: item.status }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-sm text-muted-foreground", children: [
+            item.count,
+            " records"
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm font-medium", children: [
+          "₦",
+          Number(item.total || 0).toLocaleString()
+        ] })
+      ] }, index)) }) })
+    ] }),
+    stats.bySemester && stats.bySemester.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { children: "Breakdown by Semester" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardDescription, { children: "Fee distribution by semester" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: stats.bySemester.map((item, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "outline", children: item.semester }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-sm text-muted-foreground", children: [
+            item.count,
+            " records"
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm font-medium", children: [
+          "₦",
+          Number(item.total || 0).toLocaleString()
+        ] })
+      ] }, index)) }) })
+    ] })
+  ] });
+}
+
+function SchoolFeesPage() {
+  const [activeTab, setActiveTab] = reactExports.useState("dashboard");
+  const [refreshKey, setRefreshKey] = reactExports.useState(0);
+  const handleRefresh = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4 md:space-y-6", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-semibold", children: "School Fees Management" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Manage student school fees, payment setup, and configurations" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { children: "School Fees Management" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardDescription, { children: "View payments, manage payment setup items, and configure school fees" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Tabs, { value: activeTab, onValueChange: setActiveTab, className: "w-full", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsList, { className: "grid w-full grid-cols-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TabsTrigger, { value: "dashboard", children: "Dashboard" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TabsTrigger, { value: "payments", children: "Payments" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TabsTrigger, { value: "setup", children: "Payment Setup" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TabsTrigger, { value: "configuration", children: "Configuration" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TabsContent, { value: "dashboard", className: "mt-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SchoolFeesDashboard, {}, refreshKey) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TabsContent, { value: "payments", className: "mt-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SchoolFeesPaymentsList, { onRefresh: handleRefresh }, refreshKey) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TabsContent, { value: "setup", className: "mt-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentSetupManagement, { onRefresh: handleRefresh }, refreshKey) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TabsContent, { value: "configuration", className: "mt-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SchoolFeesConfiguration, { onRefresh: handleRefresh }, refreshKey) })
       ] }) })
     ] })
   ] });
@@ -104172,7 +105944,7 @@ function getInvalidValueError(propValue, componentName) {
 
 Defaulting to \`null\`.`;
 }
-var Root$2 = Progress$1;
+var Root = Progress$1;
 var Indicator = ProgressIndicator;
 
 function Progress({
@@ -104181,7 +105953,7 @@ function Progress({
   ...props
 }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Root$2,
+    Root,
     {
       "data-slot": "progress",
       className: cn$1(
@@ -138514,377 +140286,6 @@ function ExamsListPage() {
   ] });
 }
 
-// packages/react/context/src/create-context.tsx
-function createContext2(rootComponentName, defaultContext) {
-  const Context = reactExports.createContext(defaultContext);
-  const Provider = (props) => {
-    const { children, ...context } = props;
-    const value = reactExports.useMemo(() => context, Object.values(context));
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
-  };
-  Provider.displayName = rootComponentName + "Provider";
-  function useContext2(consumerName) {
-    const context = reactExports.useContext(Context);
-    if (context) return context;
-    if (defaultContext !== void 0) return defaultContext;
-    throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
-  }
-  return [Provider, useContext2];
-}
-function createContextScope(scopeName, createContextScopeDeps = []) {
-  let defaultContexts = [];
-  function createContext3(rootComponentName, defaultContext) {
-    const BaseContext = reactExports.createContext(defaultContext);
-    const index = defaultContexts.length;
-    defaultContexts = [...defaultContexts, defaultContext];
-    const Provider = (props) => {
-      const { scope, children, ...context } = props;
-      const Context = scope?.[scopeName]?.[index] || BaseContext;
-      const value = reactExports.useMemo(() => context, Object.values(context));
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
-    };
-    Provider.displayName = rootComponentName + "Provider";
-    function useContext2(consumerName, scope) {
-      const Context = scope?.[scopeName]?.[index] || BaseContext;
-      const context = reactExports.useContext(Context);
-      if (context) return context;
-      if (defaultContext !== void 0) return defaultContext;
-      throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
-    }
-    return [Provider, useContext2];
-  }
-  const createScope = () => {
-    const scopeContexts = defaultContexts.map((defaultContext) => {
-      return reactExports.createContext(defaultContext);
-    });
-    return function useScope(scope) {
-      const contexts = scope?.[scopeName] || scopeContexts;
-      return reactExports.useMemo(
-        () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
-        [scope, contexts]
-      );
-    };
-  };
-  createScope.scopeName = scopeName;
-  return [createContext3, composeContextScopes(createScope, ...createContextScopeDeps)];
-}
-function composeContextScopes(...scopes) {
-  const baseScope = scopes[0];
-  if (scopes.length === 1) return baseScope;
-  const createScope = () => {
-    const scopeHooks = scopes.map((createScope2) => ({
-      useScope: createScope2(),
-      scopeName: createScope2.scopeName
-    }));
-    return function useComposedScopes(overrideScopes) {
-      const nextScopes = scopeHooks.reduce((nextScopes2, { useScope, scopeName }) => {
-        const scopeProps = useScope(overrideScopes);
-        const currentScope = scopeProps[`__scope${scopeName}`];
-        return { ...nextScopes2, ...currentScope };
-      }, {});
-      return reactExports.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
-    };
-  };
-  createScope.scopeName = baseScope.scopeName;
-  return createScope;
-}
-
-// src/slot.tsx
-// @__NO_SIDE_EFFECTS__
-function createSlot(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone(ownerName);
-  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable);
-    if (slottable) {
-      const newElement = slottable.props.children;
-      const newChildren = childrenArray.map((child) => {
-        if (child === slottable) {
-          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
-          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
-        } else {
-          return child;
-        }
-      });
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
-  });
-  Slot2.displayName = `${ownerName}.Slot`;
-  return Slot2;
-}
-var Slot = /* @__PURE__ */ createSlot("Slot");
-// @__NO_SIDE_EFFECTS__
-function createSlotClone(ownerName) {
-  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef(children);
-      const props2 = mergeProps(slotProps, children.props);
-      if (children.type !== reactExports.Fragment) {
-        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
-      }
-      return reactExports.cloneElement(children, props2);
-    }
-    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
-  });
-  SlotClone.displayName = `${ownerName}.SlotClone`;
-  return SlotClone;
-}
-var SLOTTABLE_IDENTIFIER = Symbol("radix.slottable");
-// @__NO_SIDE_EFFECTS__
-function createSlottable(ownerName) {
-  const Slottable2 = ({ children }) => {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
-  };
-  Slottable2.displayName = `${ownerName}.Slottable`;
-  Slottable2.__radixId = SLOTTABLE_IDENTIFIER;
-  return Slottable2;
-}
-var Slottable = /* @__PURE__ */ createSlottable("Slottable");
-function isSlottable(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER;
-}
-function mergeProps(slotProps, childProps) {
-  const overrideProps = { ...childProps };
-  for (const propName in childProps) {
-    const slotPropValue = slotProps[propName];
-    const childPropValue = childProps[propName];
-    const isHandler = /^on[A-Z]/.test(propName);
-    if (isHandler) {
-      if (slotPropValue && childPropValue) {
-        overrideProps[propName] = (...args) => {
-          const result = childPropValue(...args);
-          slotPropValue(...args);
-          return result;
-        };
-      } else if (slotPropValue) {
-        overrideProps[propName] = slotPropValue;
-      }
-    } else if (propName === "style") {
-      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
-    } else if (propName === "className") {
-      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
-    }
-  }
-  return { ...slotProps, ...overrideProps };
-}
-function getElementRef(element) {
-  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
-  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.ref;
-  }
-  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
-  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.props.ref;
-  }
-  return element.props.ref || element.ref;
-}
-
-// src/primitive.tsx
-var NODES = [
-  "a",
-  "button",
-  "div",
-  "form",
-  "h2",
-  "h3",
-  "img",
-  "input",
-  "label",
-  "li",
-  "nav",
-  "ol",
-  "p",
-  "select",
-  "span",
-  "svg",
-  "ul"
-];
-var Primitive = NODES.reduce((primitive, node) => {
-  const Slot = createSlot(`Primitive.${node}`);
-  const Node = reactExports.forwardRef((props, forwardedRef) => {
-    const { asChild, ...primitiveProps } = props;
-    const Comp = asChild ? Slot : node;
-    if (typeof window !== "undefined") {
-      window[Symbol.for("radix-ui")] = true;
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
-  });
-  Node.displayName = `Primitive.${node}`;
-  return { ...primitive, [node]: Node };
-}, {});
-function dispatchDiscreteCustomEvent(target, event) {
-  if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
-}
-var Root$1 = Primitive;
-
-"use client";
-var SWITCH_NAME = "Switch";
-var [createSwitchContext, createSwitchScope] = createContextScope(SWITCH_NAME);
-var [SwitchProvider, useSwitchContext] = createSwitchContext(SWITCH_NAME);
-var Switch$1 = reactExports.forwardRef(
-  (props, forwardedRef) => {
-    const {
-      __scopeSwitch,
-      name,
-      checked: checkedProp,
-      defaultChecked,
-      required,
-      disabled,
-      value = "on",
-      onCheckedChange,
-      form,
-      ...switchProps
-    } = props;
-    const [button, setButton] = reactExports.useState(null);
-    const composedRefs = useComposedRefs(forwardedRef, (node) => setButton(node));
-    const hasConsumerStoppedPropagationRef = reactExports.useRef(false);
-    const isFormControl = button ? form || !!button.closest("form") : true;
-    const [checked, setChecked] = useControllableState({
-      prop: checkedProp,
-      defaultProp: defaultChecked ?? false,
-      onChange: onCheckedChange,
-      caller: SWITCH_NAME
-    });
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs(SwitchProvider, { scope: __scopeSwitch, checked, disabled, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Primitive.button,
-        {
-          type: "button",
-          role: "switch",
-          "aria-checked": checked,
-          "aria-required": required,
-          "data-state": getState(checked),
-          "data-disabled": disabled ? "" : void 0,
-          disabled,
-          value,
-          ...switchProps,
-          ref: composedRefs,
-          onClick: composeEventHandlers(props.onClick, (event) => {
-            setChecked((prevChecked) => !prevChecked);
-            if (isFormControl) {
-              hasConsumerStoppedPropagationRef.current = event.isPropagationStopped();
-              if (!hasConsumerStoppedPropagationRef.current) event.stopPropagation();
-            }
-          })
-        }
-      ),
-      isFormControl && /* @__PURE__ */ jsxRuntimeExports.jsx(
-        SwitchBubbleInput,
-        {
-          control: button,
-          bubbles: !hasConsumerStoppedPropagationRef.current,
-          name,
-          value,
-          checked,
-          required,
-          disabled,
-          form,
-          style: { transform: "translateX(-100%)" }
-        }
-      )
-    ] });
-  }
-);
-Switch$1.displayName = SWITCH_NAME;
-var THUMB_NAME = "SwitchThumb";
-var SwitchThumb = reactExports.forwardRef(
-  (props, forwardedRef) => {
-    const { __scopeSwitch, ...thumbProps } = props;
-    const context = useSwitchContext(THUMB_NAME, __scopeSwitch);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive.span,
-      {
-        "data-state": getState(context.checked),
-        "data-disabled": context.disabled ? "" : void 0,
-        ...thumbProps,
-        ref: forwardedRef
-      }
-    );
-  }
-);
-SwitchThumb.displayName = THUMB_NAME;
-var BUBBLE_INPUT_NAME = "SwitchBubbleInput";
-var SwitchBubbleInput = reactExports.forwardRef(
-  ({
-    __scopeSwitch,
-    control,
-    checked,
-    bubbles = true,
-    ...props
-  }, forwardedRef) => {
-    const ref = reactExports.useRef(null);
-    const composedRefs = useComposedRefs(ref, forwardedRef);
-    const prevChecked = usePrevious(checked);
-    const controlSize = useSize(control);
-    reactExports.useEffect(() => {
-      const input = ref.current;
-      if (!input) return;
-      const inputProto = window.HTMLInputElement.prototype;
-      const descriptor = Object.getOwnPropertyDescriptor(
-        inputProto,
-        "checked"
-      );
-      const setChecked = descriptor.set;
-      if (prevChecked !== checked && setChecked) {
-        const event = new Event("click", { bubbles });
-        setChecked.call(input, checked);
-        input.dispatchEvent(event);
-      }
-    }, [prevChecked, checked, bubbles]);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "input",
-      {
-        type: "checkbox",
-        "aria-hidden": true,
-        defaultChecked: checked,
-        ...props,
-        tabIndex: -1,
-        ref: composedRefs,
-        style: {
-          ...props.style,
-          ...controlSize,
-          position: "absolute",
-          pointerEvents: "none",
-          opacity: 0,
-          margin: 0
-        }
-      }
-    );
-  }
-);
-SwitchBubbleInput.displayName = BUBBLE_INPUT_NAME;
-function getState(checked) {
-  return checked ? "checked" : "unchecked";
-}
-var Root = Switch$1;
-var Thumb = SwitchThumb;
-
-const Switch = reactExports.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-  Root,
-  {
-    className: cn$1(
-      "peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input",
-      className
-    ),
-    ...props,
-    ref,
-    children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Thumb,
-      {
-        className: cn$1(
-          "pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0"
-        )
-      }
-    )
-  }
-));
-Switch.displayName = Root.displayName;
-
 const generateAcademicYears = () => {
   const currentYear = (/* @__PURE__ */ new Date()).getFullYear();
   const years = [];
@@ -145367,6 +146768,7 @@ function AppRouter() {
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "faculties", element: /* @__PURE__ */ jsxRuntimeExports.jsx(FacultiesPage, {}) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "notices", element: /* @__PURE__ */ jsxRuntimeExports.jsx(NoticesPage, {}) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "payments", element: /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentsPage, {}) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "school-fees", element: /* @__PURE__ */ jsxRuntimeExports.jsx(SchoolFeesPage, {}) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "tutors", element: /* @__PURE__ */ jsxRuntimeExports.jsx(TutorsPage, {}) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "revenue", element: /* @__PURE__ */ jsxRuntimeExports.jsx(RevenuePage, {}) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "revenue/tutor/:ownerType/:ownerId", element: /* @__PURE__ */ jsxRuntimeExports.jsx(TutorRevenuePage, {}) }),

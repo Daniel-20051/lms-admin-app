@@ -98,7 +98,7 @@ export default function PaymentsPage() {
   const fetchSchoolFees = async () => {
     try {
       setSchoolFeesLoading(true);
-      const response = await getSchoolFees(schoolFeesPage, 20);
+      const response = await getSchoolFees({ page: schoolFeesPage, limit: 20 });
       if (response.success) {
         setSchoolFees(response.data.schoolFees);
         setSchoolFeesPagination(response.data.pagination);

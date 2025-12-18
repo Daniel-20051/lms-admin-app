@@ -24,6 +24,7 @@ import {
   FolderOpen,
   BookMarked,
   ListChecks,
+  Receipt,
 } from "lucide-react";
 import { Button } from "@/Components/ui/button";
 import { cn } from "@/lib/utils";
@@ -128,6 +129,11 @@ const navigationCategories: NavigationCategory[] = [
         title: "Payments",
         href: "/super-admin/payments",
         icon: CreditCard,
+      },
+      {
+        title: "School Fees Management",
+        href: "/super-admin/school-fees",
+        icon: Receipt,
       },
       {
         title: "Tutor Management",

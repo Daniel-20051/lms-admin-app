@@ -1857,14 +1857,36 @@ export interface SchoolFeesResponse {
   };
 }
 
-export const getSchoolFees = async (page: number = 1, limit: number = 20): Promise<SchoolFeesResponse> => {
+export interface GetSchoolFeesParams {
+  page?: number;
+  limit?: number;
+  student_id?: number;
+  status?: string;
+  semester?: string;
+  academic_year?: string;
+  start_date?: string;
+  end_date?: string;
+}
+
+export const getSchoolFees = async (params: GetSchoolFeesParams = {}): Promise<SchoolFeesResponse> => {
   try {
     const headers = getAuthHeaders();
+    const queryParams: any = {};
+    
+    if (params.page) queryParams.page = params.page;
+    if (params.limit) queryParams.limit = params.limit;
+    if (params.student_id) queryParams.student_id = params.student_id;
+    if (params.status) queryParams.status = params.status;
+    if (params.semester) queryParams.semester = params.semester;
+    if (params.academic_year) queryParams.academic_year = params.academic_year;
+    if (params.start_date) queryParams.start_date = params.start_date;
+    if (params.end_date) queryParams.end_date = params.end_date;
+    
     const response = await axios.get<SchoolFeesResponse>(
       `${BASE_URL}/api/admin/payments/school-fees`,
       { 
         headers,
-        params: { page, limit }
+        params: queryParams
       }
     );
     return response.data;
@@ -1992,6 +2014,355 @@ export const getSchoolFeesStats = async (): Promise<SchoolFeesStatsResponse> => 
     return response.data;
   } catch (err) {
     handleApiError(err, 'getting school fees statistics');
+    throw err;
+  }
+};
+
+// ==================== SCHOOL FEES MANAGEMENT ====================
+
+// Get school fees payments with filters
+export interface GetSchoolFeesPaymentsParams {
+  page?: number;
+  limit?: number;
+  student_id?: number;
+  status?: 'Paid' | 'Pending';
+  semester?: string;
+  academic_year?: string;
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface SchoolFeePaymentDetail {
+  id: number;
+  student_id: number;
+  amount: number;
+  status: 'Paid' | 'Pending';
+  semester: string;
+  academic_year: string;
+  payment_date: string | null;
+  student: {
+    id: number;
+    fname: string;
+    lname: string;
+    email: string;
+    matric_number: string | null;
+  };
+}
+
+export interface GetSchoolFeesPaymentsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    payments: SchoolFeePaymentDetail[];
+    pagination: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
+  };
+}
+
+export const getSchoolFeesPayments = async (params: GetSchoolFeesPaymentsParams = {}): Promise<GetSchoolFeesPaymentsResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const queryParams = new URLSearchParams();
+    
+    if (params.page) queryParams.append('page', params.page.toString());
+    if (params.limit) queryParams.append('limit', params.limit.toString());
+    if (params.student_id) queryParams.append('student_id', params.student_id.toString());
+    if (params.status) queryParams.append('status', params.status);
+    if (params.semester) queryParams.append('semester', params.semester);
+    if (params.academic_year) queryParams.append('academic_year', params.academic_year);
+    if (params.start_date) queryParams.append('start_date', params.start_date);
+    if (params.end_date) queryParams.append('end_date', params.end_date);
+
+    const response = await axios.get<GetSchoolFeesPaymentsResponse>(
+      `${BASE_URL}/api/admin/payments/school-fees?${queryParams.toString()}`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'getting school fees payments');
+    throw err;
+  }
+};
+
+// Payment Setup Management
+export interface PaymentSetupItem {
+  id: number;
+  item: string;
+  amount: number;
+  description: string | null;
+  semester: string;
+  currency: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface GetPaymentSetupResponse {
+  success: boolean;
+  message: string;
+  data: {
+    paymentSetup: PaymentSetupItem[];
+    pagination?: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
+  };
+}
+
+export const getPaymentSetup = async (): Promise<GetPaymentSetupResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.get<GetPaymentSetupResponse>(
+      `${BASE_URL}/api/admin/payment-setup`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'getting payment setup');
+    throw err;
+  }
+};
+
+export interface CreatePaymentSetupItemData {
+  item: string;
+  amount: number;
+  description?: string;
+  semester: '1ST' | '2ND';
+  currency: string;
+}
+
+export interface CreatePaymentSetupItemResponse {
+  success: boolean;
+  message: string;
+  data: PaymentSetupItem;
+}
+
+export const createPaymentSetupItem = async (data: CreatePaymentSetupItemData): Promise<CreatePaymentSetupItemResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.post<CreatePaymentSetupItemResponse>(
+      `${BASE_URL}/api/admin/payment-setup`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'creating payment setup item');
+    throw err;
+  }
+};
+
+export interface UpdatePaymentSetupItemResponse {
+  success: boolean;
+  message: string;
+  data: PaymentSetupItem;
+}
+
+export const updatePaymentSetupItem = async (id: number, data: CreatePaymentSetupItemData): Promise<UpdatePaymentSetupItemResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.put<UpdatePaymentSetupItemResponse>(
+      `${BASE_URL}/api/admin/payment-setup/${id}`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'updating payment setup item');
+    throw err;
+  }
+};
+
+export interface DeletePaymentSetupItemResponse {
+  success: boolean;
+  message: string;
+}
+
+export const deletePaymentSetupItem = async (id: number): Promise<DeletePaymentSetupItemResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.delete<DeletePaymentSetupItemResponse>(
+      `${BASE_URL}/api/admin/payment-setup/${id}`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'deleting payment setup item');
+    throw err;
+  }
+};
+
+export interface PaymentSetupStats {
+  totalItems: number;
+  totalBySemester: Array<{
+    semester: string;
+    count: number;
+    total: number;
+  }>;
+  totalByCurrency: Array<{
+    currency: string;
+    count: number;
+    total: number;
+  }>;
+}
+
+export interface GetPaymentSetupStatsResponse {
+  success: boolean;
+  message: string;
+  data: PaymentSetupStats;
+}
+
+export const getPaymentSetupStats = async (): Promise<GetPaymentSetupStatsResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.get<GetPaymentSetupStatsResponse>(
+      `${BASE_URL}/api/admin/payment-setup/stats`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'getting payment setup statistics');
+    throw err;
+  }
+};
+
+// School Fees Configuration Management
+export interface SchoolFeesConfiguration {
+  id: number;
+  academic_year: string;
+  level: string | null;
+  program_id: number | null;
+  faculty_id: number | null;
+  amount: number;
+  currency: string;
+  description: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  program?: {
+    id: number;
+    title: string;
+  } | null;
+  faculty?: {
+    id: number;
+    name: string;
+  } | null;
+}
+
+export interface GetSchoolFeesConfigurationParams {
+  academic_year?: string;
+  level?: string;
+  program_id?: number;
+  faculty_id?: number;
+  is_active?: boolean;
+}
+
+export interface GetSchoolFeesConfigurationResponse {
+  success: boolean;
+  message: string;
+  data: {
+    configurations: SchoolFeesConfiguration[];
+    count: number;
+  };
+}
+
+export const getSchoolFeesConfiguration = async (params: GetSchoolFeesConfigurationParams = {}): Promise<GetSchoolFeesConfigurationResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const queryParams = new URLSearchParams();
+    
+    if (params.academic_year) queryParams.append('academic_year', params.academic_year);
+    if (params.level) queryParams.append('level', params.level);
+    if (params.program_id) queryParams.append('program_id', params.program_id.toString());
+    if (params.faculty_id) queryParams.append('faculty_id', params.faculty_id.toString());
+    if (params.is_active !== undefined) queryParams.append('is_active', params.is_active.toString());
+
+    const response = await axios.get<GetSchoolFeesConfigurationResponse>(
+      `${BASE_URL}/api/admin/school-fees/configuration?${queryParams.toString()}`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'getting school fees configuration');
+    throw err;
+  }
+};
+
+export interface CreateSchoolFeesConfigurationData {
+  academic_year: string;
+  level?: string | null;
+  program_id?: number | null;
+  faculty_id?: number | null;
+  amount: number;
+  currency: string;
+  description?: string;
+  is_active?: boolean;
+}
+
+export interface CreateSchoolFeesConfigurationResponse {
+  success: boolean;
+  message: string;
+  data: SchoolFeesConfiguration;
+}
+
+export const createSchoolFeesConfiguration = async (data: CreateSchoolFeesConfigurationData): Promise<CreateSchoolFeesConfigurationResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.post<CreateSchoolFeesConfigurationResponse>(
+      `${BASE_URL}/api/admin/school-fees/configuration`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'creating school fees configuration');
+    throw err;
+  }
+};
+
+export interface UpdateSchoolFeesConfigurationResponse {
+  success: boolean;
+  message: string;
+  data: SchoolFeesConfiguration;
+}
+
+export const updateSchoolFeesConfiguration = async (id: number, data: CreateSchoolFeesConfigurationData): Promise<UpdateSchoolFeesConfigurationResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.put<UpdateSchoolFeesConfigurationResponse>(
+      `${BASE_URL}/api/admin/school-fees/configuration/${id}`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'updating school fees configuration');
+    throw err;
+  }
+};
+
+export interface ToggleSchoolFeesConfigurationResponse {
+  success: boolean;
+  message: string;
+  data: SchoolFeesConfiguration;
+}
+
+export const toggleSchoolFeesConfiguration = async (id: number, is_active: boolean): Promise<ToggleSchoolFeesConfigurationResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.patch<ToggleSchoolFeesConfigurationResponse>(
+      `${BASE_URL}/api/admin/school-fees/configuration/${id}/toggle`,
+      { is_active },
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'toggling school fees configuration');
     throw err;
   }
 };

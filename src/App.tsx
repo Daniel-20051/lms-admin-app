@@ -18,6 +18,7 @@ import FacultiesPage from "@/pages/super-admin/faculties/FacultiesPage";
 import SettingsPage from "@/pages/super-admin/settings/SettingsPage";
 import NoticesPage from "@/pages/super-admin/notices/NoticesPage";
 import PaymentsPage from "@/pages/super-admin/payments/PaymentsPage";
+import SchoolFeesPage from "@/pages/super-admin/school-fees/SchoolFeesPage";
 import TutorsPage from "@/pages/super-admin/tutors/TutorsPage";
 import RevenuePage from "@/pages/super-admin/revenue/RevenuePage";
 import TutorRevenuePage from "@/pages/super-admin/revenue/TutorRevenuePage";
@@ -128,6 +129,7 @@ function AppRouter() {
             <Route path="faculties" element={<FacultiesPage />} />
             <Route path="notices" element={<NoticesPage />} />
             <Route path="payments" element={<PaymentsPage />} />
+            <Route path="school-fees" element={<SchoolFeesPage />} />
             <Route path="tutors" element={<TutorsPage />} />
             <Route path="revenue" element={<RevenuePage />} />
             <Route path="revenue/tutor/:ownerType/:ownerId" element={<TutorRevenuePage />} />
