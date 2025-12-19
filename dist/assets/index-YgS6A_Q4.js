@@ -36050,15 +36050,15 @@ function isLazyComponent(element) {
   return element != null && typeof element === "object" && "$$typeof" in element && element.$$typeof === REACT_LAZY_TYPE && "_payload" in element && isPromiseLike(element._payload);
 }
 // @__NO_SIDE_EFFECTS__
-function createSlot$f(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$f(ownerName);
+function createSlot$g(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone$g(ownerName);
   const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
     let { children, ...slotProps } = props;
     if (isLazyComponent(children) && typeof use === "function") {
       children = use(children._payload);
     }
     const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$f);
+    const slottable = childrenArray.find(isSlottable$g);
     if (slottable) {
       const newElement = slottable.props.children;
       const newChildren = childrenArray.map((child) => {
@@ -36076,17 +36076,17 @@ function createSlot$f(ownerName) {
   Slot2.displayName = `${ownerName}.Slot`;
   return Slot2;
 }
-var Slot$i = /* @__PURE__ */ createSlot$f("Slot");
+var Slot$j = /* @__PURE__ */ createSlot$g("Slot");
 // @__NO_SIDE_EFFECTS__
-function createSlotClone$f(ownerName) {
+function createSlotClone$g(ownerName) {
   const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
     let { children, ...slotProps } = props;
     if (isLazyComponent(children) && typeof use === "function") {
       children = use(children._payload);
     }
     if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$g(children);
-      const props2 = mergeProps$f(slotProps, children.props);
+      const childrenRef = getElementRef$h(children);
+      const props2 = mergeProps$g(slotProps, children.props);
       if (children.type !== reactExports.Fragment) {
         props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
       }
@@ -36097,21 +36097,21 @@ function createSlotClone$f(ownerName) {
   SlotClone.displayName = `${ownerName}.SlotClone`;
   return SlotClone;
 }
-var SLOTTABLE_IDENTIFIER$f = Symbol("radix.slottable");
+var SLOTTABLE_IDENTIFIER$g = Symbol("radix.slottable");
 // @__NO_SIDE_EFFECTS__
-function createSlottable$f(ownerName) {
+function createSlottable$g(ownerName) {
   const Slottable2 = ({ children }) => {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
   };
   Slottable2.displayName = `${ownerName}.Slottable`;
-  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$f;
+  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$g;
   return Slottable2;
 }
-var Slottable$f = /* @__PURE__ */ createSlottable$f("Slottable");
-function isSlottable$f(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$f;
+var Slottable$h = /* @__PURE__ */ createSlottable$g("Slottable");
+function isSlottable$g(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$g;
 }
-function mergeProps$f(slotProps, childProps) {
+function mergeProps$g(slotProps, childProps) {
   const overrideProps = { ...childProps };
   for (const propName in childProps) {
     const slotPropValue = slotProps[propName];
@@ -36135,7 +36135,7 @@ function mergeProps$f(slotProps, childProps) {
   }
   return { ...slotProps, ...overrideProps };
 }
-function getElementRef$g(element) {
+function getElementRef$h(element) {
   let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
@@ -39374,7 +39374,7 @@ function Button({
   asChild = false,
   ...props
 }) {
-  const Comp = asChild ? Slot$i : "button";
+  const Comp = asChild ? Slot$j : "button";
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     Comp,
     {
@@ -39403,7 +39403,7 @@ function Input$1({ className, type, ...props }) {
 }
 
 // src/primitive.tsx
-var NODES$e = [
+var NODES$f = [
   "a",
   "button",
   "div",
@@ -39422,8 +39422,8 @@ var NODES$e = [
   "svg",
   "ul"
 ];
-var Primitive$e = NODES$e.reduce((primitive, node) => {
-  const Slot = createSlot$f(`Primitive.${node}`);
+var Primitive$f = NODES$f.reduce((primitive, node) => {
+  const Slot = createSlot$g(`Primitive.${node}`);
   const Node = reactExports.forwardRef((props, forwardedRef) => {
     const { asChild, ...primitiveProps } = props;
     const Comp = asChild ? Slot : node;
@@ -39435,16 +39435,16 @@ var Primitive$e = NODES$e.reduce((primitive, node) => {
   Node.displayName = `Primitive.${node}`;
   return { ...primitive, [node]: Node };
 }, {});
-function dispatchDiscreteCustomEvent$e(target, event) {
+function dispatchDiscreteCustomEvent$f(target, event) {
   if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
 }
-var Root$r = Primitive$e;
+var Root$s = Primitive$f;
 
 "use client";
 var NAME$3 = "Label";
 var Label$3 = reactExports.forwardRef((props, forwardedRef) => {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Primitive$e.label,
+    Primitive$f.label,
     {
       ...props,
       ref: forwardedRef,
@@ -39458,14 +39458,14 @@ var Label$3 = reactExports.forwardRef((props, forwardedRef) => {
   );
 });
 Label$3.displayName = NAME$3;
-var Root$q = Label$3;
+var Root$r = Label$3;
 
 function Label$2({
   className,
   ...props
 }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Root$q,
+    Root$r,
     {
       "data-slot": "label",
       className: cn$1(
@@ -72580,7 +72580,7 @@ function isFrame(element) {
 }
 
 // packages/react/context/src/create-context.tsx
-function createContext2$a(rootComponentName, defaultContext) {
+function createContext2$b(rootComponentName, defaultContext) {
   const Context = reactExports.createContext(defaultContext);
   const Provider = (props) => {
     const { children, ...context } = props;
@@ -72596,7 +72596,7 @@ function createContext2$a(rootComponentName, defaultContext) {
   }
   return [Provider, useContext2];
 }
-function createContextScope$a(scopeName, createContextScopeDeps = []) {
+function createContextScope$b(scopeName, createContextScopeDeps = []) {
   let defaultContexts = [];
   function createContext3(rootComponentName, defaultContext) {
     const BaseContext = reactExports.createContext(defaultContext);
@@ -72631,9 +72631,9 @@ function createContextScope$a(scopeName, createContextScopeDeps = []) {
     };
   };
   createScope.scopeName = scopeName;
-  return [createContext3, composeContextScopes$a(createScope, ...createContextScopeDeps)];
+  return [createContext3, composeContextScopes$b(createScope, ...createContextScopeDeps)];
 }
-function composeContextScopes$a(...scopes) {
+function composeContextScopes$b(...scopes) {
   const baseScope = scopes[0];
   if (scopes.length === 1) return baseScope;
   const createScope = () => {
@@ -72819,12 +72819,12 @@ function useControllableStateReducer(reducer, userArgs, initialArg, init) {
 
 // src/slot.tsx
 // @__NO_SIDE_EFFECTS__
-function createSlot$e(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$e(ownerName);
+function createSlot$f(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone$f(ownerName);
   const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
     const { children, ...slotProps } = props;
     const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$e);
+    const slottable = childrenArray.find(isSlottable$f);
     if (slottable) {
       const newElement = slottable.props.children;
       const newChildren = childrenArray.map((child) => {
@@ -72842,14 +72842,14 @@ function createSlot$e(ownerName) {
   Slot2.displayName = `${ownerName}.Slot`;
   return Slot2;
 }
-var Slot$h = /* @__PURE__ */ createSlot$e("Slot");
+var Slot$i = /* @__PURE__ */ createSlot$f("Slot");
 // @__NO_SIDE_EFFECTS__
-function createSlotClone$e(ownerName) {
+function createSlotClone$f(ownerName) {
   const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
     const { children, ...slotProps } = props;
     if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$f(children);
-      const props2 = mergeProps$e(slotProps, children.props);
+      const childrenRef = getElementRef$g(children);
+      const props2 = mergeProps$f(slotProps, children.props);
       if (children.type !== reactExports.Fragment) {
         props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
       }
@@ -72860,21 +72860,21 @@ function createSlotClone$e(ownerName) {
   SlotClone.displayName = `${ownerName}.SlotClone`;
   return SlotClone;
 }
-var SLOTTABLE_IDENTIFIER$e = Symbol("radix.slottable");
+var SLOTTABLE_IDENTIFIER$f = Symbol("radix.slottable");
 // @__NO_SIDE_EFFECTS__
-function createSlottable$e(ownerName) {
+function createSlottable$f(ownerName) {
   const Slottable2 = ({ children }) => {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
   };
   Slottable2.displayName = `${ownerName}.Slottable`;
-  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$e;
+  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$f;
   return Slottable2;
 }
-var Slottable$e = /* @__PURE__ */ createSlottable$e("Slottable");
-function isSlottable$e(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$e;
+var Slottable$g = /* @__PURE__ */ createSlottable$f("Slottable");
+function isSlottable$f(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$f;
 }
-function mergeProps$e(slotProps, childProps) {
+function mergeProps$f(slotProps, childProps) {
   const overrideProps = { ...childProps };
   for (const propName in childProps) {
     const slotPropValue = slotProps[propName];
@@ -72898,7 +72898,7 @@ function mergeProps$e(slotProps, childProps) {
   }
   return { ...slotProps, ...overrideProps };
 }
-function getElementRef$f(element) {
+function getElementRef$g(element) {
   let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
@@ -72913,7 +72913,7 @@ function getElementRef$f(element) {
 }
 
 // src/primitive.tsx
-var NODES$d = [
+var NODES$e = [
   "a",
   "button",
   "div",
@@ -72932,8 +72932,8 @@ var NODES$d = [
   "svg",
   "ul"
 ];
-var Primitive$d = NODES$d.reduce((primitive, node) => {
-  const Slot = createSlot$e(`Primitive.${node}`);
+var Primitive$e = NODES$e.reduce((primitive, node) => {
+  const Slot = createSlot$f(`Primitive.${node}`);
   const Node = reactExports.forwardRef((props, forwardedRef) => {
     const { asChild, ...primitiveProps } = props;
     const Comp = asChild ? Slot : node;
@@ -72945,10 +72945,10 @@ var Primitive$d = NODES$d.reduce((primitive, node) => {
   Node.displayName = `Primitive.${node}`;
   return { ...primitive, [node]: Node };
 }, {});
-function dispatchDiscreteCustomEvent$d(target, event) {
+function dispatchDiscreteCustomEvent$e(target, event) {
   if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
 }
-var Root$p = Primitive$d;
+var Root$q = Primitive$e;
 
 // packages/react/use-callback-ref/src/use-callback-ref.tsx
 function useCallbackRef$1(callback) {
@@ -73062,7 +73062,7 @@ var DismissableLayer = reactExports.forwardRef(
       return () => document.removeEventListener(CONTEXT_UPDATE, handleUpdate);
     }, []);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$d.div,
+      Primitive$e.div,
       {
         ...layerProps,
         ref: composedRefs,
@@ -73095,7 +73095,7 @@ var DismissableLayerBranch = reactExports.forwardRef((props, forwardedRef) => {
       };
     }
   }, [context.branches]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$d.div, { ...props, ref: composedRefs });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$e.div, { ...props, ref: composedRefs });
 });
 DismissableLayerBranch.displayName = BRANCH_NAME;
 function usePointerDownOutside(onPointerDownOutside, ownerDocument = globalThis?.document) {
@@ -73171,22 +73171,22 @@ function handleAndDispatchCustomEvent(name, handler, detail, { discrete }) {
   const event = new CustomEvent(name, { bubbles: false, cancelable: true, detail });
   if (handler) target.addEventListener(name, handler, { once: true });
   if (discrete) {
-    dispatchDiscreteCustomEvent$d(target, event);
+    dispatchDiscreteCustomEvent$e(target, event);
   } else {
     target.dispatchEvent(event);
   }
 }
-var Root$o = DismissableLayer;
+var Root$p = DismissableLayer;
 var Branch = DismissableLayerBranch;
 
 // src/slot.tsx
 // @__NO_SIDE_EFFECTS__
-function createSlot$d(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$d(ownerName);
+function createSlot$e(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone$e(ownerName);
   const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
     const { children, ...slotProps } = props;
     const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$d);
+    const slottable = childrenArray.find(isSlottable$e);
     if (slottable) {
       const newElement = slottable.props.children;
       const newChildren = childrenArray.map((child) => {
@@ -73204,14 +73204,14 @@ function createSlot$d(ownerName) {
   Slot2.displayName = `${ownerName}.Slot`;
   return Slot2;
 }
-var Slot$g = /* @__PURE__ */ createSlot$d("Slot");
+var Slot$h = /* @__PURE__ */ createSlot$e("Slot");
 // @__NO_SIDE_EFFECTS__
-function createSlotClone$d(ownerName) {
+function createSlotClone$e(ownerName) {
   const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
     const { children, ...slotProps } = props;
     if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$e(children);
-      const props2 = mergeProps$d(slotProps, children.props);
+      const childrenRef = getElementRef$f(children);
+      const props2 = mergeProps$e(slotProps, children.props);
       if (children.type !== reactExports.Fragment) {
         props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
       }
@@ -73222,21 +73222,21 @@ function createSlotClone$d(ownerName) {
   SlotClone.displayName = `${ownerName}.SlotClone`;
   return SlotClone;
 }
-var SLOTTABLE_IDENTIFIER$d = Symbol("radix.slottable");
+var SLOTTABLE_IDENTIFIER$e = Symbol("radix.slottable");
 // @__NO_SIDE_EFFECTS__
-function createSlottable$d(ownerName) {
+function createSlottable$e(ownerName) {
   const Slottable2 = ({ children }) => {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
   };
   Slottable2.displayName = `${ownerName}.Slottable`;
-  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$d;
+  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$e;
   return Slottable2;
 }
-var Slottable$d = /* @__PURE__ */ createSlottable$d("Slottable");
-function isSlottable$d(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$d;
+var Slottable$f = /* @__PURE__ */ createSlottable$e("Slottable");
+function isSlottable$e(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$e;
 }
-function mergeProps$d(slotProps, childProps) {
+function mergeProps$e(slotProps, childProps) {
   const overrideProps = { ...childProps };
   for (const propName in childProps) {
     const slotPropValue = slotProps[propName];
@@ -73260,7 +73260,7 @@ function mergeProps$d(slotProps, childProps) {
   }
   return { ...slotProps, ...overrideProps };
 }
-function getElementRef$e(element) {
+function getElementRef$f(element) {
   let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
@@ -73275,7 +73275,7 @@ function getElementRef$e(element) {
 }
 
 // src/primitive.tsx
-var NODES$c = [
+var NODES$d = [
   "a",
   "button",
   "div",
@@ -73294,8 +73294,8 @@ var NODES$c = [
   "svg",
   "ul"
 ];
-var Primitive$c = NODES$c.reduce((primitive, node) => {
-  const Slot = createSlot$d(`Primitive.${node}`);
+var Primitive$d = NODES$d.reduce((primitive, node) => {
+  const Slot = createSlot$e(`Primitive.${node}`);
   const Node = reactExports.forwardRef((props, forwardedRef) => {
     const { asChild, ...primitiveProps } = props;
     const Comp = asChild ? Slot : node;
@@ -73307,10 +73307,10 @@ var Primitive$c = NODES$c.reduce((primitive, node) => {
   Node.displayName = `Primitive.${node}`;
   return { ...primitive, [node]: Node };
 }, {});
-function dispatchDiscreteCustomEvent$c(target, event) {
+function dispatchDiscreteCustomEvent$d(target, event) {
   if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
 }
-var Root$n = Primitive$c;
+var Root$o = Primitive$d;
 
 "use client";
 var AUTOFOCUS_ON_MOUNT = "focusScope.autoFocusOnMount";
@@ -73431,7 +73431,7 @@ var FocusScope = reactExports.forwardRef((props, forwardedRef) => {
     },
     [loop, trapped, focusScope.paused]
   );
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$c.div, { tabIndex: -1, ...scopeProps, ref: composedRefs, onKeyDown: handleKeyDown });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$d.div, { tabIndex: -1, ...scopeProps, ref: composedRefs, onKeyDown: handleKeyDown });
 });
 FocusScope.displayName = FOCUS_SCOPE_NAME;
 function focusFirst$2(candidates, { select = false } = {}) {
@@ -73513,16 +73513,16 @@ function arrayRemove(array, item) {
 function removeLinks(items) {
   return items.filter((item) => item.tagName !== "A");
 }
-var Root$m = FocusScope;
+var Root$n = FocusScope;
 
 // src/slot.tsx
 // @__NO_SIDE_EFFECTS__
-function createSlot$c(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$c(ownerName);
+function createSlot$d(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone$d(ownerName);
   const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
     const { children, ...slotProps } = props;
     const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$c);
+    const slottable = childrenArray.find(isSlottable$d);
     if (slottable) {
       const newElement = slottable.props.children;
       const newChildren = childrenArray.map((child) => {
@@ -73540,14 +73540,14 @@ function createSlot$c(ownerName) {
   Slot2.displayName = `${ownerName}.Slot`;
   return Slot2;
 }
-var Slot$f = /* @__PURE__ */ createSlot$c("Slot");
+var Slot$g = /* @__PURE__ */ createSlot$d("Slot");
 // @__NO_SIDE_EFFECTS__
-function createSlotClone$c(ownerName) {
+function createSlotClone$d(ownerName) {
   const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
     const { children, ...slotProps } = props;
     if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$d(children);
-      const props2 = mergeProps$c(slotProps, children.props);
+      const childrenRef = getElementRef$e(children);
+      const props2 = mergeProps$d(slotProps, children.props);
       if (children.type !== reactExports.Fragment) {
         props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
       }
@@ -73558,21 +73558,21 @@ function createSlotClone$c(ownerName) {
   SlotClone.displayName = `${ownerName}.SlotClone`;
   return SlotClone;
 }
-var SLOTTABLE_IDENTIFIER$c = Symbol("radix.slottable");
+var SLOTTABLE_IDENTIFIER$d = Symbol("radix.slottable");
 // @__NO_SIDE_EFFECTS__
-function createSlottable$c(ownerName) {
+function createSlottable$d(ownerName) {
   const Slottable2 = ({ children }) => {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
   };
   Slottable2.displayName = `${ownerName}.Slottable`;
-  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$c;
+  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$d;
   return Slottable2;
 }
-var Slottable$c = /* @__PURE__ */ createSlottable$c("Slottable");
-function isSlottable$c(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$c;
+var Slottable$e = /* @__PURE__ */ createSlottable$d("Slottable");
+function isSlottable$d(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$d;
 }
-function mergeProps$c(slotProps, childProps) {
+function mergeProps$d(slotProps, childProps) {
   const overrideProps = { ...childProps };
   for (const propName in childProps) {
     const slotPropValue = slotProps[propName];
@@ -73596,7 +73596,7 @@ function mergeProps$c(slotProps, childProps) {
   }
   return { ...slotProps, ...overrideProps };
 }
-function getElementRef$d(element) {
+function getElementRef$e(element) {
   let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
@@ -73611,7 +73611,7 @@ function getElementRef$d(element) {
 }
 
 // src/primitive.tsx
-var NODES$b = [
+var NODES$c = [
   "a",
   "button",
   "div",
@@ -73630,8 +73630,8 @@ var NODES$b = [
   "svg",
   "ul"
 ];
-var Primitive$b = NODES$b.reduce((primitive, node) => {
-  const Slot = createSlot$c(`Primitive.${node}`);
+var Primitive$c = NODES$c.reduce((primitive, node) => {
+  const Slot = createSlot$d(`Primitive.${node}`);
   const Node = reactExports.forwardRef((props, forwardedRef) => {
     const { asChild, ...primitiveProps } = props;
     const Comp = asChild ? Slot : node;
@@ -73643,22 +73643,22 @@ var Primitive$b = NODES$b.reduce((primitive, node) => {
   Node.displayName = `Primitive.${node}`;
   return { ...primitive, [node]: Node };
 }, {});
-function dispatchDiscreteCustomEvent$b(target, event) {
+function dispatchDiscreteCustomEvent$c(target, event) {
   if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
 }
-var Root$l = Primitive$b;
+var Root$m = Primitive$c;
 
 "use client";
-var PORTAL_NAME$4 = "Portal";
-var Portal$3 = reactExports.forwardRef((props, forwardedRef) => {
+var PORTAL_NAME$5 = "Portal";
+var Portal$4 = reactExports.forwardRef((props, forwardedRef) => {
   const { container: containerProp, ...portalProps } = props;
   const [mounted, setMounted] = reactExports.useState(false);
   useLayoutEffect2(() => setMounted(true), []);
   const container = containerProp || mounted && globalThis?.document?.body;
-  return container ? ReactDOM.createPortal(/* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$b.div, { ...portalProps, ref: forwardedRef }), container) : null;
+  return container ? ReactDOM.createPortal(/* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$c.div, { ...portalProps, ref: forwardedRef }), container) : null;
 });
-Portal$3.displayName = PORTAL_NAME$4;
-var Root$k = Portal$3;
+Portal$4.displayName = PORTAL_NAME$5;
+var Root$l = Portal$4;
 
 "use client";
 function useStateMachine(initialState, machine) {
@@ -73673,7 +73673,7 @@ var Presence = (props) => {
   const { present, children } = props;
   const presence = usePresence(present);
   const child = typeof children === "function" ? children({ present: presence.isPresent }) : reactExports.Children.only(children);
-  const ref = useComposedRefs(presence.ref, getElementRef$c(child));
+  const ref = useComposedRefs(presence.ref, getElementRef$d(child));
   const forceMount = typeof children === "function";
   return forceMount || presence.isPresent ? reactExports.cloneElement(child, { ref }) : null;
 };
@@ -73772,7 +73772,7 @@ function usePresence(present) {
 function getAnimationName(styles) {
   return styles?.animationName || "none";
 }
-function getElementRef$c(element) {
+function getElementRef$d(element) {
   let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
@@ -73785,16 +73785,16 @@ function getElementRef$c(element) {
   }
   return element.props.ref || element.ref;
 }
-var Root$j = Presence;
+var Root$k = Presence;
 
 // src/slot.tsx
 // @__NO_SIDE_EFFECTS__
-function createSlot$b(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$b(ownerName);
+function createSlot$c(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone$c(ownerName);
   const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
     const { children, ...slotProps } = props;
     const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$b);
+    const slottable = childrenArray.find(isSlottable$c);
     if (slottable) {
       const newElement = slottable.props.children;
       const newChildren = childrenArray.map((child) => {
@@ -73812,14 +73812,14 @@ function createSlot$b(ownerName) {
   Slot2.displayName = `${ownerName}.Slot`;
   return Slot2;
 }
-var Slot$e = /* @__PURE__ */ createSlot$b("Slot");
+var Slot$f = /* @__PURE__ */ createSlot$c("Slot");
 // @__NO_SIDE_EFFECTS__
-function createSlotClone$b(ownerName) {
+function createSlotClone$c(ownerName) {
   const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
     const { children, ...slotProps } = props;
     if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$b(children);
-      const props2 = mergeProps$b(slotProps, children.props);
+      const childrenRef = getElementRef$c(children);
+      const props2 = mergeProps$c(slotProps, children.props);
       if (children.type !== reactExports.Fragment) {
         props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
       }
@@ -73830,21 +73830,21 @@ function createSlotClone$b(ownerName) {
   SlotClone.displayName = `${ownerName}.SlotClone`;
   return SlotClone;
 }
-var SLOTTABLE_IDENTIFIER$b = Symbol("radix.slottable");
+var SLOTTABLE_IDENTIFIER$c = Symbol("radix.slottable");
 // @__NO_SIDE_EFFECTS__
-function createSlottable$b(ownerName) {
+function createSlottable$c(ownerName) {
   const Slottable2 = ({ children }) => {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
   };
   Slottable2.displayName = `${ownerName}.Slottable`;
-  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$b;
+  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$c;
   return Slottable2;
 }
-var Slottable$b = /* @__PURE__ */ createSlottable$b("Slottable");
-function isSlottable$b(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$b;
+var Slottable$d = /* @__PURE__ */ createSlottable$c("Slottable");
+function isSlottable$c(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$c;
 }
-function mergeProps$b(slotProps, childProps) {
+function mergeProps$c(slotProps, childProps) {
   const overrideProps = { ...childProps };
   for (const propName in childProps) {
     const slotPropValue = slotProps[propName];
@@ -73868,7 +73868,7 @@ function mergeProps$b(slotProps, childProps) {
   }
   return { ...slotProps, ...overrideProps };
 }
-function getElementRef$b(element) {
+function getElementRef$c(element) {
   let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
@@ -73883,7 +73883,7 @@ function getElementRef$b(element) {
 }
 
 // src/primitive.tsx
-var NODES$a = [
+var NODES$b = [
   "a",
   "button",
   "div",
@@ -73902,8 +73902,8 @@ var NODES$a = [
   "svg",
   "ul"
 ];
-var Primitive$a = NODES$a.reduce((primitive, node) => {
-  const Slot = createSlot$b(`Primitive.${node}`);
+var Primitive$b = NODES$b.reduce((primitive, node) => {
+  const Slot = createSlot$c(`Primitive.${node}`);
   const Node = reactExports.forwardRef((props, forwardedRef) => {
     const { asChild, ...primitiveProps } = props;
     const Comp = asChild ? Slot : node;
@@ -73915,10 +73915,10 @@ var Primitive$a = NODES$a.reduce((primitive, node) => {
   Node.displayName = `Primitive.${node}`;
   return { ...primitive, [node]: Node };
 }, {});
-function dispatchDiscreteCustomEvent$a(target, event) {
+function dispatchDiscreteCustomEvent$b(target, event) {
   if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
 }
-var Root$i = Primitive$a;
+var Root$j = Primitive$b;
 
 "use client";
 var count = 0;
@@ -75450,7 +75450,7 @@ var suppressOthers = function (originalTarget, parentNode, markerName) {
 
 "use client";
 var DIALOG_NAME = "Dialog";
-var [createDialogContext, createDialogScope] = createContextScope$a(DIALOG_NAME);
+var [createDialogContext, createDialogScope] = createContextScope$b(DIALOG_NAME);
 var [DialogProvider, useDialogContext] = createDialogContext(DIALOG_NAME);
 var Dialog$1 = (props) => {
   const {
@@ -75487,14 +75487,14 @@ var Dialog$1 = (props) => {
   );
 };
 Dialog$1.displayName = DIALOG_NAME;
-var TRIGGER_NAME$4 = "DialogTrigger";
+var TRIGGER_NAME$5 = "DialogTrigger";
 var DialogTrigger$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeDialog, ...triggerProps } = props;
-    const context = useDialogContext(TRIGGER_NAME$4, __scopeDialog);
+    const context = useDialogContext(TRIGGER_NAME$5, __scopeDialog);
     const composedTriggerRef = useComposedRefs(forwardedRef, context.triggerRef);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$a.button,
+      Primitive$b.button,
       {
         type: "button",
         "aria-haspopup": "dialog",
@@ -75508,28 +75508,28 @@ var DialogTrigger$1 = reactExports.forwardRef(
     );
   }
 );
-DialogTrigger$1.displayName = TRIGGER_NAME$4;
-var PORTAL_NAME$3 = "DialogPortal";
-var [PortalProvider$1, usePortalContext$1] = createDialogContext(PORTAL_NAME$3, {
+DialogTrigger$1.displayName = TRIGGER_NAME$5;
+var PORTAL_NAME$4 = "DialogPortal";
+var [PortalProvider$2, usePortalContext$2] = createDialogContext(PORTAL_NAME$4, {
   forceMount: void 0
 });
 var DialogPortal$1 = (props) => {
   const { __scopeDialog, forceMount, children, container } = props;
-  const context = useDialogContext(PORTAL_NAME$3, __scopeDialog);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(PortalProvider$1, { scope: __scopeDialog, forceMount, children: reactExports.Children.map(children, (child) => /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$3, { asChild: true, container, children: child }) })) });
+  const context = useDialogContext(PORTAL_NAME$4, __scopeDialog);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(PortalProvider$2, { scope: __scopeDialog, forceMount, children: reactExports.Children.map(children, (child) => /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$4, { asChild: true, container, children: child }) })) });
 };
-DialogPortal$1.displayName = PORTAL_NAME$3;
+DialogPortal$1.displayName = PORTAL_NAME$4;
 var OVERLAY_NAME = "DialogOverlay";
 var DialogOverlay$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
-    const portalContext = usePortalContext$1(OVERLAY_NAME, props.__scopeDialog);
+    const portalContext = usePortalContext$2(OVERLAY_NAME, props.__scopeDialog);
     const { forceMount = portalContext.forceMount, ...overlayProps } = props;
     const context = useDialogContext(OVERLAY_NAME, props.__scopeDialog);
     return context.modal ? /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(DialogOverlayImpl, { ...overlayProps, ref: forwardedRef }) }) : null;
   }
 );
 DialogOverlay$1.displayName = OVERLAY_NAME;
-var Slot$d = createSlot$b("DialogOverlay.RemoveScroll");
+var Slot$e = createSlot$c("DialogOverlay.RemoveScroll");
 var DialogOverlayImpl = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeDialog, ...overlayProps } = props;
@@ -75537,8 +75537,8 @@ var DialogOverlayImpl = reactExports.forwardRef(
     return (
       // Make sure `Content` is scrollable even when it doesn't live inside `RemoveScroll`
       // ie. when `Overlay` and `Content` are siblings
-      /* @__PURE__ */ jsxRuntimeExports.jsx(ReactRemoveScroll, { as: Slot$d, allowPinchZoom: true, shards: [context.contentRef], children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Primitive$a.div,
+      /* @__PURE__ */ jsxRuntimeExports.jsx(ReactRemoveScroll, { as: Slot$e, allowPinchZoom: true, shards: [context.contentRef], children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Primitive$b.div,
         {
           "data-state": getState$2(context.open),
           ...overlayProps,
@@ -75549,19 +75549,19 @@ var DialogOverlayImpl = reactExports.forwardRef(
     );
   }
 );
-var CONTENT_NAME$5 = "DialogContent";
+var CONTENT_NAME$6 = "DialogContent";
 var DialogContent$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
-    const portalContext = usePortalContext$1(CONTENT_NAME$5, props.__scopeDialog);
+    const portalContext = usePortalContext$2(CONTENT_NAME$6, props.__scopeDialog);
     const { forceMount = portalContext.forceMount, ...contentProps } = props;
-    const context = useDialogContext(CONTENT_NAME$5, props.__scopeDialog);
+    const context = useDialogContext(CONTENT_NAME$6, props.__scopeDialog);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: context.modal ? /* @__PURE__ */ jsxRuntimeExports.jsx(DialogContentModal, { ...contentProps, ref: forwardedRef }) : /* @__PURE__ */ jsxRuntimeExports.jsx(DialogContentNonModal, { ...contentProps, ref: forwardedRef }) });
   }
 );
-DialogContent$1.displayName = CONTENT_NAME$5;
+DialogContent$1.displayName = CONTENT_NAME$6;
 var DialogContentModal = reactExports.forwardRef(
   (props, forwardedRef) => {
-    const context = useDialogContext(CONTENT_NAME$5, props.__scopeDialog);
+    const context = useDialogContext(CONTENT_NAME$6, props.__scopeDialog);
     const contentRef = reactExports.useRef(null);
     const composedRefs = useComposedRefs(forwardedRef, context.contentRef, contentRef);
     reactExports.useEffect(() => {
@@ -75595,7 +75595,7 @@ var DialogContentModal = reactExports.forwardRef(
 );
 var DialogContentNonModal = reactExports.forwardRef(
   (props, forwardedRef) => {
-    const context = useDialogContext(CONTENT_NAME$5, props.__scopeDialog);
+    const context = useDialogContext(CONTENT_NAME$6, props.__scopeDialog);
     const hasInteractedOutsideRef = reactExports.useRef(false);
     const hasPointerDownOutsideRef = reactExports.useRef(false);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -75636,7 +75636,7 @@ var DialogContentNonModal = reactExports.forwardRef(
 var DialogContentImpl = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeDialog, trapFocus, onOpenAutoFocus, onCloseAutoFocus, ...contentProps } = props;
-    const context = useDialogContext(CONTENT_NAME$5, __scopeDialog);
+    const context = useDialogContext(CONTENT_NAME$6, __scopeDialog);
     const contentRef = reactExports.useRef(null);
     const composedRefs = useComposedRefs(forwardedRef, contentRef);
     useFocusGuards();
@@ -75676,7 +75676,7 @@ var DialogTitle$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeDialog, ...titleProps } = props;
     const context = useDialogContext(TITLE_NAME, __scopeDialog);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$a.h2, { id: context.titleId, ...titleProps, ref: forwardedRef });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$b.h2, { id: context.titleId, ...titleProps, ref: forwardedRef });
   }
 );
 DialogTitle$1.displayName = TITLE_NAME;
@@ -75685,7 +75685,7 @@ var DialogDescription$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeDialog, ...descriptionProps } = props;
     const context = useDialogContext(DESCRIPTION_NAME, __scopeDialog);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$a.p, { id: context.descriptionId, ...descriptionProps, ref: forwardedRef });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$b.p, { id: context.descriptionId, ...descriptionProps, ref: forwardedRef });
   }
 );
 DialogDescription$1.displayName = DESCRIPTION_NAME;
@@ -75695,7 +75695,7 @@ var DialogClose$1 = reactExports.forwardRef(
     const { __scopeDialog, ...closeProps } = props;
     const context = useDialogContext(CLOSE_NAME, __scopeDialog);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$a.button,
+      Primitive$b.button,
       {
         type: "button",
         ...closeProps,
@@ -75710,8 +75710,8 @@ function getState$2(open) {
   return open ? "open" : "closed";
 }
 var TITLE_WARNING_NAME = "DialogTitleWarning";
-var [WarningProvider, useWarningContext] = createContext2$a(TITLE_WARNING_NAME, {
-  contentName: CONTENT_NAME$5,
+var [WarningProvider, useWarningContext] = createContext2$b(TITLE_WARNING_NAME, {
+  contentName: CONTENT_NAME$6,
   titleName: TITLE_NAME,
   docsSlug: "dialog"
 });
@@ -75743,9 +75743,9 @@ var DescriptionWarning = ({ contentRef, descriptionId }) => {
   }, [MESSAGE, contentRef, descriptionId]);
   return null;
 };
-var Root$h = Dialog$1;
-var Trigger$3 = DialogTrigger$1;
-var Portal$2 = DialogPortal$1;
+var Root$i = Dialog$1;
+var Trigger$4 = DialogTrigger$1;
+var Portal$3 = DialogPortal$1;
 var Overlay = DialogOverlay$1;
 var Content$2 = DialogContent$1;
 var Title = DialogTitle$1;
@@ -75753,12 +75753,12 @@ var Description = DialogDescription$1;
 var Close = DialogClose$1;
 
 function Sheet({ ...props }) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Root$h, { "data-slot": "sheet", ...props });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Root$i, { "data-slot": "sheet", ...props });
 }
 function SheetTrigger({
   ...props
 }) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger$3, { "data-slot": "sheet-trigger", ...props });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger$4, { "data-slot": "sheet-trigger", ...props });
 }
 function SheetClose({
   ...props
@@ -75768,7 +75768,7 @@ function SheetClose({
 function SheetPortal({
   ...props
 }) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$2, { "data-slot": "sheet-portal", ...props });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$3, { "data-slot": "sheet-portal", ...props });
 }
 function SheetOverlay({
   className,
@@ -75885,6 +75885,11 @@ const navigationCategories = [
         title: "Admins",
         href: "/super-admin/admins",
         icon: Shield
+      },
+      {
+        title: "Creators",
+        href: "/super-admin/tutors",
+        icon: School
       }
     ]
   },
@@ -75954,11 +75959,6 @@ const navigationCategories = [
         title: "School Fees Management",
         href: "/super-admin/school-fees",
         icon: Receipt
-      },
-      {
-        title: "Tutor Management",
-        href: "/super-admin/tutors",
-        icon: School
       },
       {
         title: "Revenue",
@@ -76132,7 +76132,7 @@ function AdminSidebar({
 }
 
 // src/create-context.tsx
-function createContext2$9(rootComponentName, defaultContext) {
+function createContext2$a(rootComponentName, defaultContext) {
   const Context = reactExports.createContext(defaultContext);
   Context.displayName = rootComponentName + "Context";
   const Provider = (props) => {
@@ -76149,7 +76149,7 @@ function createContext2$9(rootComponentName, defaultContext) {
   }
   return [Provider, useContext2];
 }
-function createContextScope$9(scopeName, createContextScopeDeps = []) {
+function createContextScope$a(scopeName, createContextScopeDeps = []) {
   let defaultContexts = [];
   function createContext3(rootComponentName, defaultContext) {
     const BaseContext = reactExports.createContext(defaultContext);
@@ -76185,9 +76185,9 @@ function createContextScope$9(scopeName, createContextScopeDeps = []) {
     };
   };
   createScope.scopeName = scopeName;
-  return [createContext3, composeContextScopes$9(createScope, ...createContextScopeDeps)];
+  return [createContext3, composeContextScopes$a(createScope, ...createContextScopeDeps)];
 }
-function composeContextScopes$9(...scopes) {
+function composeContextScopes$a(...scopes) {
   const baseScope = scopes[0];
   if (scopes.length === 1) return baseScope;
   const createScope = () => {
@@ -76320,7 +76320,7 @@ function subscribe() {
 
 "use client";
 var AVATAR_NAME = "Avatar";
-var [createAvatarContext, createAvatarScope] = createContextScope$9(AVATAR_NAME);
+var [createAvatarContext, createAvatarScope] = createContextScope$a(AVATAR_NAME);
 var [AvatarProvider, useAvatarContext] = createAvatarContext(AVATAR_NAME);
 var Avatar$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
@@ -76332,7 +76332,7 @@ var Avatar$1 = reactExports.forwardRef(
         scope: __scopeAvatar,
         imageLoadingStatus,
         onImageLoadingStatusChange: setImageLoadingStatus,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$e.span, { ...avatarProps, ref: forwardedRef })
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$f.span, { ...avatarProps, ref: forwardedRef })
       }
     );
   }
@@ -76354,7 +76354,7 @@ var AvatarImage$1 = reactExports.forwardRef(
         handleLoadingStatusChange(imageLoadingStatus);
       }
     }, [imageLoadingStatus, handleLoadingStatusChange]);
-    return imageLoadingStatus === "loaded" ? /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$e.img, { ...imageProps, ref: forwardedRef, src }) : null;
+    return imageLoadingStatus === "loaded" ? /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$f.img, { ...imageProps, ref: forwardedRef, src }) : null;
   }
 );
 AvatarImage$1.displayName = IMAGE_NAME;
@@ -76370,7 +76370,7 @@ var AvatarFallback$1 = reactExports.forwardRef(
         return () => window.clearTimeout(timerId);
       }
     }, [delayMs]);
-    return canRender && context.imageLoadingStatus !== "loaded" ? /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$e.span, { ...fallbackProps, ref: forwardedRef }) : null;
+    return canRender && context.imageLoadingStatus !== "loaded" ? /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$f.span, { ...fallbackProps, ref: forwardedRef }) : null;
   }
 );
 AvatarFallback$1.displayName = FALLBACK_NAME;
@@ -76424,12 +76424,12 @@ function useImageLoadingStatus(src, { referrerPolicy, crossOrigin }) {
   }, [image, crossOrigin, referrerPolicy]);
   return loadingStatus;
 }
-var Root$g = Avatar$1;
+var Root$h = Avatar$1;
 var Image$1 = AvatarImage$1;
 var Fallback = AvatarFallback$1;
 
 const Avatar = reactExports.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-  Root$g,
+  Root$h,
   {
     ref,
     className: cn$1(
@@ -76439,7 +76439,7 @@ const Avatar = reactExports.forwardRef(({ className, ...props }, ref) => /* @__P
     ...props
   }
 ));
-Avatar.displayName = Root$g.displayName;
+Avatar.displayName = Root$h.displayName;
 const AvatarImage = reactExports.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsx(
   Image$1,
   {
@@ -76461,6 +76461,214 @@ const AvatarFallback = reactExports.forwardRef(({ className, ...props }, ref) =>
   }
 ));
 AvatarFallback.displayName = Fallback.displayName;
+
+// packages/react/context/src/create-context.tsx
+function createContext2$9(rootComponentName, defaultContext) {
+  const Context = reactExports.createContext(defaultContext);
+  const Provider = (props) => {
+    const { children, ...context } = props;
+    const value = reactExports.useMemo(() => context, Object.values(context));
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
+  };
+  Provider.displayName = rootComponentName + "Provider";
+  function useContext2(consumerName) {
+    const context = reactExports.useContext(Context);
+    if (context) return context;
+    if (defaultContext !== void 0) return defaultContext;
+    throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
+  }
+  return [Provider, useContext2];
+}
+function createContextScope$9(scopeName, createContextScopeDeps = []) {
+  let defaultContexts = [];
+  function createContext3(rootComponentName, defaultContext) {
+    const BaseContext = reactExports.createContext(defaultContext);
+    const index = defaultContexts.length;
+    defaultContexts = [...defaultContexts, defaultContext];
+    const Provider = (props) => {
+      const { scope, children, ...context } = props;
+      const Context = scope?.[scopeName]?.[index] || BaseContext;
+      const value = reactExports.useMemo(() => context, Object.values(context));
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
+    };
+    Provider.displayName = rootComponentName + "Provider";
+    function useContext2(consumerName, scope) {
+      const Context = scope?.[scopeName]?.[index] || BaseContext;
+      const context = reactExports.useContext(Context);
+      if (context) return context;
+      if (defaultContext !== void 0) return defaultContext;
+      throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
+    }
+    return [Provider, useContext2];
+  }
+  const createScope = () => {
+    const scopeContexts = defaultContexts.map((defaultContext) => {
+      return reactExports.createContext(defaultContext);
+    });
+    return function useScope(scope) {
+      const contexts = scope?.[scopeName] || scopeContexts;
+      return reactExports.useMemo(
+        () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
+        [scope, contexts]
+      );
+    };
+  };
+  createScope.scopeName = scopeName;
+  return [createContext3, composeContextScopes$9(createScope, ...createContextScopeDeps)];
+}
+function composeContextScopes$9(...scopes) {
+  const baseScope = scopes[0];
+  if (scopes.length === 1) return baseScope;
+  const createScope = () => {
+    const scopeHooks = scopes.map((createScope2) => ({
+      useScope: createScope2(),
+      scopeName: createScope2.scopeName
+    }));
+    return function useComposedScopes(overrideScopes) {
+      const nextScopes = scopeHooks.reduce((nextScopes2, { useScope, scopeName }) => {
+        const scopeProps = useScope(overrideScopes);
+        const currentScope = scopeProps[`__scope${scopeName}`];
+        return { ...nextScopes2, ...currentScope };
+      }, {});
+      return reactExports.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
+    };
+  };
+  createScope.scopeName = baseScope.scopeName;
+  return createScope;
+}
+
+// src/slot.tsx
+// @__NO_SIDE_EFFECTS__
+function createSlot$b(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone$b(ownerName);
+  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    const childrenArray = reactExports.Children.toArray(children);
+    const slottable = childrenArray.find(isSlottable$b);
+    if (slottable) {
+      const newElement = slottable.props.children;
+      const newChildren = childrenArray.map((child) => {
+        if (child === slottable) {
+          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
+          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
+        } else {
+          return child;
+        }
+      });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
+  });
+  Slot2.displayName = `${ownerName}.Slot`;
+  return Slot2;
+}
+var Slot$d = /* @__PURE__ */ createSlot$b("Slot");
+// @__NO_SIDE_EFFECTS__
+function createSlotClone$b(ownerName) {
+  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    if (reactExports.isValidElement(children)) {
+      const childrenRef = getElementRef$b(children);
+      const props2 = mergeProps$b(slotProps, children.props);
+      if (children.type !== reactExports.Fragment) {
+        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
+      }
+      return reactExports.cloneElement(children, props2);
+    }
+    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
+  });
+  SlotClone.displayName = `${ownerName}.SlotClone`;
+  return SlotClone;
+}
+var SLOTTABLE_IDENTIFIER$b = Symbol("radix.slottable");
+// @__NO_SIDE_EFFECTS__
+function createSlottable$b(ownerName) {
+  const Slottable2 = ({ children }) => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
+  };
+  Slottable2.displayName = `${ownerName}.Slottable`;
+  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$b;
+  return Slottable2;
+}
+var Slottable$c = /* @__PURE__ */ createSlottable$b("Slottable");
+function isSlottable$b(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$b;
+}
+function mergeProps$b(slotProps, childProps) {
+  const overrideProps = { ...childProps };
+  for (const propName in childProps) {
+    const slotPropValue = slotProps[propName];
+    const childPropValue = childProps[propName];
+    const isHandler = /^on[A-Z]/.test(propName);
+    if (isHandler) {
+      if (slotPropValue && childPropValue) {
+        overrideProps[propName] = (...args) => {
+          const result = childPropValue(...args);
+          slotPropValue(...args);
+          return result;
+        };
+      } else if (slotPropValue) {
+        overrideProps[propName] = slotPropValue;
+      }
+    } else if (propName === "style") {
+      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
+    } else if (propName === "className") {
+      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
+    }
+  }
+  return { ...slotProps, ...overrideProps };
+}
+function getElementRef$b(element) {
+  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
+  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.ref;
+  }
+  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
+  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.props.ref;
+  }
+  return element.props.ref || element.ref;
+}
+
+// src/primitive.tsx
+var NODES$a = [
+  "a",
+  "button",
+  "div",
+  "form",
+  "h2",
+  "h3",
+  "img",
+  "input",
+  "label",
+  "li",
+  "nav",
+  "ol",
+  "p",
+  "select",
+  "span",
+  "svg",
+  "ul"
+];
+var Primitive$a = NODES$a.reduce((primitive, node) => {
+  const Slot = createSlot$b(`Primitive.${node}`);
+  const Node = reactExports.forwardRef((props, forwardedRef) => {
+    const { asChild, ...primitiveProps } = props;
+    const Comp = asChild ? Slot : node;
+    if (typeof window !== "undefined") {
+      window[Symbol.for("radix-ui")] = true;
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
+  });
+  Node.displayName = `Primitive.${node}`;
+  return { ...primitive, [node]: Node };
+}, {});
+function dispatchDiscreteCustomEvent$a(target, event) {
+  if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
+}
+var Root$g = Primitive$a;
 
 // packages/react/context/src/create-context.tsx
 function createContext2$8(rootComponentName, defaultContext) {
@@ -76590,7 +76798,7 @@ function createSlottable$a(ownerName) {
   Slottable2.__radixId = SLOTTABLE_IDENTIFIER$a;
   return Slottable2;
 }
-var Slottable$a = /* @__PURE__ */ createSlottable$a("Slottable");
+var Slottable$b = /* @__PURE__ */ createSlottable$a("Slottable");
 function isSlottable$a(child) {
   return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$a;
 }
@@ -76632,218 +76840,10 @@ function getElementRef$a(element) {
   return element.props.ref || element.ref;
 }
 
-// src/primitive.tsx
-var NODES$9 = [
-  "a",
-  "button",
-  "div",
-  "form",
-  "h2",
-  "h3",
-  "img",
-  "input",
-  "label",
-  "li",
-  "nav",
-  "ol",
-  "p",
-  "select",
-  "span",
-  "svg",
-  "ul"
-];
-var Primitive$9 = NODES$9.reduce((primitive, node) => {
-  const Slot = createSlot$a(`Primitive.${node}`);
-  const Node = reactExports.forwardRef((props, forwardedRef) => {
-    const { asChild, ...primitiveProps } = props;
-    const Comp = asChild ? Slot : node;
-    if (typeof window !== "undefined") {
-      window[Symbol.for("radix-ui")] = true;
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
-  });
-  Node.displayName = `Primitive.${node}`;
-  return { ...primitive, [node]: Node };
-}, {});
-function dispatchDiscreteCustomEvent$9(target, event) {
-  if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
-}
-var Root$f = Primitive$9;
-
-// packages/react/context/src/create-context.tsx
-function createContext2$7(rootComponentName, defaultContext) {
-  const Context = reactExports.createContext(defaultContext);
-  const Provider = (props) => {
-    const { children, ...context } = props;
-    const value = reactExports.useMemo(() => context, Object.values(context));
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
-  };
-  Provider.displayName = rootComponentName + "Provider";
-  function useContext2(consumerName) {
-    const context = reactExports.useContext(Context);
-    if (context) return context;
-    if (defaultContext !== void 0) return defaultContext;
-    throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
-  }
-  return [Provider, useContext2];
-}
-function createContextScope$7(scopeName, createContextScopeDeps = []) {
-  let defaultContexts = [];
-  function createContext3(rootComponentName, defaultContext) {
-    const BaseContext = reactExports.createContext(defaultContext);
-    const index = defaultContexts.length;
-    defaultContexts = [...defaultContexts, defaultContext];
-    const Provider = (props) => {
-      const { scope, children, ...context } = props;
-      const Context = scope?.[scopeName]?.[index] || BaseContext;
-      const value = reactExports.useMemo(() => context, Object.values(context));
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
-    };
-    Provider.displayName = rootComponentName + "Provider";
-    function useContext2(consumerName, scope) {
-      const Context = scope?.[scopeName]?.[index] || BaseContext;
-      const context = reactExports.useContext(Context);
-      if (context) return context;
-      if (defaultContext !== void 0) return defaultContext;
-      throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
-    }
-    return [Provider, useContext2];
-  }
-  const createScope = () => {
-    const scopeContexts = defaultContexts.map((defaultContext) => {
-      return reactExports.createContext(defaultContext);
-    });
-    return function useScope(scope) {
-      const contexts = scope?.[scopeName] || scopeContexts;
-      return reactExports.useMemo(
-        () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
-        [scope, contexts]
-      );
-    };
-  };
-  createScope.scopeName = scopeName;
-  return [createContext3, composeContextScopes$7(createScope, ...createContextScopeDeps)];
-}
-function composeContextScopes$7(...scopes) {
-  const baseScope = scopes[0];
-  if (scopes.length === 1) return baseScope;
-  const createScope = () => {
-    const scopeHooks = scopes.map((createScope2) => ({
-      useScope: createScope2(),
-      scopeName: createScope2.scopeName
-    }));
-    return function useComposedScopes(overrideScopes) {
-      const nextScopes = scopeHooks.reduce((nextScopes2, { useScope, scopeName }) => {
-        const scopeProps = useScope(overrideScopes);
-        const currentScope = scopeProps[`__scope${scopeName}`];
-        return { ...nextScopes2, ...currentScope };
-      }, {});
-      return reactExports.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
-    };
-  };
-  createScope.scopeName = baseScope.scopeName;
-  return createScope;
-}
-
-// src/slot.tsx
-// @__NO_SIDE_EFFECTS__
-function createSlot$9(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$9(ownerName);
-  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$9);
-    if (slottable) {
-      const newElement = slottable.props.children;
-      const newChildren = childrenArray.map((child) => {
-        if (child === slottable) {
-          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
-          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
-        } else {
-          return child;
-        }
-      });
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
-  });
-  Slot2.displayName = `${ownerName}.Slot`;
-  return Slot2;
-}
-var Slot$b = /* @__PURE__ */ createSlot$9("Slot");
-// @__NO_SIDE_EFFECTS__
-function createSlotClone$9(ownerName) {
-  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$9(children);
-      const props2 = mergeProps$9(slotProps, children.props);
-      if (children.type !== reactExports.Fragment) {
-        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
-      }
-      return reactExports.cloneElement(children, props2);
-    }
-    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
-  });
-  SlotClone.displayName = `${ownerName}.SlotClone`;
-  return SlotClone;
-}
-var SLOTTABLE_IDENTIFIER$9 = Symbol("radix.slottable");
-// @__NO_SIDE_EFFECTS__
-function createSlottable$9(ownerName) {
-  const Slottable2 = ({ children }) => {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
-  };
-  Slottable2.displayName = `${ownerName}.Slottable`;
-  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$9;
-  return Slottable2;
-}
-var Slottable$9 = /* @__PURE__ */ createSlottable$9("Slottable");
-function isSlottable$9(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$9;
-}
-function mergeProps$9(slotProps, childProps) {
-  const overrideProps = { ...childProps };
-  for (const propName in childProps) {
-    const slotPropValue = slotProps[propName];
-    const childPropValue = childProps[propName];
-    const isHandler = /^on[A-Z]/.test(propName);
-    if (isHandler) {
-      if (slotPropValue && childPropValue) {
-        overrideProps[propName] = (...args) => {
-          const result = childPropValue(...args);
-          slotPropValue(...args);
-          return result;
-        };
-      } else if (slotPropValue) {
-        overrideProps[propName] = slotPropValue;
-      }
-    } else if (propName === "style") {
-      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
-    } else if (propName === "className") {
-      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
-    }
-  }
-  return { ...slotProps, ...overrideProps };
-}
-function getElementRef$9(element) {
-  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
-  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.ref;
-  }
-  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
-  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.props.ref;
-  }
-  return element.props.ref || element.ref;
-}
-
 "use client";
 function createCollection(name) {
   const PROVIDER_NAME = name + "CollectionProvider";
-  const [createCollectionContext, createCollectionScope] = createContextScope$7(PROVIDER_NAME);
+  const [createCollectionContext, createCollectionScope] = createContextScope$8(PROVIDER_NAME);
   const [CollectionProviderImpl, useCollectionContext] = createCollectionContext(
     PROVIDER_NAME,
     { collectionRef: { current: null }, itemMap: /* @__PURE__ */ new Map() }
@@ -76856,7 +76856,7 @@ function createCollection(name) {
   };
   CollectionProvider.displayName = PROVIDER_NAME;
   const COLLECTION_SLOT_NAME = name + "CollectionSlot";
-  const CollectionSlotImpl = createSlot$9(COLLECTION_SLOT_NAME);
+  const CollectionSlotImpl = createSlot$a(COLLECTION_SLOT_NAME);
   const CollectionSlot = React.forwardRef(
     (props, forwardedRef) => {
       const { scope, children } = props;
@@ -76868,7 +76868,7 @@ function createCollection(name) {
   CollectionSlot.displayName = COLLECTION_SLOT_NAME;
   const ITEM_SLOT_NAME = name + "CollectionItemSlot";
   const ITEM_DATA_ATTR = "data-radix-collection-item";
-  const CollectionItemSlotImpl = createSlot$9(ITEM_SLOT_NAME);
+  const CollectionItemSlotImpl = createSlot$a(ITEM_SLOT_NAME);
   const CollectionItemSlot = React.forwardRef(
     (props, forwardedRef) => {
       const { scope, children, ...itemData } = props;
@@ -77210,7 +77210,7 @@ function toSafeInteger$1(number) {
 }
 function createCollection2(name) {
   const PROVIDER_NAME = name + "CollectionProvider";
-  const [createCollectionContext, createCollectionScope] = createContextScope$7(PROVIDER_NAME);
+  const [createCollectionContext, createCollectionScope] = createContextScope$8(PROVIDER_NAME);
   const [CollectionContextProvider, useCollectionContext] = createCollectionContext(
     PROVIDER_NAME,
     {
@@ -77265,7 +77265,7 @@ function createCollection2(name) {
   };
   CollectionProviderImpl.displayName = PROVIDER_NAME + "Impl";
   const COLLECTION_SLOT_NAME = name + "CollectionSlot";
-  const CollectionSlotImpl = createSlot$9(COLLECTION_SLOT_NAME);
+  const CollectionSlotImpl = createSlot$a(COLLECTION_SLOT_NAME);
   const CollectionSlot = React.forwardRef(
     (props, forwardedRef) => {
       const { scope, children } = props;
@@ -77277,7 +77277,7 @@ function createCollection2(name) {
   CollectionSlot.displayName = COLLECTION_SLOT_NAME;
   const ITEM_SLOT_NAME = name + "CollectionItemSlot";
   const ITEM_DATA_ATTR = "data-radix-collection-item";
-  const CollectionItemSlotImpl = createSlot$9(ITEM_SLOT_NAME);
+  const CollectionItemSlotImpl = createSlot$a(ITEM_SLOT_NAME);
   const CollectionItemSlot = React.forwardRef(
     (props, forwardedRef) => {
       const { scope, children, ...itemData } = props;
@@ -77366,7 +77366,7 @@ function getChildListObserver(callback) {
 }
 
 // packages/react/context/src/create-context.tsx
-function createContext2$6(rootComponentName, defaultContext) {
+function createContext2$7(rootComponentName, defaultContext) {
   const Context = reactExports.createContext(defaultContext);
   const Provider = (props) => {
     const { children, ...context } = props;
@@ -77382,7 +77382,7 @@ function createContext2$6(rootComponentName, defaultContext) {
   }
   return [Provider, useContext2];
 }
-function createContextScope$6(scopeName, createContextScopeDeps = []) {
+function createContextScope$7(scopeName, createContextScopeDeps = []) {
   let defaultContexts = [];
   function createContext3(rootComponentName, defaultContext) {
     const BaseContext = reactExports.createContext(defaultContext);
@@ -77417,9 +77417,9 @@ function createContextScope$6(scopeName, createContextScopeDeps = []) {
     };
   };
   createScope.scopeName = scopeName;
-  return [createContext3, composeContextScopes$6(createScope, ...createContextScopeDeps)];
+  return [createContext3, composeContextScopes$7(createScope, ...createContextScopeDeps)];
 }
-function composeContextScopes$6(...scopes) {
+function composeContextScopes$7(...scopes) {
   const baseScope = scopes[0];
   if (scopes.length === 1) return baseScope;
   const createScope = () => {
@@ -77450,7 +77450,7 @@ function useDirection(localDir) {
   const globalDir = reactExports.useContext(DirectionContext);
   return localDir || globalDir || "ltr";
 }
-var Provider = DirectionProvider;
+var Provider$1 = DirectionProvider;
 
 /**
  * Custom positioning reference element.
@@ -79932,6 +79932,234 @@ const arrow = (options, deps) => ({
 
 // src/slot.tsx
 // @__NO_SIDE_EFFECTS__
+function createSlot$9(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone$9(ownerName);
+  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    const childrenArray = reactExports.Children.toArray(children);
+    const slottable = childrenArray.find(isSlottable$9);
+    if (slottable) {
+      const newElement = slottable.props.children;
+      const newChildren = childrenArray.map((child) => {
+        if (child === slottable) {
+          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
+          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
+        } else {
+          return child;
+        }
+      });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
+  });
+  Slot2.displayName = `${ownerName}.Slot`;
+  return Slot2;
+}
+var Slot$b = /* @__PURE__ */ createSlot$9("Slot");
+// @__NO_SIDE_EFFECTS__
+function createSlotClone$9(ownerName) {
+  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    if (reactExports.isValidElement(children)) {
+      const childrenRef = getElementRef$9(children);
+      const props2 = mergeProps$9(slotProps, children.props);
+      if (children.type !== reactExports.Fragment) {
+        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
+      }
+      return reactExports.cloneElement(children, props2);
+    }
+    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
+  });
+  SlotClone.displayName = `${ownerName}.SlotClone`;
+  return SlotClone;
+}
+var SLOTTABLE_IDENTIFIER$9 = Symbol("radix.slottable");
+// @__NO_SIDE_EFFECTS__
+function createSlottable$9(ownerName) {
+  const Slottable2 = ({ children }) => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
+  };
+  Slottable2.displayName = `${ownerName}.Slottable`;
+  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$9;
+  return Slottable2;
+}
+var Slottable$a = /* @__PURE__ */ createSlottable$9("Slottable");
+function isSlottable$9(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$9;
+}
+function mergeProps$9(slotProps, childProps) {
+  const overrideProps = { ...childProps };
+  for (const propName in childProps) {
+    const slotPropValue = slotProps[propName];
+    const childPropValue = childProps[propName];
+    const isHandler = /^on[A-Z]/.test(propName);
+    if (isHandler) {
+      if (slotPropValue && childPropValue) {
+        overrideProps[propName] = (...args) => {
+          const result = childPropValue(...args);
+          slotPropValue(...args);
+          return result;
+        };
+      } else if (slotPropValue) {
+        overrideProps[propName] = slotPropValue;
+      }
+    } else if (propName === "style") {
+      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
+    } else if (propName === "className") {
+      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
+    }
+  }
+  return { ...slotProps, ...overrideProps };
+}
+function getElementRef$9(element) {
+  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
+  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.ref;
+  }
+  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
+  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.props.ref;
+  }
+  return element.props.ref || element.ref;
+}
+
+// src/primitive.tsx
+var NODES$9 = [
+  "a",
+  "button",
+  "div",
+  "form",
+  "h2",
+  "h3",
+  "img",
+  "input",
+  "label",
+  "li",
+  "nav",
+  "ol",
+  "p",
+  "select",
+  "span",
+  "svg",
+  "ul"
+];
+var Primitive$9 = NODES$9.reduce((primitive, node) => {
+  const Slot = createSlot$9(`Primitive.${node}`);
+  const Node = reactExports.forwardRef((props, forwardedRef) => {
+    const { asChild, ...primitiveProps } = props;
+    const Comp = asChild ? Slot : node;
+    if (typeof window !== "undefined") {
+      window[Symbol.for("radix-ui")] = true;
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
+  });
+  Node.displayName = `Primitive.${node}`;
+  return { ...primitive, [node]: Node };
+}, {});
+function dispatchDiscreteCustomEvent$9(target, event) {
+  if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
+}
+var Root$f = Primitive$9;
+
+// src/arrow.tsx
+var NAME$2 = "Arrow";
+var Arrow$1 = reactExports.forwardRef((props, forwardedRef) => {
+  const { children, width = 10, height = 5, ...arrowProps } = props;
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    Primitive$9.svg,
+    {
+      ...arrowProps,
+      ref: forwardedRef,
+      width,
+      height,
+      viewBox: "0 0 30 10",
+      preserveAspectRatio: "none",
+      children: props.asChild ? children : /* @__PURE__ */ jsxRuntimeExports.jsx("polygon", { points: "0,0 30,0 15,10" })
+    }
+  );
+});
+Arrow$1.displayName = NAME$2;
+var Root$e = Arrow$1;
+
+// packages/react/context/src/create-context.tsx
+function createContext2$6(rootComponentName, defaultContext) {
+  const Context = reactExports.createContext(defaultContext);
+  const Provider = (props) => {
+    const { children, ...context } = props;
+    const value = reactExports.useMemo(() => context, Object.values(context));
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
+  };
+  Provider.displayName = rootComponentName + "Provider";
+  function useContext2(consumerName) {
+    const context = reactExports.useContext(Context);
+    if (context) return context;
+    if (defaultContext !== void 0) return defaultContext;
+    throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
+  }
+  return [Provider, useContext2];
+}
+function createContextScope$6(scopeName, createContextScopeDeps = []) {
+  let defaultContexts = [];
+  function createContext3(rootComponentName, defaultContext) {
+    const BaseContext = reactExports.createContext(defaultContext);
+    const index = defaultContexts.length;
+    defaultContexts = [...defaultContexts, defaultContext];
+    const Provider = (props) => {
+      const { scope, children, ...context } = props;
+      const Context = scope?.[scopeName]?.[index] || BaseContext;
+      const value = reactExports.useMemo(() => context, Object.values(context));
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
+    };
+    Provider.displayName = rootComponentName + "Provider";
+    function useContext2(consumerName, scope) {
+      const Context = scope?.[scopeName]?.[index] || BaseContext;
+      const context = reactExports.useContext(Context);
+      if (context) return context;
+      if (defaultContext !== void 0) return defaultContext;
+      throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
+    }
+    return [Provider, useContext2];
+  }
+  const createScope = () => {
+    const scopeContexts = defaultContexts.map((defaultContext) => {
+      return reactExports.createContext(defaultContext);
+    });
+    return function useScope(scope) {
+      const contexts = scope?.[scopeName] || scopeContexts;
+      return reactExports.useMemo(
+        () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
+        [scope, contexts]
+      );
+    };
+  };
+  createScope.scopeName = scopeName;
+  return [createContext3, composeContextScopes$6(createScope, ...createContextScopeDeps)];
+}
+function composeContextScopes$6(...scopes) {
+  const baseScope = scopes[0];
+  if (scopes.length === 1) return baseScope;
+  const createScope = () => {
+    const scopeHooks = scopes.map((createScope2) => ({
+      useScope: createScope2(),
+      scopeName: createScope2.scopeName
+    }));
+    return function useComposedScopes(overrideScopes) {
+      const nextScopes = scopeHooks.reduce((nextScopes2, { useScope, scopeName }) => {
+        const scopeProps = useScope(overrideScopes);
+        const currentScope = scopeProps[`__scope${scopeName}`];
+        return { ...nextScopes2, ...currentScope };
+      }, {});
+      return reactExports.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
+    };
+  };
+  createScope.scopeName = baseScope.scopeName;
+  return createScope;
+}
+
+// src/slot.tsx
+// @__NO_SIDE_EFFECTS__
 function createSlot$8(ownerName) {
   const SlotClone = /* @__PURE__ */ createSlotClone$8(ownerName);
   const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
@@ -79983,7 +80211,7 @@ function createSlottable$8(ownerName) {
   Slottable2.__radixId = SLOTTABLE_IDENTIFIER$8;
   return Slottable2;
 }
-var Slottable$8 = /* @__PURE__ */ createSlottable$8("Slottable");
+var Slottable$9 = /* @__PURE__ */ createSlottable$8("Slottable");
 function isSlottable$8(child) {
   return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$8;
 }
@@ -80061,235 +80289,7 @@ var Primitive$8 = NODES$8.reduce((primitive, node) => {
 function dispatchDiscreteCustomEvent$8(target, event) {
   if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
 }
-var Root$e = Primitive$8;
-
-// src/arrow.tsx
-var NAME$2 = "Arrow";
-var Arrow$1 = reactExports.forwardRef((props, forwardedRef) => {
-  const { children, width = 10, height = 5, ...arrowProps } = props;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Primitive$8.svg,
-    {
-      ...arrowProps,
-      ref: forwardedRef,
-      width,
-      height,
-      viewBox: "0 0 30 10",
-      preserveAspectRatio: "none",
-      children: props.asChild ? children : /* @__PURE__ */ jsxRuntimeExports.jsx("polygon", { points: "0,0 30,0 15,10" })
-    }
-  );
-});
-Arrow$1.displayName = NAME$2;
-var Root$d = Arrow$1;
-
-// packages/react/context/src/create-context.tsx
-function createContext2$5(rootComponentName, defaultContext) {
-  const Context = reactExports.createContext(defaultContext);
-  const Provider = (props) => {
-    const { children, ...context } = props;
-    const value = reactExports.useMemo(() => context, Object.values(context));
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
-  };
-  Provider.displayName = rootComponentName + "Provider";
-  function useContext2(consumerName) {
-    const context = reactExports.useContext(Context);
-    if (context) return context;
-    if (defaultContext !== void 0) return defaultContext;
-    throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
-  }
-  return [Provider, useContext2];
-}
-function createContextScope$5(scopeName, createContextScopeDeps = []) {
-  let defaultContexts = [];
-  function createContext3(rootComponentName, defaultContext) {
-    const BaseContext = reactExports.createContext(defaultContext);
-    const index = defaultContexts.length;
-    defaultContexts = [...defaultContexts, defaultContext];
-    const Provider = (props) => {
-      const { scope, children, ...context } = props;
-      const Context = scope?.[scopeName]?.[index] || BaseContext;
-      const value = reactExports.useMemo(() => context, Object.values(context));
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
-    };
-    Provider.displayName = rootComponentName + "Provider";
-    function useContext2(consumerName, scope) {
-      const Context = scope?.[scopeName]?.[index] || BaseContext;
-      const context = reactExports.useContext(Context);
-      if (context) return context;
-      if (defaultContext !== void 0) return defaultContext;
-      throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
-    }
-    return [Provider, useContext2];
-  }
-  const createScope = () => {
-    const scopeContexts = defaultContexts.map((defaultContext) => {
-      return reactExports.createContext(defaultContext);
-    });
-    return function useScope(scope) {
-      const contexts = scope?.[scopeName] || scopeContexts;
-      return reactExports.useMemo(
-        () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
-        [scope, contexts]
-      );
-    };
-  };
-  createScope.scopeName = scopeName;
-  return [createContext3, composeContextScopes$5(createScope, ...createContextScopeDeps)];
-}
-function composeContextScopes$5(...scopes) {
-  const baseScope = scopes[0];
-  if (scopes.length === 1) return baseScope;
-  const createScope = () => {
-    const scopeHooks = scopes.map((createScope2) => ({
-      useScope: createScope2(),
-      scopeName: createScope2.scopeName
-    }));
-    return function useComposedScopes(overrideScopes) {
-      const nextScopes = scopeHooks.reduce((nextScopes2, { useScope, scopeName }) => {
-        const scopeProps = useScope(overrideScopes);
-        const currentScope = scopeProps[`__scope${scopeName}`];
-        return { ...nextScopes2, ...currentScope };
-      }, {});
-      return reactExports.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
-    };
-  };
-  createScope.scopeName = baseScope.scopeName;
-  return createScope;
-}
-
-// src/slot.tsx
-// @__NO_SIDE_EFFECTS__
-function createSlot$7(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$7(ownerName);
-  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$7);
-    if (slottable) {
-      const newElement = slottable.props.children;
-      const newChildren = childrenArray.map((child) => {
-        if (child === slottable) {
-          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
-          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
-        } else {
-          return child;
-        }
-      });
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
-  });
-  Slot2.displayName = `${ownerName}.Slot`;
-  return Slot2;
-}
-var Slot$9 = /* @__PURE__ */ createSlot$7("Slot");
-// @__NO_SIDE_EFFECTS__
-function createSlotClone$7(ownerName) {
-  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$7(children);
-      const props2 = mergeProps$7(slotProps, children.props);
-      if (children.type !== reactExports.Fragment) {
-        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
-      }
-      return reactExports.cloneElement(children, props2);
-    }
-    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
-  });
-  SlotClone.displayName = `${ownerName}.SlotClone`;
-  return SlotClone;
-}
-var SLOTTABLE_IDENTIFIER$7 = Symbol("radix.slottable");
-// @__NO_SIDE_EFFECTS__
-function createSlottable$7(ownerName) {
-  const Slottable2 = ({ children }) => {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
-  };
-  Slottable2.displayName = `${ownerName}.Slottable`;
-  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$7;
-  return Slottable2;
-}
-var Slottable$7 = /* @__PURE__ */ createSlottable$7("Slottable");
-function isSlottable$7(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$7;
-}
-function mergeProps$7(slotProps, childProps) {
-  const overrideProps = { ...childProps };
-  for (const propName in childProps) {
-    const slotPropValue = slotProps[propName];
-    const childPropValue = childProps[propName];
-    const isHandler = /^on[A-Z]/.test(propName);
-    if (isHandler) {
-      if (slotPropValue && childPropValue) {
-        overrideProps[propName] = (...args) => {
-          const result = childPropValue(...args);
-          slotPropValue(...args);
-          return result;
-        };
-      } else if (slotPropValue) {
-        overrideProps[propName] = slotPropValue;
-      }
-    } else if (propName === "style") {
-      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
-    } else if (propName === "className") {
-      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
-    }
-  }
-  return { ...slotProps, ...overrideProps };
-}
-function getElementRef$7(element) {
-  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
-  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.ref;
-  }
-  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
-  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.props.ref;
-  }
-  return element.props.ref || element.ref;
-}
-
-// src/primitive.tsx
-var NODES$7 = [
-  "a",
-  "button",
-  "div",
-  "form",
-  "h2",
-  "h3",
-  "img",
-  "input",
-  "label",
-  "li",
-  "nav",
-  "ol",
-  "p",
-  "select",
-  "span",
-  "svg",
-  "ul"
-];
-var Primitive$7 = NODES$7.reduce((primitive, node) => {
-  const Slot = createSlot$7(`Primitive.${node}`);
-  const Node = reactExports.forwardRef((props, forwardedRef) => {
-    const { asChild, ...primitiveProps } = props;
-    const Comp = asChild ? Slot : node;
-    if (typeof window !== "undefined") {
-      window[Symbol.for("radix-ui")] = true;
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
-  });
-  Node.displayName = `Primitive.${node}`;
-  return { ...primitive, [node]: Node };
-}, {});
-function dispatchDiscreteCustomEvent$7(target, event) {
-  if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
-}
-var Root$c = Primitive$7;
+var Root$d = Primitive$8;
 
 // packages/react/use-size/src/use-size.tsx
 function useSize(element) {
@@ -80331,7 +80331,7 @@ function useSize(element) {
 var SIDE_OPTIONS = ["top", "right", "bottom", "left"];
 var ALIGN_OPTIONS = ["start", "center", "end"];
 var POPPER_NAME = "Popper";
-var [createPopperContext, createPopperScope] = createContextScope$5(POPPER_NAME);
+var [createPopperContext, createPopperScope] = createContextScope$6(POPPER_NAME);
 var [PopperProvider, usePopperContext] = createPopperContext(POPPER_NAME);
 var Popper = (props) => {
   const { __scopePopper, children } = props;
@@ -80354,12 +80354,12 @@ var PopperAnchor = reactExports.forwardRef(
         context.onAnchorChange(anchorRef.current);
       }
     });
-    return virtualRef ? null : /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$7.div, { ...anchorProps, ref: composedRefs });
+    return virtualRef ? null : /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$8.div, { ...anchorProps, ref: composedRefs });
   }
 );
 PopperAnchor.displayName = ANCHOR_NAME$1;
-var CONTENT_NAME$4 = "PopperContent";
-var [PopperContentProvider, useContentContext] = createPopperContext(CONTENT_NAME$4);
+var CONTENT_NAME$5 = "PopperContent";
+var [PopperContentProvider, useContentContext] = createPopperContext(CONTENT_NAME$5);
 var PopperContent = reactExports.forwardRef(
   (props, forwardedRef) => {
     const {
@@ -80378,7 +80378,7 @@ var PopperContent = reactExports.forwardRef(
       onPlaced,
       ...contentProps
     } = props;
-    const context = usePopperContext(CONTENT_NAME$4, __scopePopper);
+    const context = usePopperContext(CONTENT_NAME$5, __scopePopper);
     const [content, setContent] = reactExports.useState(null);
     const composedRefs = useComposedRefs(forwardedRef, (node) => setContent(node));
     const [arrow$1, setArrow] = reactExports.useState(null);
@@ -80481,7 +80481,7 @@ var PopperContent = reactExports.forwardRef(
             arrowY,
             shouldHideArrow: cannotCenterArrow,
             children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-              Primitive$7.div,
+              Primitive$8.div,
               {
                 "data-side": placedSide,
                 "data-align": placedAlign,
@@ -80501,8 +80501,8 @@ var PopperContent = reactExports.forwardRef(
     );
   }
 );
-PopperContent.displayName = CONTENT_NAME$4;
-var ARROW_NAME$3 = "PopperArrow";
+PopperContent.displayName = CONTENT_NAME$5;
+var ARROW_NAME$4 = "PopperArrow";
 var OPPOSITE_SIDE = {
   top: "bottom",
   right: "left",
@@ -80511,7 +80511,7 @@ var OPPOSITE_SIDE = {
 };
 var PopperArrow = reactExports.forwardRef(function PopperArrow2(props, forwardedRef) {
   const { __scopePopper, ...arrowProps } = props;
-  const contentContext = useContentContext(ARROW_NAME$3, __scopePopper);
+  const contentContext = useContentContext(ARROW_NAME$4, __scopePopper);
   const baseSide = OPPOSITE_SIDE[contentContext.placedSide];
   return (
     // we have to use an extra wrapper because `ResizeObserver` (used by `useSize`)
@@ -80541,7 +80541,7 @@ var PopperArrow = reactExports.forwardRef(function PopperArrow2(props, forwarded
           visibility: contentContext.shouldHideArrow ? "hidden" : void 0
         },
         children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Root$d,
+          Root$e,
           {
             ...arrowProps,
             ref: forwardedRef,
@@ -80556,7 +80556,7 @@ var PopperArrow = reactExports.forwardRef(function PopperArrow2(props, forwarded
     )
   );
 });
-PopperArrow.displayName = ARROW_NAME$3;
+PopperArrow.displayName = ARROW_NAME$4;
 function isNotNull(value) {
   return value !== null;
 }
@@ -80599,6 +80599,214 @@ var Root2$3 = Popper;
 var Anchor = PopperAnchor;
 var Content$1 = PopperContent;
 var Arrow = PopperArrow;
+
+// src/slot.tsx
+// @__NO_SIDE_EFFECTS__
+function createSlot$7(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone$7(ownerName);
+  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    const childrenArray = reactExports.Children.toArray(children);
+    const slottable = childrenArray.find(isSlottable$7);
+    if (slottable) {
+      const newElement = slottable.props.children;
+      const newChildren = childrenArray.map((child) => {
+        if (child === slottable) {
+          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
+          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
+        } else {
+          return child;
+        }
+      });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
+  });
+  Slot2.displayName = `${ownerName}.Slot`;
+  return Slot2;
+}
+var Slot$9 = /* @__PURE__ */ createSlot$7("Slot");
+// @__NO_SIDE_EFFECTS__
+function createSlotClone$7(ownerName) {
+  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    if (reactExports.isValidElement(children)) {
+      const childrenRef = getElementRef$7(children);
+      const props2 = mergeProps$7(slotProps, children.props);
+      if (children.type !== reactExports.Fragment) {
+        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
+      }
+      return reactExports.cloneElement(children, props2);
+    }
+    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
+  });
+  SlotClone.displayName = `${ownerName}.SlotClone`;
+  return SlotClone;
+}
+var SLOTTABLE_IDENTIFIER$7 = Symbol("radix.slottable");
+// @__NO_SIDE_EFFECTS__
+function createSlottable$7(ownerName) {
+  const Slottable2 = ({ children }) => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
+  };
+  Slottable2.displayName = `${ownerName}.Slottable`;
+  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$7;
+  return Slottable2;
+}
+var Slottable$8 = /* @__PURE__ */ createSlottable$7("Slottable");
+function isSlottable$7(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$7;
+}
+function mergeProps$7(slotProps, childProps) {
+  const overrideProps = { ...childProps };
+  for (const propName in childProps) {
+    const slotPropValue = slotProps[propName];
+    const childPropValue = childProps[propName];
+    const isHandler = /^on[A-Z]/.test(propName);
+    if (isHandler) {
+      if (slotPropValue && childPropValue) {
+        overrideProps[propName] = (...args) => {
+          const result = childPropValue(...args);
+          slotPropValue(...args);
+          return result;
+        };
+      } else if (slotPropValue) {
+        overrideProps[propName] = slotPropValue;
+      }
+    } else if (propName === "style") {
+      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
+    } else if (propName === "className") {
+      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
+    }
+  }
+  return { ...slotProps, ...overrideProps };
+}
+function getElementRef$7(element) {
+  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
+  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.ref;
+  }
+  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
+  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.props.ref;
+  }
+  return element.props.ref || element.ref;
+}
+
+// src/primitive.tsx
+var NODES$7 = [
+  "a",
+  "button",
+  "div",
+  "form",
+  "h2",
+  "h3",
+  "img",
+  "input",
+  "label",
+  "li",
+  "nav",
+  "ol",
+  "p",
+  "select",
+  "span",
+  "svg",
+  "ul"
+];
+var Primitive$7 = NODES$7.reduce((primitive, node) => {
+  const Slot = createSlot$7(`Primitive.${node}`);
+  const Node = reactExports.forwardRef((props, forwardedRef) => {
+    const { asChild, ...primitiveProps } = props;
+    const Comp = asChild ? Slot : node;
+    if (typeof window !== "undefined") {
+      window[Symbol.for("radix-ui")] = true;
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
+  });
+  Node.displayName = `Primitive.${node}`;
+  return { ...primitive, [node]: Node };
+}, {});
+function dispatchDiscreteCustomEvent$7(target, event) {
+  if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
+}
+var Root$c = Primitive$7;
+
+// packages/react/context/src/create-context.tsx
+function createContext2$5(rootComponentName, defaultContext) {
+  const Context = reactExports.createContext(defaultContext);
+  const Provider = (props) => {
+    const { children, ...context } = props;
+    const value = reactExports.useMemo(() => context, Object.values(context));
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
+  };
+  Provider.displayName = rootComponentName + "Provider";
+  function useContext2(consumerName) {
+    const context = reactExports.useContext(Context);
+    if (context) return context;
+    if (defaultContext !== void 0) return defaultContext;
+    throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
+  }
+  return [Provider, useContext2];
+}
+function createContextScope$5(scopeName, createContextScopeDeps = []) {
+  let defaultContexts = [];
+  function createContext3(rootComponentName, defaultContext) {
+    const BaseContext = reactExports.createContext(defaultContext);
+    const index = defaultContexts.length;
+    defaultContexts = [...defaultContexts, defaultContext];
+    const Provider = (props) => {
+      const { scope, children, ...context } = props;
+      const Context = scope?.[scopeName]?.[index] || BaseContext;
+      const value = reactExports.useMemo(() => context, Object.values(context));
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
+    };
+    Provider.displayName = rootComponentName + "Provider";
+    function useContext2(consumerName, scope) {
+      const Context = scope?.[scopeName]?.[index] || BaseContext;
+      const context = reactExports.useContext(Context);
+      if (context) return context;
+      if (defaultContext !== void 0) return defaultContext;
+      throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
+    }
+    return [Provider, useContext2];
+  }
+  const createScope = () => {
+    const scopeContexts = defaultContexts.map((defaultContext) => {
+      return reactExports.createContext(defaultContext);
+    });
+    return function useScope(scope) {
+      const contexts = scope?.[scopeName] || scopeContexts;
+      return reactExports.useMemo(
+        () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
+        [scope, contexts]
+      );
+    };
+  };
+  createScope.scopeName = scopeName;
+  return [createContext3, composeContextScopes$5(createScope, ...createContextScopeDeps)];
+}
+function composeContextScopes$5(...scopes) {
+  const baseScope = scopes[0];
+  if (scopes.length === 1) return baseScope;
+  const createScope = () => {
+    const scopeHooks = scopes.map((createScope2) => ({
+      useScope: createScope2(),
+      scopeName: createScope2.scopeName
+    }));
+    return function useComposedScopes(overrideScopes) {
+      const nextScopes = scopeHooks.reduce((nextScopes2, { useScope, scopeName }) => {
+        const scopeProps = useScope(overrideScopes);
+        const currentScope = scopeProps[`__scope${scopeName}`];
+        return { ...nextScopes2, ...currentScope };
+      }, {});
+      return reactExports.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
+    };
+  };
+  createScope.scopeName = baseScope.scopeName;
+  return createScope;
+}
 
 // src/slot.tsx
 // @__NO_SIDE_EFFECTS__
@@ -80653,7 +80861,7 @@ function createSlottable$6(ownerName) {
   Slottable2.__radixId = SLOTTABLE_IDENTIFIER$6;
   return Slottable2;
 }
-var Slottable$6 = /* @__PURE__ */ createSlottable$6("Slottable");
+var Slottable$7 = /* @__PURE__ */ createSlottable$6("Slottable");
 function isSlottable$6(child) {
   return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$6;
 }
@@ -80733,220 +80941,12 @@ function dispatchDiscreteCustomEvent$6(target, event) {
 }
 var Root$b = Primitive$6;
 
-// packages/react/context/src/create-context.tsx
-function createContext2$4(rootComponentName, defaultContext) {
-  const Context = reactExports.createContext(defaultContext);
-  const Provider = (props) => {
-    const { children, ...context } = props;
-    const value = reactExports.useMemo(() => context, Object.values(context));
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
-  };
-  Provider.displayName = rootComponentName + "Provider";
-  function useContext2(consumerName) {
-    const context = reactExports.useContext(Context);
-    if (context) return context;
-    if (defaultContext !== void 0) return defaultContext;
-    throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
-  }
-  return [Provider, useContext2];
-}
-function createContextScope$4(scopeName, createContextScopeDeps = []) {
-  let defaultContexts = [];
-  function createContext3(rootComponentName, defaultContext) {
-    const BaseContext = reactExports.createContext(defaultContext);
-    const index = defaultContexts.length;
-    defaultContexts = [...defaultContexts, defaultContext];
-    const Provider = (props) => {
-      const { scope, children, ...context } = props;
-      const Context = scope?.[scopeName]?.[index] || BaseContext;
-      const value = reactExports.useMemo(() => context, Object.values(context));
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
-    };
-    Provider.displayName = rootComponentName + "Provider";
-    function useContext2(consumerName, scope) {
-      const Context = scope?.[scopeName]?.[index] || BaseContext;
-      const context = reactExports.useContext(Context);
-      if (context) return context;
-      if (defaultContext !== void 0) return defaultContext;
-      throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
-    }
-    return [Provider, useContext2];
-  }
-  const createScope = () => {
-    const scopeContexts = defaultContexts.map((defaultContext) => {
-      return reactExports.createContext(defaultContext);
-    });
-    return function useScope(scope) {
-      const contexts = scope?.[scopeName] || scopeContexts;
-      return reactExports.useMemo(
-        () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
-        [scope, contexts]
-      );
-    };
-  };
-  createScope.scopeName = scopeName;
-  return [createContext3, composeContextScopes$4(createScope, ...createContextScopeDeps)];
-}
-function composeContextScopes$4(...scopes) {
-  const baseScope = scopes[0];
-  if (scopes.length === 1) return baseScope;
-  const createScope = () => {
-    const scopeHooks = scopes.map((createScope2) => ({
-      useScope: createScope2(),
-      scopeName: createScope2.scopeName
-    }));
-    return function useComposedScopes(overrideScopes) {
-      const nextScopes = scopeHooks.reduce((nextScopes2, { useScope, scopeName }) => {
-        const scopeProps = useScope(overrideScopes);
-        const currentScope = scopeProps[`__scope${scopeName}`];
-        return { ...nextScopes2, ...currentScope };
-      }, {});
-      return reactExports.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
-    };
-  };
-  createScope.scopeName = baseScope.scopeName;
-  return createScope;
-}
-
-// src/slot.tsx
-// @__NO_SIDE_EFFECTS__
-function createSlot$5(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$5(ownerName);
-  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$5);
-    if (slottable) {
-      const newElement = slottable.props.children;
-      const newChildren = childrenArray.map((child) => {
-        if (child === slottable) {
-          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
-          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
-        } else {
-          return child;
-        }
-      });
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
-  });
-  Slot2.displayName = `${ownerName}.Slot`;
-  return Slot2;
-}
-var Slot$7 = /* @__PURE__ */ createSlot$5("Slot");
-// @__NO_SIDE_EFFECTS__
-function createSlotClone$5(ownerName) {
-  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$5(children);
-      const props2 = mergeProps$5(slotProps, children.props);
-      if (children.type !== reactExports.Fragment) {
-        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
-      }
-      return reactExports.cloneElement(children, props2);
-    }
-    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
-  });
-  SlotClone.displayName = `${ownerName}.SlotClone`;
-  return SlotClone;
-}
-var SLOTTABLE_IDENTIFIER$5 = Symbol("radix.slottable");
-// @__NO_SIDE_EFFECTS__
-function createSlottable$5(ownerName) {
-  const Slottable2 = ({ children }) => {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
-  };
-  Slottable2.displayName = `${ownerName}.Slottable`;
-  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$5;
-  return Slottable2;
-}
-var Slottable$5 = /* @__PURE__ */ createSlottable$5("Slottable");
-function isSlottable$5(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$5;
-}
-function mergeProps$5(slotProps, childProps) {
-  const overrideProps = { ...childProps };
-  for (const propName in childProps) {
-    const slotPropValue = slotProps[propName];
-    const childPropValue = childProps[propName];
-    const isHandler = /^on[A-Z]/.test(propName);
-    if (isHandler) {
-      if (slotPropValue && childPropValue) {
-        overrideProps[propName] = (...args) => {
-          const result = childPropValue(...args);
-          slotPropValue(...args);
-          return result;
-        };
-      } else if (slotPropValue) {
-        overrideProps[propName] = slotPropValue;
-      }
-    } else if (propName === "style") {
-      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
-    } else if (propName === "className") {
-      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
-    }
-  }
-  return { ...slotProps, ...overrideProps };
-}
-function getElementRef$5(element) {
-  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
-  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.ref;
-  }
-  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
-  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.props.ref;
-  }
-  return element.props.ref || element.ref;
-}
-
-// src/primitive.tsx
-var NODES$5 = [
-  "a",
-  "button",
-  "div",
-  "form",
-  "h2",
-  "h3",
-  "img",
-  "input",
-  "label",
-  "li",
-  "nav",
-  "ol",
-  "p",
-  "select",
-  "span",
-  "svg",
-  "ul"
-];
-var Primitive$5 = NODES$5.reduce((primitive, node) => {
-  const Slot = createSlot$5(`Primitive.${node}`);
-  const Node = reactExports.forwardRef((props, forwardedRef) => {
-    const { asChild, ...primitiveProps } = props;
-    const Comp = asChild ? Slot : node;
-    if (typeof window !== "undefined") {
-      window[Symbol.for("radix-ui")] = true;
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
-  });
-  Node.displayName = `Primitive.${node}`;
-  return { ...primitive, [node]: Node };
-}, {});
-function dispatchDiscreteCustomEvent$5(target, event) {
-  if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
-}
-var Root$a = Primitive$5;
-
 "use client";
 var ENTRY_FOCUS = "rovingFocusGroup.onEntryFocus";
 var EVENT_OPTIONS = { bubbles: false, cancelable: true };
 var GROUP_NAME$3 = "RovingFocusGroup";
 var [Collection$2, useCollection$2, createCollectionScope$2] = createCollection(GROUP_NAME$3);
-var [createRovingFocusGroupContext, createRovingFocusGroupScope] = createContextScope$4(
+var [createRovingFocusGroupContext, createRovingFocusGroupScope] = createContextScope$5(
   GROUP_NAME$3,
   [createCollectionScope$2]
 );
@@ -81013,7 +81013,7 @@ var RovingFocusGroupImpl = reactExports.forwardRef((props, forwardedRef) => {
         []
       ),
       children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Primitive$5.div,
+        Primitive$6.div,
         {
           tabIndex: isTabbingBackOut || focusableItemsCount === 0 ? -1 : 0,
           "data-orientation": orientation,
@@ -81078,7 +81078,7 @@ var RovingFocusGroupItem = reactExports.forwardRef(
         focusable,
         active,
         children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Primitive$5.span,
+          Primitive$6.span,
           {
             tabIndex: isCurrentTabStop ? 0 : -1,
             "data-orientation": context.orientation,
@@ -81149,7 +81149,7 @@ function focusFirst$1(candidates, preventScroll = false) {
 function wrapArray$2(array, startIndex) {
   return array.map((_, index) => array[(startIndex + index) % array.length]);
 }
-var Root$9 = RovingFocusGroup;
+var Root$a = RovingFocusGroup;
 var Item$1 = RovingFocusGroupItem;
 
 "use client";
@@ -81167,18 +81167,18 @@ var SUB_CLOSE_KEYS = {
 };
 var MENU_NAME = "Menu";
 var [Collection$1, useCollection$1, createCollectionScope$1] = createCollection(MENU_NAME);
-var [createMenuContext, createMenuScope] = createContextScope$6(MENU_NAME, [
+var [createMenuContext, createMenuScope] = createContextScope$7(MENU_NAME, [
   createCollectionScope$1,
   createPopperScope,
   createRovingFocusGroupScope
 ]);
-var usePopperScope$1 = createPopperScope();
+var usePopperScope$2 = createPopperScope();
 var useRovingFocusGroupScope$1 = createRovingFocusGroupScope();
 var [MenuProvider, useMenuContext] = createMenuContext(MENU_NAME);
 var [MenuRootProvider, useMenuRootContext] = createMenuContext(MENU_NAME);
 var Menu = (props) => {
   const { __scopeMenu, open = false, children, dir, onOpenChange, modal = true } = props;
-  const popperScope = usePopperScope$1(__scopeMenu);
+  const popperScope = usePopperScope$2(__scopeMenu);
   const [content, setContent] = reactExports.useState(null);
   const isUsingKeyboardRef = reactExports.useRef(false);
   const handleOpenChange = useCallbackRef$1(onOpenChange);
@@ -81224,35 +81224,35 @@ var ANCHOR_NAME = "MenuAnchor";
 var MenuAnchor = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeMenu, ...anchorProps } = props;
-    const popperScope = usePopperScope$1(__scopeMenu);
+    const popperScope = usePopperScope$2(__scopeMenu);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(Anchor, { ...popperScope, ...anchorProps, ref: forwardedRef });
   }
 );
 MenuAnchor.displayName = ANCHOR_NAME;
-var PORTAL_NAME$2 = "MenuPortal";
-var [PortalProvider, usePortalContext] = createMenuContext(PORTAL_NAME$2, {
+var PORTAL_NAME$3 = "MenuPortal";
+var [PortalProvider$1, usePortalContext$1] = createMenuContext(PORTAL_NAME$3, {
   forceMount: void 0
 });
 var MenuPortal = (props) => {
   const { __scopeMenu, forceMount, children, container } = props;
-  const context = useMenuContext(PORTAL_NAME$2, __scopeMenu);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(PortalProvider, { scope: __scopeMenu, forceMount, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$3, { asChild: true, container, children }) }) });
+  const context = useMenuContext(PORTAL_NAME$3, __scopeMenu);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(PortalProvider$1, { scope: __scopeMenu, forceMount, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$4, { asChild: true, container, children }) }) });
 };
-MenuPortal.displayName = PORTAL_NAME$2;
-var CONTENT_NAME$3 = "MenuContent";
-var [MenuContentProvider, useMenuContentContext] = createMenuContext(CONTENT_NAME$3);
+MenuPortal.displayName = PORTAL_NAME$3;
+var CONTENT_NAME$4 = "MenuContent";
+var [MenuContentProvider, useMenuContentContext] = createMenuContext(CONTENT_NAME$4);
 var MenuContent = reactExports.forwardRef(
   (props, forwardedRef) => {
-    const portalContext = usePortalContext(CONTENT_NAME$3, props.__scopeMenu);
+    const portalContext = usePortalContext$1(CONTENT_NAME$4, props.__scopeMenu);
     const { forceMount = portalContext.forceMount, ...contentProps } = props;
-    const context = useMenuContext(CONTENT_NAME$3, props.__scopeMenu);
-    const rootContext = useMenuRootContext(CONTENT_NAME$3, props.__scopeMenu);
+    const context = useMenuContext(CONTENT_NAME$4, props.__scopeMenu);
+    const rootContext = useMenuRootContext(CONTENT_NAME$4, props.__scopeMenu);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(Collection$1.Provider, { scope: props.__scopeMenu, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Collection$1.Slot, { scope: props.__scopeMenu, children: rootContext.modal ? /* @__PURE__ */ jsxRuntimeExports.jsx(MenuRootContentModal, { ...contentProps, ref: forwardedRef }) : /* @__PURE__ */ jsxRuntimeExports.jsx(MenuRootContentNonModal, { ...contentProps, ref: forwardedRef }) }) }) });
   }
 );
 var MenuRootContentModal = reactExports.forwardRef(
   (props, forwardedRef) => {
-    const context = useMenuContext(CONTENT_NAME$3, props.__scopeMenu);
+    const context = useMenuContext(CONTENT_NAME$4, props.__scopeMenu);
     const ref = reactExports.useRef(null);
     const composedRefs = useComposedRefs(forwardedRef, ref);
     reactExports.useEffect(() => {
@@ -81278,7 +81278,7 @@ var MenuRootContentModal = reactExports.forwardRef(
   }
 );
 var MenuRootContentNonModal = reactExports.forwardRef((props, forwardedRef) => {
-  const context = useMenuContext(CONTENT_NAME$3, props.__scopeMenu);
+  const context = useMenuContext(CONTENT_NAME$4, props.__scopeMenu);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     MenuContentImpl,
     {
@@ -81291,7 +81291,7 @@ var MenuRootContentNonModal = reactExports.forwardRef((props, forwardedRef) => {
     }
   );
 });
-var Slot$6 = createSlot$6("MenuContent.ScrollLock");
+var Slot$7 = createSlot$7("MenuContent.ScrollLock");
 var MenuContentImpl = reactExports.forwardRef(
   (props, forwardedRef) => {
     const {
@@ -81310,9 +81310,9 @@ var MenuContentImpl = reactExports.forwardRef(
       disableOutsideScroll,
       ...contentProps
     } = props;
-    const context = useMenuContext(CONTENT_NAME$3, __scopeMenu);
-    const rootContext = useMenuRootContext(CONTENT_NAME$3, __scopeMenu);
-    const popperScope = usePopperScope$1(__scopeMenu);
+    const context = useMenuContext(CONTENT_NAME$4, __scopeMenu);
+    const rootContext = useMenuRootContext(CONTENT_NAME$4, __scopeMenu);
+    const popperScope = usePopperScope$2(__scopeMenu);
     const rovingFocusGroupScope = useRovingFocusGroupScope$1(__scopeMenu);
     const getItems = useCollection$1(__scopeMenu);
     const [currentItemId, setCurrentItemId] = reactExports.useState(null);
@@ -81325,7 +81325,7 @@ var MenuContentImpl = reactExports.forwardRef(
     const pointerDirRef = reactExports.useRef("right");
     const lastPointerXRef = reactExports.useRef(0);
     const ScrollLockWrapper = disableOutsideScroll ? ReactRemoveScroll : reactExports.Fragment;
-    const scrollLockWrapperProps = disableOutsideScroll ? { as: Slot$6, allowPinchZoom: true } : void 0;
+    const scrollLockWrapperProps = disableOutsideScroll ? { as: Slot$7, allowPinchZoom: true } : void 0;
     const handleTypeaheadSearch = (key) => {
       const search = searchRef.current + key;
       const items = getItems().filter((item) => !item.disabled);
@@ -81401,7 +81401,7 @@ var MenuContentImpl = reactExports.forwardRef(
                 onInteractOutside,
                 onDismiss,
                 children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  Root$9,
+                  Root$a,
                   {
                     asChild: true,
                     ...rovingFocusGroupScope,
@@ -81474,12 +81474,12 @@ var MenuContentImpl = reactExports.forwardRef(
     );
   }
 );
-MenuContent.displayName = CONTENT_NAME$3;
+MenuContent.displayName = CONTENT_NAME$4;
 var GROUP_NAME$2 = "MenuGroup";
 var MenuGroup = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeMenu, ...groupProps } = props;
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$6.div, { role: "group", ...groupProps, ref: forwardedRef });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$7.div, { role: "group", ...groupProps, ref: forwardedRef });
   }
 );
 MenuGroup.displayName = GROUP_NAME$2;
@@ -81487,7 +81487,7 @@ var LABEL_NAME$2 = "MenuLabel";
 var MenuLabel = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeMenu, ...labelProps } = props;
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$6.div, { ...labelProps, ref: forwardedRef });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$7.div, { ...labelProps, ref: forwardedRef });
   }
 );
 MenuLabel.displayName = LABEL_NAME$2;
@@ -81506,7 +81506,7 @@ var MenuItem = reactExports.forwardRef(
       if (!disabled && menuItem) {
         const itemSelectEvent = new CustomEvent(ITEM_SELECT, { bubbles: true, cancelable: true });
         menuItem.addEventListener(ITEM_SELECT, (event) => onSelect?.(event), { once: true });
-        dispatchDiscreteCustomEvent$6(menuItem, itemSelectEvent);
+        dispatchDiscreteCustomEvent$7(menuItem, itemSelectEvent);
         if (itemSelectEvent.defaultPrevented) {
           isPointerDownRef.current = false;
         } else {
@@ -81563,7 +81563,7 @@ var MenuItemImpl = reactExports.forwardRef(
         disabled,
         textValue: textValue ?? textContent,
         children: /* @__PURE__ */ jsxRuntimeExports.jsx(Item$1, { asChild: true, ...rovingFocusGroupScope, focusable: !disabled, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Primitive$6.div,
+          Primitive$7.div,
           {
             role: "menuitem",
             "data-highlighted": isFocused ? "" : void 0,
@@ -81671,7 +81671,7 @@ var MenuItemIndicator = reactExports.forwardRef(
       {
         present: forceMount || isIndeterminate$1(indicatorContext.checked) || indicatorContext.checked === true,
         children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Primitive$6.span,
+          Primitive$7.span,
           {
             ...itemIndicatorProps,
             ref: forwardedRef,
@@ -81688,7 +81688,7 @@ var MenuSeparator = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeMenu, ...separatorProps } = props;
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$6.div,
+      Primitive$7.div,
       {
         role: "separator",
         "aria-orientation": "horizontal",
@@ -81699,21 +81699,21 @@ var MenuSeparator = reactExports.forwardRef(
   }
 );
 MenuSeparator.displayName = SEPARATOR_NAME$2;
-var ARROW_NAME$2 = "MenuArrow";
+var ARROW_NAME$3 = "MenuArrow";
 var MenuArrow = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeMenu, ...arrowProps } = props;
-    const popperScope = usePopperScope$1(__scopeMenu);
+    const popperScope = usePopperScope$2(__scopeMenu);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow, { ...popperScope, ...arrowProps, ref: forwardedRef });
   }
 );
-MenuArrow.displayName = ARROW_NAME$2;
+MenuArrow.displayName = ARROW_NAME$3;
 var SUB_NAME = "MenuSub";
 var [MenuSubProvider, useMenuSubContext] = createMenuContext(SUB_NAME);
 var MenuSub = (props) => {
   const { __scopeMenu, children, open = false, onOpenChange } = props;
   const parentMenuContext = useMenuContext(SUB_NAME, __scopeMenu);
-  const popperScope = usePopperScope$1(__scopeMenu);
+  const popperScope = usePopperScope$2(__scopeMenu);
   const [trigger, setTrigger] = reactExports.useState(null);
   const [content, setContent] = reactExports.useState(null);
   const handleOpenChange = useCallbackRef$1(onOpenChange);
@@ -81848,10 +81848,10 @@ MenuSubTrigger.displayName = SUB_TRIGGER_NAME$1;
 var SUB_CONTENT_NAME$1 = "MenuSubContent";
 var MenuSubContent = reactExports.forwardRef(
   (props, forwardedRef) => {
-    const portalContext = usePortalContext(CONTENT_NAME$3, props.__scopeMenu);
+    const portalContext = usePortalContext$1(CONTENT_NAME$4, props.__scopeMenu);
     const { forceMount = portalContext.forceMount, ...subContentProps } = props;
-    const context = useMenuContext(CONTENT_NAME$3, props.__scopeMenu);
-    const rootContext = useMenuRootContext(CONTENT_NAME$3, props.__scopeMenu);
+    const context = useMenuContext(CONTENT_NAME$4, props.__scopeMenu);
+    const rootContext = useMenuRootContext(CONTENT_NAME$4, props.__scopeMenu);
     const subContext = useMenuSubContext(SUB_CONTENT_NAME$1, props.__scopeMenu);
     const ref = reactExports.useRef(null);
     const composedRefs = useComposedRefs(forwardedRef, ref);
@@ -81925,7 +81925,7 @@ function getNextMatch(values, search, currentMatch) {
   );
   return nextMatch !== currentMatch ? nextMatch : void 0;
 }
-function isPointInPolygon(point, polygon) {
+function isPointInPolygon$1(point, polygon) {
   const { x, y } = point;
   let inside = false;
   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
@@ -81943,15 +81943,15 @@ function isPointInPolygon(point, polygon) {
 function isPointerInGraceArea(event, area) {
   if (!area) return false;
   const cursorPos = { x: event.clientX, y: event.clientY };
-  return isPointInPolygon(cursorPos, area);
+  return isPointInPolygon$1(cursorPos, area);
 }
 function whenMouse(handler) {
   return (event) => event.pointerType === "mouse" ? handler(event) : void 0;
 }
-var Root3 = Menu;
+var Root3$1 = Menu;
 var Anchor2 = MenuAnchor;
-var Portal$1 = MenuPortal;
-var Content2$2 = MenuContent;
+var Portal$2 = MenuPortal;
+var Content2$3 = MenuContent;
 var Group$1 = MenuGroup;
 var Label$1 = MenuLabel;
 var Item2$1 = MenuItem;
@@ -81960,14 +81960,14 @@ var RadioGroup = MenuRadioGroup;
 var RadioItem = MenuRadioItem;
 var ItemIndicator$1 = MenuItemIndicator;
 var Separator$3 = MenuSeparator;
-var Arrow2$2 = MenuArrow;
+var Arrow2$3 = MenuArrow;
 var Sub = MenuSub;
 var SubTrigger = MenuSubTrigger;
 var SubContent = MenuSubContent;
 
 "use client";
 var DROPDOWN_MENU_NAME = "DropdownMenu";
-var [createDropdownMenuContext, createDropdownMenuScope] = createContextScope$8(
+var [createDropdownMenuContext, createDropdownMenuScope] = createContextScope$9(
   DROPDOWN_MENU_NAME,
   [createMenuScope]
 );
@@ -82002,19 +82002,19 @@ var DropdownMenu$1 = (props) => {
       onOpenChange: setOpen,
       onOpenToggle: reactExports.useCallback(() => setOpen((prevOpen) => !prevOpen), [setOpen]),
       modal,
-      children: /* @__PURE__ */ jsxRuntimeExports.jsx(Root3, { ...menuScope, open, onOpenChange: setOpen, dir, modal, children })
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx(Root3$1, { ...menuScope, open, onOpenChange: setOpen, dir, modal, children })
     }
   );
 };
 DropdownMenu$1.displayName = DROPDOWN_MENU_NAME;
-var TRIGGER_NAME$3 = "DropdownMenuTrigger";
+var TRIGGER_NAME$4 = "DropdownMenuTrigger";
 var DropdownMenuTrigger$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeDropdownMenu, disabled = false, ...triggerProps } = props;
-    const context = useDropdownMenuContext(TRIGGER_NAME$3, __scopeDropdownMenu);
+    const context = useDropdownMenuContext(TRIGGER_NAME$4, __scopeDropdownMenu);
     const menuScope = useMenuScope(__scopeDropdownMenu);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(Anchor2, { asChild: true, ...menuScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$9.button,
+      Primitive$a.button,
       {
         type: "button",
         id: context.triggerId,
@@ -82042,23 +82042,23 @@ var DropdownMenuTrigger$1 = reactExports.forwardRef(
     ) });
   }
 );
-DropdownMenuTrigger$1.displayName = TRIGGER_NAME$3;
-var PORTAL_NAME$1 = "DropdownMenuPortal";
+DropdownMenuTrigger$1.displayName = TRIGGER_NAME$4;
+var PORTAL_NAME$2 = "DropdownMenuPortal";
 var DropdownMenuPortal$1 = (props) => {
   const { __scopeDropdownMenu, ...portalProps } = props;
   const menuScope = useMenuScope(__scopeDropdownMenu);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$1, { ...menuScope, ...portalProps });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$2, { ...menuScope, ...portalProps });
 };
-DropdownMenuPortal$1.displayName = PORTAL_NAME$1;
-var CONTENT_NAME$2 = "DropdownMenuContent";
+DropdownMenuPortal$1.displayName = PORTAL_NAME$2;
+var CONTENT_NAME$3 = "DropdownMenuContent";
 var DropdownMenuContent$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeDropdownMenu, ...contentProps } = props;
-    const context = useDropdownMenuContext(CONTENT_NAME$2, __scopeDropdownMenu);
+    const context = useDropdownMenuContext(CONTENT_NAME$3, __scopeDropdownMenu);
     const menuScope = useMenuScope(__scopeDropdownMenu);
     const hasInteractedOutsideRef = reactExports.useRef(false);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Content2$2,
+      Content2$3,
       {
         id: context.contentId,
         "aria-labelledby": context.triggerId,
@@ -82091,7 +82091,7 @@ var DropdownMenuContent$1 = reactExports.forwardRef(
     );
   }
 );
-DropdownMenuContent$1.displayName = CONTENT_NAME$2;
+DropdownMenuContent$1.displayName = CONTENT_NAME$3;
 var GROUP_NAME$1 = "DropdownMenuGroup";
 var DropdownMenuGroup$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
@@ -82154,15 +82154,15 @@ var DropdownMenuSeparator$1 = reactExports.forwardRef((props, forwardedRef) => {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(Separator$3, { ...menuScope, ...separatorProps, ref: forwardedRef });
 });
 DropdownMenuSeparator$1.displayName = SEPARATOR_NAME$1;
-var ARROW_NAME$1 = "DropdownMenuArrow";
+var ARROW_NAME$2 = "DropdownMenuArrow";
 var DropdownMenuArrow = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeDropdownMenu, ...arrowProps } = props;
     const menuScope = useMenuScope(__scopeDropdownMenu);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2$2, { ...menuScope, ...arrowProps, ref: forwardedRef });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2$3, { ...menuScope, ...arrowProps, ref: forwardedRef });
   }
 );
-DropdownMenuArrow.displayName = ARROW_NAME$1;
+DropdownMenuArrow.displayName = ARROW_NAME$2;
 var DropdownMenuSub$1 = (props) => {
   const { __scopeDropdownMenu, children, open: openProp, onOpenChange, defaultOpen } = props;
   const menuScope = useMenuScope(__scopeDropdownMenu);
@@ -82207,9 +82207,9 @@ var DropdownMenuSubContent$1 = reactExports.forwardRef((props, forwardedRef) => 
 });
 DropdownMenuSubContent$1.displayName = SUB_CONTENT_NAME;
 var Root2$2 = DropdownMenu$1;
-var Trigger$2 = DropdownMenuTrigger$1;
+var Trigger$3 = DropdownMenuTrigger$1;
 var Portal2 = DropdownMenuPortal$1;
-var Content2$1 = DropdownMenuContent$1;
+var Content2$2 = DropdownMenuContent$1;
 var Group2 = DropdownMenuGroup$1;
 var Label2 = DropdownMenuLabel$1;
 var Item2 = DropdownMenuItem$1;
@@ -82218,7 +82218,7 @@ var RadioGroup2 = DropdownMenuRadioGroup$1;
 var RadioItem2 = DropdownMenuRadioItem$1;
 var ItemIndicator2 = DropdownMenuItemIndicator;
 var Separator2 = DropdownMenuSeparator$1;
-var Arrow2$1 = DropdownMenuArrow;
+var Arrow2$2 = DropdownMenuArrow;
 var Sub2 = DropdownMenuSub$1;
 var SubTrigger2 = DropdownMenuSubTrigger$1;
 var SubContent2 = DropdownMenuSubContent$1;
@@ -82237,7 +82237,7 @@ function DropdownMenuTrigger({
   ...props
 }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Trigger$2,
+    Trigger$3,
     {
       "data-slot": "dropdown-menu-trigger",
       ...props
@@ -82250,7 +82250,7 @@ function DropdownMenuContent({
   ...props
 }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(Portal2, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Content2$1,
+    Content2$2,
     {
       "data-slot": "dropdown-menu-content",
       sideOffset,
@@ -84417,7 +84417,7 @@ function clamp$1(value, [min, max]) {
 }
 
 // packages/react/context/src/create-context.tsx
-function createContext2$3(rootComponentName, defaultContext) {
+function createContext2$4(rootComponentName, defaultContext) {
   const Context = reactExports.createContext(defaultContext);
   const Provider = (props) => {
     const { children, ...context } = props;
@@ -84433,7 +84433,7 @@ function createContext2$3(rootComponentName, defaultContext) {
   }
   return [Provider, useContext2];
 }
-function createContextScope$3(scopeName, createContextScopeDeps = []) {
+function createContextScope$4(scopeName, createContextScopeDeps = []) {
   let defaultContexts = [];
   function createContext3(rootComponentName, defaultContext) {
     const BaseContext = reactExports.createContext(defaultContext);
@@ -84468,9 +84468,9 @@ function createContextScope$3(scopeName, createContextScopeDeps = []) {
     };
   };
   createScope.scopeName = scopeName;
-  return [createContext3, composeContextScopes$3(createScope, ...createContextScopeDeps)];
+  return [createContext3, composeContextScopes$4(createScope, ...createContextScopeDeps)];
 }
-function composeContextScopes$3(...scopes) {
+function composeContextScopes$4(...scopes) {
   const baseScope = scopes[0];
   if (scopes.length === 1) return baseScope;
   const createScope = () => {
@@ -84489,6 +84489,151 @@ function composeContextScopes$3(...scopes) {
   };
   createScope.scopeName = baseScope.scopeName;
   return createScope;
+}
+
+// src/slot.tsx
+// @__NO_SIDE_EFFECTS__
+function createSlot$5(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone$5(ownerName);
+  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    const childrenArray = reactExports.Children.toArray(children);
+    const slottable = childrenArray.find(isSlottable$5);
+    if (slottable) {
+      const newElement = slottable.props.children;
+      const newChildren = childrenArray.map((child) => {
+        if (child === slottable) {
+          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
+          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
+        } else {
+          return child;
+        }
+      });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
+  });
+  Slot2.displayName = `${ownerName}.Slot`;
+  return Slot2;
+}
+var Slot$6 = /* @__PURE__ */ createSlot$5("Slot");
+// @__NO_SIDE_EFFECTS__
+function createSlotClone$5(ownerName) {
+  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    if (reactExports.isValidElement(children)) {
+      const childrenRef = getElementRef$5(children);
+      const props2 = mergeProps$5(slotProps, children.props);
+      if (children.type !== reactExports.Fragment) {
+        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
+      }
+      return reactExports.cloneElement(children, props2);
+    }
+    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
+  });
+  SlotClone.displayName = `${ownerName}.SlotClone`;
+  return SlotClone;
+}
+var SLOTTABLE_IDENTIFIER$5 = Symbol("radix.slottable");
+// @__NO_SIDE_EFFECTS__
+function createSlottable$5(ownerName) {
+  const Slottable2 = ({ children }) => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
+  };
+  Slottable2.displayName = `${ownerName}.Slottable`;
+  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$5;
+  return Slottable2;
+}
+var Slottable$6 = /* @__PURE__ */ createSlottable$5("Slottable");
+function isSlottable$5(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$5;
+}
+function mergeProps$5(slotProps, childProps) {
+  const overrideProps = { ...childProps };
+  for (const propName in childProps) {
+    const slotPropValue = slotProps[propName];
+    const childPropValue = childProps[propName];
+    const isHandler = /^on[A-Z]/.test(propName);
+    if (isHandler) {
+      if (slotPropValue && childPropValue) {
+        overrideProps[propName] = (...args) => {
+          const result = childPropValue(...args);
+          slotPropValue(...args);
+          return result;
+        };
+      } else if (slotPropValue) {
+        overrideProps[propName] = slotPropValue;
+      }
+    } else if (propName === "style") {
+      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
+    } else if (propName === "className") {
+      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
+    }
+  }
+  return { ...slotProps, ...overrideProps };
+}
+function getElementRef$5(element) {
+  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
+  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.ref;
+  }
+  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
+  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.props.ref;
+  }
+  return element.props.ref || element.ref;
+}
+
+// src/primitive.tsx
+var NODES$5 = [
+  "a",
+  "button",
+  "div",
+  "form",
+  "h2",
+  "h3",
+  "img",
+  "input",
+  "label",
+  "li",
+  "nav",
+  "ol",
+  "p",
+  "select",
+  "span",
+  "svg",
+  "ul"
+];
+var Primitive$5 = NODES$5.reduce((primitive, node) => {
+  const Slot = createSlot$5(`Primitive.${node}`);
+  const Node = reactExports.forwardRef((props, forwardedRef) => {
+    const { asChild, ...primitiveProps } = props;
+    const Comp = asChild ? Slot : node;
+    if (typeof window !== "undefined") {
+      window[Symbol.for("radix-ui")] = true;
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
+  });
+  Node.displayName = `Primitive.${node}`;
+  return { ...primitive, [node]: Node };
+}, {});
+function dispatchDiscreteCustomEvent$5(target, event) {
+  if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
+}
+var Root$9 = Primitive$5;
+
+// packages/react/use-previous/src/use-previous.tsx
+function usePrevious(value) {
+  const ref = reactExports.useRef({ value, previous: value });
+  return reactExports.useMemo(() => {
+    if (ref.current.value !== value) {
+      ref.current.previous = ref.current.value;
+      ref.current.value = value;
+    }
+    return ref.current.previous;
+  }, [value]);
 }
 
 // src/slot.tsx
@@ -84544,7 +84689,7 @@ function createSlottable$4(ownerName) {
   Slottable2.__radixId = SLOTTABLE_IDENTIFIER$4;
   return Slottable2;
 }
-var Slottable$4 = /* @__PURE__ */ createSlottable$4("Slottable");
+var Slottable$5 = /* @__PURE__ */ createSlottable$4("Slottable");
 function isSlottable$4(child) {
   return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$4;
 }
@@ -84624,151 +84769,6 @@ function dispatchDiscreteCustomEvent$4(target, event) {
 }
 var Root$8 = Primitive$4;
 
-// packages/react/use-previous/src/use-previous.tsx
-function usePrevious(value) {
-  const ref = reactExports.useRef({ value, previous: value });
-  return reactExports.useMemo(() => {
-    if (ref.current.value !== value) {
-      ref.current.previous = ref.current.value;
-      ref.current.value = value;
-    }
-    return ref.current.previous;
-  }, [value]);
-}
-
-// src/slot.tsx
-// @__NO_SIDE_EFFECTS__
-function createSlot$3(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$3(ownerName);
-  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$3);
-    if (slottable) {
-      const newElement = slottable.props.children;
-      const newChildren = childrenArray.map((child) => {
-        if (child === slottable) {
-          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
-          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
-        } else {
-          return child;
-        }
-      });
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
-  });
-  Slot2.displayName = `${ownerName}.Slot`;
-  return Slot2;
-}
-var Slot$4 = /* @__PURE__ */ createSlot$3("Slot");
-// @__NO_SIDE_EFFECTS__
-function createSlotClone$3(ownerName) {
-  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$3(children);
-      const props2 = mergeProps$3(slotProps, children.props);
-      if (children.type !== reactExports.Fragment) {
-        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
-      }
-      return reactExports.cloneElement(children, props2);
-    }
-    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
-  });
-  SlotClone.displayName = `${ownerName}.SlotClone`;
-  return SlotClone;
-}
-var SLOTTABLE_IDENTIFIER$3 = Symbol("radix.slottable");
-// @__NO_SIDE_EFFECTS__
-function createSlottable$3(ownerName) {
-  const Slottable2 = ({ children }) => {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
-  };
-  Slottable2.displayName = `${ownerName}.Slottable`;
-  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$3;
-  return Slottable2;
-}
-var Slottable$3 = /* @__PURE__ */ createSlottable$3("Slottable");
-function isSlottable$3(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$3;
-}
-function mergeProps$3(slotProps, childProps) {
-  const overrideProps = { ...childProps };
-  for (const propName in childProps) {
-    const slotPropValue = slotProps[propName];
-    const childPropValue = childProps[propName];
-    const isHandler = /^on[A-Z]/.test(propName);
-    if (isHandler) {
-      if (slotPropValue && childPropValue) {
-        overrideProps[propName] = (...args) => {
-          const result = childPropValue(...args);
-          slotPropValue(...args);
-          return result;
-        };
-      } else if (slotPropValue) {
-        overrideProps[propName] = slotPropValue;
-      }
-    } else if (propName === "style") {
-      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
-    } else if (propName === "className") {
-      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
-    }
-  }
-  return { ...slotProps, ...overrideProps };
-}
-function getElementRef$3(element) {
-  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
-  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.ref;
-  }
-  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
-  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.props.ref;
-  }
-  return element.props.ref || element.ref;
-}
-
-// src/primitive.tsx
-var NODES$3 = [
-  "a",
-  "button",
-  "div",
-  "form",
-  "h2",
-  "h3",
-  "img",
-  "input",
-  "label",
-  "li",
-  "nav",
-  "ol",
-  "p",
-  "select",
-  "span",
-  "svg",
-  "ul"
-];
-var Primitive$3 = NODES$3.reduce((primitive, node) => {
-  const Slot = createSlot$3(`Primitive.${node}`);
-  const Node = reactExports.forwardRef((props, forwardedRef) => {
-    const { asChild, ...primitiveProps } = props;
-    const Comp = asChild ? Slot : node;
-    if (typeof window !== "undefined") {
-      window[Symbol.for("radix-ui")] = true;
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
-  });
-  Node.displayName = `Primitive.${node}`;
-  return { ...primitive, [node]: Node };
-}, {});
-function dispatchDiscreteCustomEvent$3(target, event) {
-  if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
-}
-var Root$7 = Primitive$3;
-
 // src/visually-hidden.tsx
 var VISUALLY_HIDDEN_STYLES = Object.freeze({
   // See: https://github.com/twbs/bootstrap/blob/main/scss/mixins/_visually-hidden.scss
@@ -84787,7 +84787,7 @@ var NAME$1 = "VisuallyHidden";
 var VisuallyHidden = reactExports.forwardRef(
   (props, forwardedRef) => {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$3.span,
+      Primitive$4.span,
       {
         ...props,
         ref: forwardedRef,
@@ -84797,18 +84797,18 @@ var VisuallyHidden = reactExports.forwardRef(
   }
 );
 VisuallyHidden.displayName = NAME$1;
-var Root$6 = VisuallyHidden;
+var Root$7 = VisuallyHidden;
 
 "use client";
 var OPEN_KEYS = [" ", "Enter", "ArrowUp", "ArrowDown"];
 var SELECTION_KEYS = [" ", "Enter"];
 var SELECT_NAME = "Select";
 var [Collection, useCollection, createCollectionScope] = createCollection(SELECT_NAME);
-var [createSelectContext, createSelectScope] = createContextScope$3(SELECT_NAME, [
+var [createSelectContext, createSelectScope] = createContextScope$4(SELECT_NAME, [
   createCollectionScope,
   createPopperScope
 ]);
-var usePopperScope = createPopperScope();
+var usePopperScope$1 = createPopperScope();
 var [SelectProvider, useSelectContext] = createSelectContext(SELECT_NAME);
 var [SelectNativeOptionsProvider, useSelectNativeOptionsContext] = createSelectContext(SELECT_NAME);
 var Select$1 = (props) => {
@@ -84828,7 +84828,7 @@ var Select$1 = (props) => {
     required,
     form
   } = props;
-  const popperScope = usePopperScope(__scopeSelect);
+  const popperScope = usePopperScope$1(__scopeSelect);
   const [trigger, setTrigger] = reactExports.useState(null);
   const [valueNode, setValueNode] = reactExports.useState(null);
   const [valueNodeHasChildren, setValueNodeHasChildren] = reactExports.useState(false);
@@ -84910,12 +84910,12 @@ var Select$1 = (props) => {
   ) });
 };
 Select$1.displayName = SELECT_NAME;
-var TRIGGER_NAME$2 = "SelectTrigger";
+var TRIGGER_NAME$3 = "SelectTrigger";
 var SelectTrigger$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeSelect, disabled = false, ...triggerProps } = props;
-    const popperScope = usePopperScope(__scopeSelect);
-    const context = useSelectContext(TRIGGER_NAME$2, __scopeSelect);
+    const popperScope = usePopperScope$1(__scopeSelect);
+    const context = useSelectContext(TRIGGER_NAME$3, __scopeSelect);
     const isDisabled = context.disabled || disabled;
     const composedRefs = useComposedRefs(forwardedRef, context.onTriggerChange);
     const getItems = useCollection(__scopeSelect);
@@ -84941,7 +84941,7 @@ var SelectTrigger$1 = reactExports.forwardRef(
       }
     };
     return /* @__PURE__ */ jsxRuntimeExports.jsx(Anchor, { asChild: true, ...popperScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$4.button,
+      Primitive$5.button,
       {
         type: "button",
         role: "combobox",
@@ -84987,7 +84987,7 @@ var SelectTrigger$1 = reactExports.forwardRef(
     ) });
   }
 );
-SelectTrigger$1.displayName = TRIGGER_NAME$2;
+SelectTrigger$1.displayName = TRIGGER_NAME$3;
 var VALUE_NAME = "SelectValue";
 var SelectValue$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
@@ -85000,7 +85000,7 @@ var SelectValue$1 = reactExports.forwardRef(
       onValueNodeHasChildrenChange(hasChildren);
     }, [onValueNodeHasChildrenChange, hasChildren]);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$4.span,
+      Primitive$5.span,
       {
         ...valueProps,
         ref: composedRefs,
@@ -85015,19 +85015,19 @@ var ICON_NAME = "SelectIcon";
 var SelectIcon = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeSelect, children, ...iconProps } = props;
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$4.span, { "aria-hidden": true, ...iconProps, ref: forwardedRef, children: children || "\u25BC" });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$5.span, { "aria-hidden": true, ...iconProps, ref: forwardedRef, children: children || "\u25BC" });
   }
 );
 SelectIcon.displayName = ICON_NAME;
-var PORTAL_NAME = "SelectPortal";
+var PORTAL_NAME$1 = "SelectPortal";
 var SelectPortal = (props) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$3, { asChild: true, ...props });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$4, { asChild: true, ...props });
 };
-SelectPortal.displayName = PORTAL_NAME;
-var CONTENT_NAME$1 = "SelectContent";
+SelectPortal.displayName = PORTAL_NAME$1;
+var CONTENT_NAME$2 = "SelectContent";
 var SelectContent$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
-    const context = useSelectContext(CONTENT_NAME$1, props.__scopeSelect);
+    const context = useSelectContext(CONTENT_NAME$2, props.__scopeSelect);
     const [fragment, setFragment] = reactExports.useState();
     useLayoutEffect2(() => {
       setFragment(new DocumentFragment());
@@ -85042,11 +85042,11 @@ var SelectContent$1 = reactExports.forwardRef(
     return /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContentImpl, { ...props, ref: forwardedRef });
   }
 );
-SelectContent$1.displayName = CONTENT_NAME$1;
+SelectContent$1.displayName = CONTENT_NAME$2;
 var CONTENT_MARGIN = 10;
-var [SelectContentProvider, useSelectContentContext] = createSelectContext(CONTENT_NAME$1);
+var [SelectContentProvider, useSelectContentContext] = createSelectContext(CONTENT_NAME$2);
 var CONTENT_IMPL_NAME = "SelectContentImpl";
-var Slot$3 = createSlot$4("SelectContent.RemoveScroll");
+var Slot$4 = createSlot$5("SelectContent.RemoveScroll");
 var SelectContentImpl = reactExports.forwardRef(
   (props, forwardedRef) => {
     const {
@@ -85070,7 +85070,7 @@ var SelectContentImpl = reactExports.forwardRef(
       //
       ...contentProps
     } = props;
-    const context = useSelectContext(CONTENT_NAME$1, __scopeSelect);
+    const context = useSelectContext(CONTENT_NAME$2, __scopeSelect);
     const [content, setContent] = reactExports.useState(null);
     const [viewport, setViewport] = reactExports.useState(null);
     const composedRefs = useComposedRefs(forwardedRef, (node) => setContent(node));
@@ -85209,7 +85209,7 @@ var SelectContentImpl = reactExports.forwardRef(
         position,
         isPositioned,
         searchRef,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(ReactRemoveScroll, { as: Slot$3, allowPinchZoom: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(ReactRemoveScroll, { as: Slot$4, allowPinchZoom: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           FocusScope,
           {
             asChild: true,
@@ -85283,8 +85283,8 @@ SelectContentImpl.displayName = CONTENT_IMPL_NAME;
 var ITEM_ALIGNED_POSITION_NAME = "SelectItemAlignedPosition";
 var SelectItemAlignedPosition = reactExports.forwardRef((props, forwardedRef) => {
   const { __scopeSelect, onPlaced, ...popperProps } = props;
-  const context = useSelectContext(CONTENT_NAME$1, __scopeSelect);
-  const contentContext = useSelectContentContext(CONTENT_NAME$1, __scopeSelect);
+  const context = useSelectContext(CONTENT_NAME$2, __scopeSelect);
+  const contentContext = useSelectContentContext(CONTENT_NAME$2, __scopeSelect);
   const [contentWrapper, setContentWrapper] = reactExports.useState(null);
   const [content, setContent] = reactExports.useState(null);
   const composedRefs = useComposedRefs(forwardedRef, (node) => setContent(node));
@@ -85424,7 +85424,7 @@ var SelectItemAlignedPosition = reactExports.forwardRef((props, forwardedRef) =>
             zIndex: contentZIndex
           },
           children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Primitive$4.div,
+            Primitive$5.div,
             {
               ...popperProps,
               ref: composedRefs,
@@ -85452,7 +85452,7 @@ var SelectPopperPosition = reactExports.forwardRef((props, forwardedRef) => {
     collisionPadding = CONTENT_MARGIN,
     ...popperProps
   } = props;
-  const popperScope = usePopperScope(__scopeSelect);
+  const popperScope = usePopperScope$1(__scopeSelect);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     Content$1,
     {
@@ -85478,7 +85478,7 @@ var SelectPopperPosition = reactExports.forwardRef((props, forwardedRef) => {
   );
 });
 SelectPopperPosition.displayName = POPPER_POSITION_NAME;
-var [SelectViewportProvider, useSelectViewportContext] = createSelectContext(CONTENT_NAME$1, {});
+var [SelectViewportProvider, useSelectViewportContext] = createSelectContext(CONTENT_NAME$2, {});
 var VIEWPORT_NAME = "SelectViewport";
 var SelectViewport = reactExports.forwardRef(
   (props, forwardedRef) => {
@@ -85498,7 +85498,7 @@ var SelectViewport = reactExports.forwardRef(
         }
       ),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Collection.Slot, { scope: __scopeSelect, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Primitive$4.div,
+        Primitive$5.div,
         {
           "data-radix-select-viewport": "",
           role: "presentation",
@@ -85553,7 +85553,7 @@ var SelectGroup$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeSelect, ...groupProps } = props;
     const groupId = useId();
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SelectGroupContextProvider, { scope: __scopeSelect, id: groupId, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$4.div, { role: "group", "aria-labelledby": groupId, ...groupProps, ref: forwardedRef }) });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(SelectGroupContextProvider, { scope: __scopeSelect, id: groupId, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$5.div, { role: "group", "aria-labelledby": groupId, ...groupProps, ref: forwardedRef }) });
   }
 );
 SelectGroup$1.displayName = GROUP_NAME;
@@ -85562,7 +85562,7 @@ var SelectLabel$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeSelect, ...labelProps } = props;
     const groupContext = useSelectGroupContext(LABEL_NAME, __scopeSelect);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$4.div, { id: groupContext.id, ...labelProps, ref: forwardedRef });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$5.div, { id: groupContext.id, ...labelProps, ref: forwardedRef });
   }
 );
 SelectLabel$1.displayName = LABEL_NAME;
@@ -85618,7 +85618,7 @@ var SelectItem$1 = reactExports.forwardRef(
             disabled,
             textValue,
             children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-              Primitive$4.div,
+              Primitive$5.div,
               {
                 role: "option",
                 "aria-labelledby": textId,
@@ -85695,7 +85695,7 @@ var SelectItemText = reactExports.forwardRef(
       return () => onNativeOptionRemove(nativeOption);
     }, [onNativeOptionAdd, onNativeOptionRemove, nativeOption]);
     return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$4.span, { id: itemContext.textId, ...itemTextProps, ref: composedRefs }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$5.span, { id: itemContext.textId, ...itemTextProps, ref: composedRefs }),
       itemContext.isSelected && context.valueNode && !context.valueNodeHasChildren ? reactDomExports.createPortal(itemTextProps.children, context.valueNode) : null
     ] });
   }
@@ -85706,7 +85706,7 @@ var SelectItemIndicator = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeSelect, ...itemIndicatorProps } = props;
     const itemContext = useSelectItemContext(ITEM_INDICATOR_NAME, __scopeSelect);
-    return itemContext.isSelected ? /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$4.span, { "aria-hidden": true, ...itemIndicatorProps, ref: forwardedRef }) : null;
+    return itemContext.isSelected ? /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$5.span, { "aria-hidden": true, ...itemIndicatorProps, ref: forwardedRef }) : null;
   }
 );
 SelectItemIndicator.displayName = ITEM_INDICATOR_NAME;
@@ -85798,7 +85798,7 @@ var SelectScrollButtonImpl = reactExports.forwardRef((props, forwardedRef) => {
     activeItem?.ref.current?.scrollIntoView({ block: "nearest" });
   }, [getItems]);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Primitive$4.div,
+    Primitive$5.div,
     {
       "aria-hidden": true,
       ...scrollIndicatorProps,
@@ -85825,21 +85825,21 @@ var SEPARATOR_NAME = "SelectSeparator";
 var SelectSeparator$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeSelect, ...separatorProps } = props;
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$4.div, { "aria-hidden": true, ...separatorProps, ref: forwardedRef });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$5.div, { "aria-hidden": true, ...separatorProps, ref: forwardedRef });
   }
 );
 SelectSeparator$1.displayName = SEPARATOR_NAME;
-var ARROW_NAME = "SelectArrow";
+var ARROW_NAME$1 = "SelectArrow";
 var SelectArrow = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeSelect, ...arrowProps } = props;
-    const popperScope = usePopperScope(__scopeSelect);
-    const context = useSelectContext(ARROW_NAME, __scopeSelect);
-    const contentContext = useSelectContentContext(ARROW_NAME, __scopeSelect);
+    const popperScope = usePopperScope$1(__scopeSelect);
+    const context = useSelectContext(ARROW_NAME$1, __scopeSelect);
+    const contentContext = useSelectContentContext(ARROW_NAME$1, __scopeSelect);
     return context.open && contentContext.position === "popper" ? /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow, { ...popperScope, ...arrowProps, ref: forwardedRef }) : null;
   }
 );
-SelectArrow.displayName = ARROW_NAME;
+SelectArrow.displayName = ARROW_NAME$1;
 var BUBBLE_INPUT_NAME$2 = "SelectBubbleInput";
 var SelectBubbleInput = reactExports.forwardRef(
   ({ __scopeSelect, value, ...props }, forwardedRef) => {
@@ -85862,7 +85862,7 @@ var SelectBubbleInput = reactExports.forwardRef(
       }
     }, [prevValue, value]);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$4.select,
+      Primitive$5.select,
       {
         ...props,
         style: { ...VISUALLY_HIDDEN_STYLES, ...props.style },
@@ -85917,11 +85917,11 @@ function wrapArray(array, startIndex) {
   return array.map((_, index) => array[(startIndex + index) % array.length]);
 }
 var Root2$1 = Select$1;
-var Trigger$1 = SelectTrigger$1;
+var Trigger$2 = SelectTrigger$1;
 var Value = SelectValue$1;
 var Icon = SelectIcon;
-var Portal = SelectPortal;
-var Content2 = SelectContent$1;
+var Portal$1 = SelectPortal;
+var Content2$1 = SelectContent$1;
 var Viewport = SelectViewport;
 var Group = SelectGroup$1;
 var Label = SelectLabel$1;
@@ -85931,13 +85931,13 @@ var ItemIndicator = SelectItemIndicator;
 var ScrollUpButton = SelectScrollUpButton$1;
 var ScrollDownButton = SelectScrollDownButton$1;
 var Separator$2 = SelectSeparator$1;
-var Arrow2 = SelectArrow;
+var Arrow2$1 = SelectArrow;
 
 const Select = Root2$1;
 const SelectGroup = Group;
 const SelectValue = Value;
 const SelectTrigger = reactExports.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
-  Trigger$1,
+  Trigger$2,
   {
     ref,
     className: cn$1(
@@ -85951,7 +85951,7 @@ const SelectTrigger = reactExports.forwardRef(({ className, children, ...props }
     ]
   }
 ));
-SelectTrigger.displayName = Trigger$1.displayName;
+SelectTrigger.displayName = Trigger$2.displayName;
 const SelectScrollUpButton = reactExports.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsx(
   ScrollUpButton,
   {
@@ -85978,8 +85978,8 @@ const SelectScrollDownButton = reactExports.forwardRef(({ className, ...props },
   }
 ));
 SelectScrollDownButton.displayName = ScrollDownButton.displayName;
-const SelectContent = reactExports.forwardRef(({ className, children, position = "popper", ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsx(Portal, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
-  Content2,
+const SelectContent = reactExports.forwardRef(({ className, children, position = "popper", ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  Content2$1,
   {
     ref,
     className: cn$1(
@@ -86005,7 +86005,7 @@ const SelectContent = reactExports.forwardRef(({ className, children, position =
     ]
   }
 ) }));
-SelectContent.displayName = Content2.displayName;
+SelectContent.displayName = Content2$1.displayName;
 const SelectLabel = reactExports.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsx(
   Label,
   {
@@ -86490,9 +86490,9 @@ function StudentActionDialogs({
   ] });
 }
 
-const Dialog = Root$h;
-const DialogTrigger = Trigger$3;
-const DialogPortal = Portal$2;
+const Dialog = Root$i;
+const DialogTrigger = Trigger$4;
+const DialogPortal = Portal$3;
 const DialogClose = Close;
 const DialogOverlay = reactExports.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsx(
   Overlay,
@@ -86594,7 +86594,7 @@ const DialogDescription = reactExports.forwardRef(({ className, ...props }, ref)
 DialogDescription.displayName = Description.displayName;
 
 // packages/react/context/src/create-context.tsx
-function createContext2$2(rootComponentName, defaultContext) {
+function createContext2$3(rootComponentName, defaultContext) {
   const Context = reactExports.createContext(defaultContext);
   const Provider = (props) => {
     const { children, ...context } = props;
@@ -86610,7 +86610,7 @@ function createContext2$2(rootComponentName, defaultContext) {
   }
   return [Provider, useContext2];
 }
-function createContextScope$2(scopeName, createContextScopeDeps = []) {
+function createContextScope$3(scopeName, createContextScopeDeps = []) {
   let defaultContexts = [];
   function createContext3(rootComponentName, defaultContext) {
     const BaseContext = reactExports.createContext(defaultContext);
@@ -86645,9 +86645,9 @@ function createContextScope$2(scopeName, createContextScopeDeps = []) {
     };
   };
   createScope.scopeName = scopeName;
-  return [createContext3, composeContextScopes$2(createScope, ...createContextScopeDeps)];
+  return [createContext3, composeContextScopes$3(createScope, ...createContextScopeDeps)];
 }
-function composeContextScopes$2(...scopes) {
+function composeContextScopes$3(...scopes) {
   const baseScope = scopes[0];
   if (scopes.length === 1) return baseScope;
   const createScope = () => {
@@ -86670,12 +86670,12 @@ function composeContextScopes$2(...scopes) {
 
 // src/slot.tsx
 // @__NO_SIDE_EFFECTS__
-function createSlot$2(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$2(ownerName);
+function createSlot$3(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone$3(ownerName);
   const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
     const { children, ...slotProps } = props;
     const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$2);
+    const slottable = childrenArray.find(isSlottable$3);
     if (slottable) {
       const newElement = slottable.props.children;
       const newChildren = childrenArray.map((child) => {
@@ -86693,14 +86693,14 @@ function createSlot$2(ownerName) {
   Slot2.displayName = `${ownerName}.Slot`;
   return Slot2;
 }
-var Slot$2 = /* @__PURE__ */ createSlot$2("Slot");
+var Slot$3 = /* @__PURE__ */ createSlot$3("Slot");
 // @__NO_SIDE_EFFECTS__
-function createSlotClone$2(ownerName) {
+function createSlotClone$3(ownerName) {
   const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
     const { children, ...slotProps } = props;
     if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$2(children);
-      const props2 = mergeProps$2(slotProps, children.props);
+      const childrenRef = getElementRef$3(children);
+      const props2 = mergeProps$3(slotProps, children.props);
       if (children.type !== reactExports.Fragment) {
         props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
       }
@@ -86711,21 +86711,21 @@ function createSlotClone$2(ownerName) {
   SlotClone.displayName = `${ownerName}.SlotClone`;
   return SlotClone;
 }
-var SLOTTABLE_IDENTIFIER$2 = Symbol("radix.slottable");
+var SLOTTABLE_IDENTIFIER$3 = Symbol("radix.slottable");
 // @__NO_SIDE_EFFECTS__
-function createSlottable$2(ownerName) {
+function createSlottable$3(ownerName) {
   const Slottable2 = ({ children }) => {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
   };
   Slottable2.displayName = `${ownerName}.Slottable`;
-  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$2;
+  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$3;
   return Slottable2;
 }
-var Slottable$2 = /* @__PURE__ */ createSlottable$2("Slottable");
-function isSlottable$2(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$2;
+var Slottable$4 = /* @__PURE__ */ createSlottable$3("Slottable");
+function isSlottable$3(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$3;
 }
-function mergeProps$2(slotProps, childProps) {
+function mergeProps$3(slotProps, childProps) {
   const overrideProps = { ...childProps };
   for (const propName in childProps) {
     const slotPropValue = slotProps[propName];
@@ -86749,7 +86749,7 @@ function mergeProps$2(slotProps, childProps) {
   }
   return { ...slotProps, ...overrideProps };
 }
-function getElementRef$2(element) {
+function getElementRef$3(element) {
   let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
@@ -86764,7 +86764,7 @@ function getElementRef$2(element) {
 }
 
 // src/primitive.tsx
-var NODES$2 = [
+var NODES$3 = [
   "a",
   "button",
   "div",
@@ -86783,8 +86783,8 @@ var NODES$2 = [
   "svg",
   "ul"
 ];
-var Primitive$2 = NODES$2.reduce((primitive, node) => {
-  const Slot = createSlot$2(`Primitive.${node}`);
+var Primitive$3 = NODES$3.reduce((primitive, node) => {
+  const Slot = createSlot$3(`Primitive.${node}`);
   const Node = reactExports.forwardRef((props, forwardedRef) => {
     const { asChild, ...primitiveProps } = props;
     const Comp = asChild ? Slot : node;
@@ -86796,14 +86796,14 @@ var Primitive$2 = NODES$2.reduce((primitive, node) => {
   Node.displayName = `Primitive.${node}`;
   return { ...primitive, [node]: Node };
 }, {});
-function dispatchDiscreteCustomEvent$2(target, event) {
+function dispatchDiscreteCustomEvent$3(target, event) {
   if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
 }
-var Root$5 = Primitive$2;
+var Root$6 = Primitive$3;
 
 "use client";
 var TABS_NAME = "Tabs";
-var [createTabsContext, createTabsScope] = createContextScope$2(TABS_NAME, [
+var [createTabsContext, createTabsScope] = createContextScope$3(TABS_NAME, [
   createRovingFocusGroupScope
 ]);
 var useRovingFocusGroupScope = createRovingFocusGroupScope();
@@ -86838,7 +86838,7 @@ var Tabs$1 = reactExports.forwardRef(
         dir: direction,
         activationMode,
         children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Primitive$2.div,
+          Primitive$3.div,
           {
             dir: direction,
             "data-orientation": orientation,
@@ -86858,7 +86858,7 @@ var TabsList$1 = reactExports.forwardRef(
     const context = useTabsContext(TAB_LIST_NAME, __scopeTabs);
     const rovingFocusGroupScope = useRovingFocusGroupScope(__scopeTabs);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Root$9,
+      Root$a,
       {
         asChild: true,
         ...rovingFocusGroupScope,
@@ -86866,7 +86866,7 @@ var TabsList$1 = reactExports.forwardRef(
         dir: context.dir,
         loop,
         children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Primitive$2.div,
+          Primitive$3.div,
           {
             role: "tablist",
             "aria-orientation": context.orientation,
@@ -86879,11 +86879,11 @@ var TabsList$1 = reactExports.forwardRef(
   }
 );
 TabsList$1.displayName = TAB_LIST_NAME;
-var TRIGGER_NAME$1 = "TabsTrigger";
+var TRIGGER_NAME$2 = "TabsTrigger";
 var TabsTrigger$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeTabs, value, disabled = false, ...triggerProps } = props;
-    const context = useTabsContext(TRIGGER_NAME$1, __scopeTabs);
+    const context = useTabsContext(TRIGGER_NAME$2, __scopeTabs);
     const rovingFocusGroupScope = useRovingFocusGroupScope(__scopeTabs);
     const triggerId = makeTriggerId(context.baseId, value);
     const contentId = makeContentId(context.baseId, value);
@@ -86896,7 +86896,7 @@ var TabsTrigger$1 = reactExports.forwardRef(
         focusable: !disabled,
         active: isSelected,
         children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Primitive$2.button,
+          Primitive$3.button,
           {
             type: "button",
             role: "tab",
@@ -86930,12 +86930,12 @@ var TabsTrigger$1 = reactExports.forwardRef(
     );
   }
 );
-TabsTrigger$1.displayName = TRIGGER_NAME$1;
-var CONTENT_NAME = "TabsContent";
+TabsTrigger$1.displayName = TRIGGER_NAME$2;
+var CONTENT_NAME$1 = "TabsContent";
 var TabsContent$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeTabs, value, forceMount, children, ...contentProps } = props;
-    const context = useTabsContext(CONTENT_NAME, __scopeTabs);
+    const context = useTabsContext(CONTENT_NAME$1, __scopeTabs);
     const triggerId = makeTriggerId(context.baseId, value);
     const contentId = makeContentId(context.baseId, value);
     const isSelected = value === context.value;
@@ -86945,7 +86945,7 @@ var TabsContent$1 = reactExports.forwardRef(
       return () => cancelAnimationFrame(rAF);
     }, []);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || isSelected, children: ({ present }) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$2.div,
+      Primitive$3.div,
       {
         "data-state": isSelected ? "active" : "inactive",
         "data-orientation": context.orientation,
@@ -86965,7 +86965,7 @@ var TabsContent$1 = reactExports.forwardRef(
     ) });
   }
 );
-TabsContent$1.displayName = CONTENT_NAME;
+TabsContent$1.displayName = CONTENT_NAME$1;
 function makeTriggerId(baseId, value) {
   return `${baseId}-trigger-${value}`;
 }
@@ -86974,7 +86974,7 @@ function makeContentId(baseId, value) {
 }
 var Root2 = Tabs$1;
 var List = TabsList$1;
-var Trigger = TabsTrigger$1;
+var Trigger$1 = TabsTrigger$1;
 var Content = TabsContent$1;
 
 function Tabs({
@@ -87011,7 +87011,7 @@ function TabsTrigger({
   ...props
 }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Trigger,
+    Trigger$1,
     {
       "data-slot": "tabs-trigger",
       className: cn$1(
@@ -90151,7 +90151,7 @@ function AdminsTable({
 }
 
 // packages/react/context/src/create-context.tsx
-function createContext2$1(rootComponentName, defaultContext) {
+function createContext2$2(rootComponentName, defaultContext) {
   const Context = reactExports.createContext(defaultContext);
   const Provider = (props) => {
     const { children, ...context } = props;
@@ -90167,7 +90167,7 @@ function createContext2$1(rootComponentName, defaultContext) {
   }
   return [Provider, useContext2];
 }
-function createContextScope$1(scopeName, createContextScopeDeps = []) {
+function createContextScope$2(scopeName, createContextScopeDeps = []) {
   let defaultContexts = [];
   function createContext3(rootComponentName, defaultContext) {
     const BaseContext = reactExports.createContext(defaultContext);
@@ -90202,9 +90202,9 @@ function createContextScope$1(scopeName, createContextScopeDeps = []) {
     };
   };
   createScope.scopeName = scopeName;
-  return [createContext3, composeContextScopes$1(createScope, ...createContextScopeDeps)];
+  return [createContext3, composeContextScopes$2(createScope, ...createContextScopeDeps)];
 }
-function composeContextScopes$1(...scopes) {
+function composeContextScopes$2(...scopes) {
   const baseScope = scopes[0];
   if (scopes.length === 1) return baseScope;
   const createScope = () => {
@@ -90227,12 +90227,12 @@ function composeContextScopes$1(...scopes) {
 
 // src/slot.tsx
 // @__NO_SIDE_EFFECTS__
-function createSlot$1(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$1(ownerName);
+function createSlot$2(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone$2(ownerName);
   const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
     const { children, ...slotProps } = props;
     const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$1);
+    const slottable = childrenArray.find(isSlottable$2);
     if (slottable) {
       const newElement = slottable.props.children;
       const newChildren = childrenArray.map((child) => {
@@ -90250,14 +90250,14 @@ function createSlot$1(ownerName) {
   Slot2.displayName = `${ownerName}.Slot`;
   return Slot2;
 }
-var Slot$1 = /* @__PURE__ */ createSlot$1("Slot");
+var Slot$2 = /* @__PURE__ */ createSlot$2("Slot");
 // @__NO_SIDE_EFFECTS__
-function createSlotClone$1(ownerName) {
+function createSlotClone$2(ownerName) {
   const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
     const { children, ...slotProps } = props;
     if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$1(children);
-      const props2 = mergeProps$1(slotProps, children.props);
+      const childrenRef = getElementRef$2(children);
+      const props2 = mergeProps$2(slotProps, children.props);
       if (children.type !== reactExports.Fragment) {
         props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
       }
@@ -90268,21 +90268,21 @@ function createSlotClone$1(ownerName) {
   SlotClone.displayName = `${ownerName}.SlotClone`;
   return SlotClone;
 }
-var SLOTTABLE_IDENTIFIER$1 = Symbol("radix.slottable");
+var SLOTTABLE_IDENTIFIER$2 = Symbol("radix.slottable");
 // @__NO_SIDE_EFFECTS__
-function createSlottable$1(ownerName) {
+function createSlottable$2(ownerName) {
   const Slottable2 = ({ children }) => {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
   };
   Slottable2.displayName = `${ownerName}.Slottable`;
-  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$1;
+  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$2;
   return Slottable2;
 }
-var Slottable$1 = /* @__PURE__ */ createSlottable$1("Slottable");
-function isSlottable$1(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$1;
+var Slottable$3 = /* @__PURE__ */ createSlottable$2("Slottable");
+function isSlottable$2(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$2;
 }
-function mergeProps$1(slotProps, childProps) {
+function mergeProps$2(slotProps, childProps) {
   const overrideProps = { ...childProps };
   for (const propName in childProps) {
     const slotPropValue = slotProps[propName];
@@ -90306,7 +90306,7 @@ function mergeProps$1(slotProps, childProps) {
   }
   return { ...slotProps, ...overrideProps };
 }
-function getElementRef$1(element) {
+function getElementRef$2(element) {
   let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
@@ -90321,7 +90321,7 @@ function getElementRef$1(element) {
 }
 
 // src/primitive.tsx
-var NODES$1 = [
+var NODES$2 = [
   "a",
   "button",
   "div",
@@ -90340,8 +90340,8 @@ var NODES$1 = [
   "svg",
   "ul"
 ];
-var Primitive$1 = NODES$1.reduce((primitive, node) => {
-  const Slot = createSlot$1(`Primitive.${node}`);
+var Primitive$2 = NODES$2.reduce((primitive, node) => {
+  const Slot = createSlot$2(`Primitive.${node}`);
   const Node = reactExports.forwardRef((props, forwardedRef) => {
     const { asChild, ...primitiveProps } = props;
     const Comp = asChild ? Slot : node;
@@ -90353,14 +90353,14 @@ var Primitive$1 = NODES$1.reduce((primitive, node) => {
   Node.displayName = `Primitive.${node}`;
   return { ...primitive, [node]: Node };
 }, {});
-function dispatchDiscreteCustomEvent$1(target, event) {
+function dispatchDiscreteCustomEvent$2(target, event) {
   if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
 }
-var Root$4 = Primitive$1;
+var Root$5 = Primitive$2;
 
 "use client";
 var CHECKBOX_NAME = "Checkbox";
-var [createCheckboxContext, createCheckboxScope] = createContextScope$1(CHECKBOX_NAME);
+var [createCheckboxContext, createCheckboxScope] = createContextScope$2(CHECKBOX_NAME);
 var [CheckboxProviderImpl, useCheckboxContext] = createCheckboxContext(CHECKBOX_NAME);
 function CheckboxProvider(props) {
   const {
@@ -90415,7 +90415,7 @@ function CheckboxProvider(props) {
     }
   );
 }
-var TRIGGER_NAME = "CheckboxTrigger";
+var TRIGGER_NAME$1 = "CheckboxTrigger";
 var CheckboxTrigger = reactExports.forwardRef(
   ({ __scopeCheckbox, onKeyDown, onClick, ...checkboxProps }, forwardedRef) => {
     const {
@@ -90429,7 +90429,7 @@ var CheckboxTrigger = reactExports.forwardRef(
       hasConsumerStoppedPropagationRef,
       isFormControl,
       bubbleInput
-    } = useCheckboxContext(TRIGGER_NAME, __scopeCheckbox);
+    } = useCheckboxContext(TRIGGER_NAME$1, __scopeCheckbox);
     const composedRefs = useComposedRefs(forwardedRef, setControl);
     const initialCheckedStateRef = reactExports.useRef(checked);
     reactExports.useEffect(() => {
@@ -90441,7 +90441,7 @@ var CheckboxTrigger = reactExports.forwardRef(
       }
     }, [control, setChecked]);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$1.button,
+      Primitive$2.button,
       {
         type: "button",
         role: "checkbox",
@@ -90467,7 +90467,7 @@ var CheckboxTrigger = reactExports.forwardRef(
     );
   }
 );
-CheckboxTrigger.displayName = TRIGGER_NAME;
+CheckboxTrigger.displayName = TRIGGER_NAME$1;
 var Checkbox$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
     const {
@@ -90525,7 +90525,7 @@ var CheckboxIndicator = reactExports.forwardRef(
       {
         present: forceMount || isIndeterminate(context.checked) || context.checked === true,
         children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Primitive$1.span,
+          Primitive$2.span,
           {
             "data-state": getState$1(context.checked),
             "data-disabled": context.disabled ? "" : void 0,
@@ -90577,7 +90577,7 @@ var CheckboxBubbleInput = reactExports.forwardRef(
     }, [bubbleInput, prevChecked, checked, hasConsumerStoppedPropagationRef]);
     const defaultCheckedRef = reactExports.useRef(isIndeterminate(checked) ? false : checked);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$1.input,
+      Primitive$2.input,
       {
         type: "checkbox",
         "aria-hidden": true,
@@ -92411,7 +92411,7 @@ var Separator$1 = reactExports.forwardRef((props, forwardedRef) => {
   const ariaOrientation = orientation === "vertical" ? orientation : void 0;
   const semanticProps = decorative ? { role: "none" } : { "aria-orientation": ariaOrientation, role: "separator" };
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Primitive$e.div,
+    Primitive$f.div,
     {
       "data-orientation": orientation,
       ...semanticProps,
@@ -92424,7 +92424,7 @@ Separator$1.displayName = NAME;
 function isValidOrientation(orientation) {
   return ORIENTATIONS.includes(orientation);
 }
-var Root$3 = Separator$1;
+var Root$4 = Separator$1;
 
 "use client";
 function Separator({
@@ -92434,7 +92434,7 @@ function Separator({
   ...props
 }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Root$3,
+    Root$4,
     {
       "data-slot": "separator",
       decorative,
@@ -101326,6 +101326,738 @@ function NoticesPage() {
   ] });
 }
 
+// packages/react/context/src/create-context.tsx
+function createContext2$1(rootComponentName, defaultContext) {
+  const Context = reactExports.createContext(defaultContext);
+  const Provider = (props) => {
+    const { children, ...context } = props;
+    const value = reactExports.useMemo(() => context, Object.values(context));
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
+  };
+  Provider.displayName = rootComponentName + "Provider";
+  function useContext2(consumerName) {
+    const context = reactExports.useContext(Context);
+    if (context) return context;
+    if (defaultContext !== void 0) return defaultContext;
+    throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
+  }
+  return [Provider, useContext2];
+}
+function createContextScope$1(scopeName, createContextScopeDeps = []) {
+  let defaultContexts = [];
+  function createContext3(rootComponentName, defaultContext) {
+    const BaseContext = reactExports.createContext(defaultContext);
+    const index = defaultContexts.length;
+    defaultContexts = [...defaultContexts, defaultContext];
+    const Provider = (props) => {
+      const { scope, children, ...context } = props;
+      const Context = scope?.[scopeName]?.[index] || BaseContext;
+      const value = reactExports.useMemo(() => context, Object.values(context));
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
+    };
+    Provider.displayName = rootComponentName + "Provider";
+    function useContext2(consumerName, scope) {
+      const Context = scope?.[scopeName]?.[index] || BaseContext;
+      const context = reactExports.useContext(Context);
+      if (context) return context;
+      if (defaultContext !== void 0) return defaultContext;
+      throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
+    }
+    return [Provider, useContext2];
+  }
+  const createScope = () => {
+    const scopeContexts = defaultContexts.map((defaultContext) => {
+      return reactExports.createContext(defaultContext);
+    });
+    return function useScope(scope) {
+      const contexts = scope?.[scopeName] || scopeContexts;
+      return reactExports.useMemo(
+        () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
+        [scope, contexts]
+      );
+    };
+  };
+  createScope.scopeName = scopeName;
+  return [createContext3, composeContextScopes$1(createScope, ...createContextScopeDeps)];
+}
+function composeContextScopes$1(...scopes) {
+  const baseScope = scopes[0];
+  if (scopes.length === 1) return baseScope;
+  const createScope = () => {
+    const scopeHooks = scopes.map((createScope2) => ({
+      useScope: createScope2(),
+      scopeName: createScope2.scopeName
+    }));
+    return function useComposedScopes(overrideScopes) {
+      const nextScopes = scopeHooks.reduce((nextScopes2, { useScope, scopeName }) => {
+        const scopeProps = useScope(overrideScopes);
+        const currentScope = scopeProps[`__scope${scopeName}`];
+        return { ...nextScopes2, ...currentScope };
+      }, {});
+      return reactExports.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
+    };
+  };
+  createScope.scopeName = baseScope.scopeName;
+  return createScope;
+}
+
+// src/slot.tsx
+// @__NO_SIDE_EFFECTS__
+function createSlot$1(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone$1(ownerName);
+  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    const childrenArray = reactExports.Children.toArray(children);
+    const slottable = childrenArray.find(isSlottable$1);
+    if (slottable) {
+      const newElement = slottable.props.children;
+      const newChildren = childrenArray.map((child) => {
+        if (child === slottable) {
+          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
+          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
+        } else {
+          return child;
+        }
+      });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
+  });
+  Slot2.displayName = `${ownerName}.Slot`;
+  return Slot2;
+}
+var Slot$1 = /* @__PURE__ */ createSlot$1("Slot");
+// @__NO_SIDE_EFFECTS__
+function createSlotClone$1(ownerName) {
+  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    if (reactExports.isValidElement(children)) {
+      const childrenRef = getElementRef$1(children);
+      const props2 = mergeProps$1(slotProps, children.props);
+      if (children.type !== reactExports.Fragment) {
+        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
+      }
+      return reactExports.cloneElement(children, props2);
+    }
+    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
+  });
+  SlotClone.displayName = `${ownerName}.SlotClone`;
+  return SlotClone;
+}
+var SLOTTABLE_IDENTIFIER$1 = Symbol("radix.slottable");
+// @__NO_SIDE_EFFECTS__
+function createSlottable$1(ownerName) {
+  const Slottable2 = ({ children }) => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
+  };
+  Slottable2.displayName = `${ownerName}.Slottable`;
+  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$1;
+  return Slottable2;
+}
+var Slottable$2 = /* @__PURE__ */ createSlottable$1("Slottable");
+function isSlottable$1(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$1;
+}
+function mergeProps$1(slotProps, childProps) {
+  const overrideProps = { ...childProps };
+  for (const propName in childProps) {
+    const slotPropValue = slotProps[propName];
+    const childPropValue = childProps[propName];
+    const isHandler = /^on[A-Z]/.test(propName);
+    if (isHandler) {
+      if (slotPropValue && childPropValue) {
+        overrideProps[propName] = (...args) => {
+          const result = childPropValue(...args);
+          slotPropValue(...args);
+          return result;
+        };
+      } else if (slotPropValue) {
+        overrideProps[propName] = slotPropValue;
+      }
+    } else if (propName === "style") {
+      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
+    } else if (propName === "className") {
+      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
+    }
+  }
+  return { ...slotProps, ...overrideProps };
+}
+function getElementRef$1(element) {
+  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
+  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.ref;
+  }
+  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
+  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.props.ref;
+  }
+  return element.props.ref || element.ref;
+}
+
+// src/primitive.tsx
+var NODES$1 = [
+  "a",
+  "button",
+  "div",
+  "form",
+  "h2",
+  "h3",
+  "img",
+  "input",
+  "label",
+  "li",
+  "nav",
+  "ol",
+  "p",
+  "select",
+  "span",
+  "svg",
+  "ul"
+];
+var Primitive$1 = NODES$1.reduce((primitive, node) => {
+  const Slot = createSlot$1(`Primitive.${node}`);
+  const Node = reactExports.forwardRef((props, forwardedRef) => {
+    const { asChild, ...primitiveProps } = props;
+    const Comp = asChild ? Slot : node;
+    if (typeof window !== "undefined") {
+      window[Symbol.for("radix-ui")] = true;
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
+  });
+  Node.displayName = `Primitive.${node}`;
+  return { ...primitive, [node]: Node };
+}, {});
+function dispatchDiscreteCustomEvent$1(target, event) {
+  if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
+}
+var Root$3 = Primitive$1;
+
+"use client";
+var [createTooltipContext, createTooltipScope] = createContextScope$1("Tooltip", [
+  createPopperScope
+]);
+var usePopperScope = createPopperScope();
+var PROVIDER_NAME = "TooltipProvider";
+var DEFAULT_DELAY_DURATION = 700;
+var TOOLTIP_OPEN = "tooltip.open";
+var [TooltipProviderContextProvider, useTooltipProviderContext] = createTooltipContext(PROVIDER_NAME);
+var TooltipProvider$1 = (props) => {
+  const {
+    __scopeTooltip,
+    delayDuration = DEFAULT_DELAY_DURATION,
+    skipDelayDuration = 300,
+    disableHoverableContent = false,
+    children
+  } = props;
+  const isOpenDelayedRef = reactExports.useRef(true);
+  const isPointerInTransitRef = reactExports.useRef(false);
+  const skipDelayTimerRef = reactExports.useRef(0);
+  reactExports.useEffect(() => {
+    const skipDelayTimer = skipDelayTimerRef.current;
+    return () => window.clearTimeout(skipDelayTimer);
+  }, []);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    TooltipProviderContextProvider,
+    {
+      scope: __scopeTooltip,
+      isOpenDelayedRef,
+      delayDuration,
+      onOpen: reactExports.useCallback(() => {
+        window.clearTimeout(skipDelayTimerRef.current);
+        isOpenDelayedRef.current = false;
+      }, []),
+      onClose: reactExports.useCallback(() => {
+        window.clearTimeout(skipDelayTimerRef.current);
+        skipDelayTimerRef.current = window.setTimeout(
+          () => isOpenDelayedRef.current = true,
+          skipDelayDuration
+        );
+      }, [skipDelayDuration]),
+      isPointerInTransitRef,
+      onPointerInTransitChange: reactExports.useCallback((inTransit) => {
+        isPointerInTransitRef.current = inTransit;
+      }, []),
+      disableHoverableContent,
+      children
+    }
+  );
+};
+TooltipProvider$1.displayName = PROVIDER_NAME;
+var TOOLTIP_NAME = "Tooltip";
+var [TooltipContextProvider, useTooltipContext] = createTooltipContext(TOOLTIP_NAME);
+var Tooltip$2 = (props) => {
+  const {
+    __scopeTooltip,
+    children,
+    open: openProp,
+    defaultOpen,
+    onOpenChange,
+    disableHoverableContent: disableHoverableContentProp,
+    delayDuration: delayDurationProp
+  } = props;
+  const providerContext = useTooltipProviderContext(TOOLTIP_NAME, props.__scopeTooltip);
+  const popperScope = usePopperScope(__scopeTooltip);
+  const [trigger, setTrigger] = reactExports.useState(null);
+  const contentId = useId();
+  const openTimerRef = reactExports.useRef(0);
+  const disableHoverableContent = disableHoverableContentProp ?? providerContext.disableHoverableContent;
+  const delayDuration = delayDurationProp ?? providerContext.delayDuration;
+  const wasOpenDelayedRef = reactExports.useRef(false);
+  const [open, setOpen] = useControllableState({
+    prop: openProp,
+    defaultProp: defaultOpen ?? false,
+    onChange: (open2) => {
+      if (open2) {
+        providerContext.onOpen();
+        document.dispatchEvent(new CustomEvent(TOOLTIP_OPEN));
+      } else {
+        providerContext.onClose();
+      }
+      onOpenChange?.(open2);
+    },
+    caller: TOOLTIP_NAME
+  });
+  const stateAttribute = reactExports.useMemo(() => {
+    return open ? wasOpenDelayedRef.current ? "delayed-open" : "instant-open" : "closed";
+  }, [open]);
+  const handleOpen = reactExports.useCallback(() => {
+    window.clearTimeout(openTimerRef.current);
+    openTimerRef.current = 0;
+    wasOpenDelayedRef.current = false;
+    setOpen(true);
+  }, [setOpen]);
+  const handleClose = reactExports.useCallback(() => {
+    window.clearTimeout(openTimerRef.current);
+    openTimerRef.current = 0;
+    setOpen(false);
+  }, [setOpen]);
+  const handleDelayedOpen = reactExports.useCallback(() => {
+    window.clearTimeout(openTimerRef.current);
+    openTimerRef.current = window.setTimeout(() => {
+      wasOpenDelayedRef.current = true;
+      setOpen(true);
+      openTimerRef.current = 0;
+    }, delayDuration);
+  }, [delayDuration, setOpen]);
+  reactExports.useEffect(() => {
+    return () => {
+      if (openTimerRef.current) {
+        window.clearTimeout(openTimerRef.current);
+        openTimerRef.current = 0;
+      }
+    };
+  }, []);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Root2$3, { ...popperScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    TooltipContextProvider,
+    {
+      scope: __scopeTooltip,
+      contentId,
+      open,
+      stateAttribute,
+      trigger,
+      onTriggerChange: setTrigger,
+      onTriggerEnter: reactExports.useCallback(() => {
+        if (providerContext.isOpenDelayedRef.current) handleDelayedOpen();
+        else handleOpen();
+      }, [providerContext.isOpenDelayedRef, handleDelayedOpen, handleOpen]),
+      onTriggerLeave: reactExports.useCallback(() => {
+        if (disableHoverableContent) {
+          handleClose();
+        } else {
+          window.clearTimeout(openTimerRef.current);
+          openTimerRef.current = 0;
+        }
+      }, [handleClose, disableHoverableContent]),
+      onOpen: handleOpen,
+      onClose: handleClose,
+      disableHoverableContent,
+      children
+    }
+  ) });
+};
+Tooltip$2.displayName = TOOLTIP_NAME;
+var TRIGGER_NAME = "TooltipTrigger";
+var TooltipTrigger$1 = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeTooltip, ...triggerProps } = props;
+    const context = useTooltipContext(TRIGGER_NAME, __scopeTooltip);
+    const providerContext = useTooltipProviderContext(TRIGGER_NAME, __scopeTooltip);
+    const popperScope = usePopperScope(__scopeTooltip);
+    const ref = reactExports.useRef(null);
+    const composedRefs = useComposedRefs(forwardedRef, ref, context.onTriggerChange);
+    const isPointerDownRef = reactExports.useRef(false);
+    const hasPointerMoveOpenedRef = reactExports.useRef(false);
+    const handlePointerUp = reactExports.useCallback(() => isPointerDownRef.current = false, []);
+    reactExports.useEffect(() => {
+      return () => document.removeEventListener("pointerup", handlePointerUp);
+    }, [handlePointerUp]);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Anchor, { asChild: true, ...popperScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Primitive$1.button,
+      {
+        "aria-describedby": context.open ? context.contentId : void 0,
+        "data-state": context.stateAttribute,
+        ...triggerProps,
+        ref: composedRefs,
+        onPointerMove: composeEventHandlers(props.onPointerMove, (event) => {
+          if (event.pointerType === "touch") return;
+          if (!hasPointerMoveOpenedRef.current && !providerContext.isPointerInTransitRef.current) {
+            context.onTriggerEnter();
+            hasPointerMoveOpenedRef.current = true;
+          }
+        }),
+        onPointerLeave: composeEventHandlers(props.onPointerLeave, () => {
+          context.onTriggerLeave();
+          hasPointerMoveOpenedRef.current = false;
+        }),
+        onPointerDown: composeEventHandlers(props.onPointerDown, () => {
+          if (context.open) {
+            context.onClose();
+          }
+          isPointerDownRef.current = true;
+          document.addEventListener("pointerup", handlePointerUp, { once: true });
+        }),
+        onFocus: composeEventHandlers(props.onFocus, () => {
+          if (!isPointerDownRef.current) context.onOpen();
+        }),
+        onBlur: composeEventHandlers(props.onBlur, context.onClose),
+        onClick: composeEventHandlers(props.onClick, context.onClose)
+      }
+    ) });
+  }
+);
+TooltipTrigger$1.displayName = TRIGGER_NAME;
+var PORTAL_NAME = "TooltipPortal";
+var [PortalProvider, usePortalContext] = createTooltipContext(PORTAL_NAME, {
+  forceMount: void 0
+});
+var TooltipPortal = (props) => {
+  const { __scopeTooltip, forceMount, children, container } = props;
+  const context = useTooltipContext(PORTAL_NAME, __scopeTooltip);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(PortalProvider, { scope: __scopeTooltip, forceMount, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$4, { asChild: true, container, children }) }) });
+};
+TooltipPortal.displayName = PORTAL_NAME;
+var CONTENT_NAME = "TooltipContent";
+var TooltipContent$1 = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const portalContext = usePortalContext(CONTENT_NAME, props.__scopeTooltip);
+    const { forceMount = portalContext.forceMount, side = "top", ...contentProps } = props;
+    const context = useTooltipContext(CONTENT_NAME, props.__scopeTooltip);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: context.disableHoverableContent ? /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentImpl, { side, ...contentProps, ref: forwardedRef }) : /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentHoverable, { side, ...contentProps, ref: forwardedRef }) });
+  }
+);
+var TooltipContentHoverable = reactExports.forwardRef((props, forwardedRef) => {
+  const context = useTooltipContext(CONTENT_NAME, props.__scopeTooltip);
+  const providerContext = useTooltipProviderContext(CONTENT_NAME, props.__scopeTooltip);
+  const ref = reactExports.useRef(null);
+  const composedRefs = useComposedRefs(forwardedRef, ref);
+  const [pointerGraceArea, setPointerGraceArea] = reactExports.useState(null);
+  const { trigger, onClose } = context;
+  const content = ref.current;
+  const { onPointerInTransitChange } = providerContext;
+  const handleRemoveGraceArea = reactExports.useCallback(() => {
+    setPointerGraceArea(null);
+    onPointerInTransitChange(false);
+  }, [onPointerInTransitChange]);
+  const handleCreateGraceArea = reactExports.useCallback(
+    (event, hoverTarget) => {
+      const currentTarget = event.currentTarget;
+      const exitPoint = { x: event.clientX, y: event.clientY };
+      const exitSide = getExitSideFromRect(exitPoint, currentTarget.getBoundingClientRect());
+      const paddedExitPoints = getPaddedExitPoints(exitPoint, exitSide);
+      const hoverTargetPoints = getPointsFromRect(hoverTarget.getBoundingClientRect());
+      const graceArea = getHull([...paddedExitPoints, ...hoverTargetPoints]);
+      setPointerGraceArea(graceArea);
+      onPointerInTransitChange(true);
+    },
+    [onPointerInTransitChange]
+  );
+  reactExports.useEffect(() => {
+    return () => handleRemoveGraceArea();
+  }, [handleRemoveGraceArea]);
+  reactExports.useEffect(() => {
+    if (trigger && content) {
+      const handleTriggerLeave = (event) => handleCreateGraceArea(event, content);
+      const handleContentLeave = (event) => handleCreateGraceArea(event, trigger);
+      trigger.addEventListener("pointerleave", handleTriggerLeave);
+      content.addEventListener("pointerleave", handleContentLeave);
+      return () => {
+        trigger.removeEventListener("pointerleave", handleTriggerLeave);
+        content.removeEventListener("pointerleave", handleContentLeave);
+      };
+    }
+  }, [trigger, content, handleCreateGraceArea, handleRemoveGraceArea]);
+  reactExports.useEffect(() => {
+    if (pointerGraceArea) {
+      const handleTrackPointerGrace = (event) => {
+        const target = event.target;
+        const pointerPosition = { x: event.clientX, y: event.clientY };
+        const hasEnteredTarget = trigger?.contains(target) || content?.contains(target);
+        const isPointerOutsideGraceArea = !isPointInPolygon(pointerPosition, pointerGraceArea);
+        if (hasEnteredTarget) {
+          handleRemoveGraceArea();
+        } else if (isPointerOutsideGraceArea) {
+          handleRemoveGraceArea();
+          onClose();
+        }
+      };
+      document.addEventListener("pointermove", handleTrackPointerGrace);
+      return () => document.removeEventListener("pointermove", handleTrackPointerGrace);
+    }
+  }, [trigger, content, pointerGraceArea, onClose, handleRemoveGraceArea]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentImpl, { ...props, ref: composedRefs });
+});
+var [VisuallyHiddenContentContextProvider, useVisuallyHiddenContentContext] = createTooltipContext(TOOLTIP_NAME, { isInside: false });
+var Slottable$1 = createSlottable$1("TooltipContent");
+var TooltipContentImpl = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const {
+      __scopeTooltip,
+      children,
+      "aria-label": ariaLabel,
+      onEscapeKeyDown,
+      onPointerDownOutside,
+      ...contentProps
+    } = props;
+    const context = useTooltipContext(CONTENT_NAME, __scopeTooltip);
+    const popperScope = usePopperScope(__scopeTooltip);
+    const { onClose } = context;
+    reactExports.useEffect(() => {
+      document.addEventListener(TOOLTIP_OPEN, onClose);
+      return () => document.removeEventListener(TOOLTIP_OPEN, onClose);
+    }, [onClose]);
+    reactExports.useEffect(() => {
+      if (context.trigger) {
+        const handleScroll = (event) => {
+          const target = event.target;
+          if (target?.contains(context.trigger)) onClose();
+        };
+        window.addEventListener("scroll", handleScroll, { capture: true });
+        return () => window.removeEventListener("scroll", handleScroll, { capture: true });
+      }
+    }, [context.trigger, onClose]);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      DismissableLayer,
+      {
+        asChild: true,
+        disableOutsidePointerEvents: false,
+        onEscapeKeyDown,
+        onPointerDownOutside,
+        onFocusOutside: (event) => event.preventDefault(),
+        onDismiss: onClose,
+        children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          Content$1,
+          {
+            "data-state": context.stateAttribute,
+            ...popperScope,
+            ...contentProps,
+            ref: forwardedRef,
+            style: {
+              ...contentProps.style,
+              // re-namespace exposed content custom properties
+              ...{
+                "--radix-tooltip-content-transform-origin": "var(--radix-popper-transform-origin)",
+                "--radix-tooltip-content-available-width": "var(--radix-popper-available-width)",
+                "--radix-tooltip-content-available-height": "var(--radix-popper-available-height)",
+                "--radix-tooltip-trigger-width": "var(--radix-popper-anchor-width)",
+                "--radix-tooltip-trigger-height": "var(--radix-popper-anchor-height)"
+              }
+            },
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Slottable$1, { children }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(VisuallyHiddenContentContextProvider, { scope: __scopeTooltip, isInside: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Root$7, { id: context.contentId, role: "tooltip", children: ariaLabel || children }) })
+            ]
+          }
+        )
+      }
+    );
+  }
+);
+TooltipContent$1.displayName = CONTENT_NAME;
+var ARROW_NAME = "TooltipArrow";
+var TooltipArrow = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeTooltip, ...arrowProps } = props;
+    const popperScope = usePopperScope(__scopeTooltip);
+    const visuallyHiddenContentContext = useVisuallyHiddenContentContext(
+      ARROW_NAME,
+      __scopeTooltip
+    );
+    return visuallyHiddenContentContext.isInside ? null : /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow, { ...popperScope, ...arrowProps, ref: forwardedRef });
+  }
+);
+TooltipArrow.displayName = ARROW_NAME;
+function getExitSideFromRect(point, rect) {
+  const top = Math.abs(rect.top - point.y);
+  const bottom = Math.abs(rect.bottom - point.y);
+  const right = Math.abs(rect.right - point.x);
+  const left = Math.abs(rect.left - point.x);
+  switch (Math.min(top, bottom, right, left)) {
+    case left:
+      return "left";
+    case right:
+      return "right";
+    case top:
+      return "top";
+    case bottom:
+      return "bottom";
+    default:
+      throw new Error("unreachable");
+  }
+}
+function getPaddedExitPoints(exitPoint, exitSide, padding = 5) {
+  const paddedExitPoints = [];
+  switch (exitSide) {
+    case "top":
+      paddedExitPoints.push(
+        { x: exitPoint.x - padding, y: exitPoint.y + padding },
+        { x: exitPoint.x + padding, y: exitPoint.y + padding }
+      );
+      break;
+    case "bottom":
+      paddedExitPoints.push(
+        { x: exitPoint.x - padding, y: exitPoint.y - padding },
+        { x: exitPoint.x + padding, y: exitPoint.y - padding }
+      );
+      break;
+    case "left":
+      paddedExitPoints.push(
+        { x: exitPoint.x + padding, y: exitPoint.y - padding },
+        { x: exitPoint.x + padding, y: exitPoint.y + padding }
+      );
+      break;
+    case "right":
+      paddedExitPoints.push(
+        { x: exitPoint.x - padding, y: exitPoint.y - padding },
+        { x: exitPoint.x - padding, y: exitPoint.y + padding }
+      );
+      break;
+  }
+  return paddedExitPoints;
+}
+function getPointsFromRect(rect) {
+  const { top, right, bottom, left } = rect;
+  return [
+    { x: left, y: top },
+    { x: right, y: top },
+    { x: right, y: bottom },
+    { x: left, y: bottom }
+  ];
+}
+function isPointInPolygon(point, polygon) {
+  const { x, y } = point;
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const ii = polygon[i];
+    const jj = polygon[j];
+    const xi = ii.x;
+    const yi = ii.y;
+    const xj = jj.x;
+    const yj = jj.y;
+    const intersect = yi > y !== yj > y && x < (xj - xi) * (y - yi) / (yj - yi) + xi;
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+function getHull(points) {
+  const newPoints = points.slice();
+  newPoints.sort((a, b) => {
+    if (a.x < b.x) return -1;
+    else if (a.x > b.x) return 1;
+    else if (a.y < b.y) return -1;
+    else if (a.y > b.y) return 1;
+    else return 0;
+  });
+  return getHullPresorted(newPoints);
+}
+function getHullPresorted(points) {
+  if (points.length <= 1) return points.slice();
+  const upperHull = [];
+  for (let i = 0; i < points.length; i++) {
+    const p = points[i];
+    while (upperHull.length >= 2) {
+      const q = upperHull[upperHull.length - 1];
+      const r = upperHull[upperHull.length - 2];
+      if ((q.x - r.x) * (p.y - r.y) >= (q.y - r.y) * (p.x - r.x)) upperHull.pop();
+      else break;
+    }
+    upperHull.push(p);
+  }
+  upperHull.pop();
+  const lowerHull = [];
+  for (let i = points.length - 1; i >= 0; i--) {
+    const p = points[i];
+    while (lowerHull.length >= 2) {
+      const q = lowerHull[lowerHull.length - 1];
+      const r = lowerHull[lowerHull.length - 2];
+      if ((q.x - r.x) * (p.y - r.y) >= (q.y - r.y) * (p.x - r.x)) lowerHull.pop();
+      else break;
+    }
+    lowerHull.push(p);
+  }
+  lowerHull.pop();
+  if (upperHull.length === 1 && lowerHull.length === 1 && upperHull[0].x === lowerHull[0].x && upperHull[0].y === lowerHull[0].y) {
+    return upperHull;
+  } else {
+    return upperHull.concat(lowerHull);
+  }
+}
+var Provider = TooltipProvider$1;
+var Root3 = Tooltip$2;
+var Trigger = TooltipTrigger$1;
+var Portal = TooltipPortal;
+var Content2 = TooltipContent$1;
+var Arrow2 = TooltipArrow;
+
+"use client";
+function TooltipProvider({
+  delayDuration = 0,
+  ...props
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    Provider,
+    {
+      "data-slot": "tooltip-provider",
+      delayDuration,
+      ...props
+    }
+  );
+}
+function Tooltip$1({
+  ...props
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Root3, { "data-slot": "tooltip", ...props }) });
+}
+function TooltipTrigger({
+  ...props
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger, { "data-slot": "tooltip-trigger", ...props });
+}
+function TooltipContent({
+  className,
+  sideOffset = 0,
+  children,
+  ...props
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Portal, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    Content2,
+    {
+      "data-slot": "tooltip-content",
+      sideOffset,
+      className: cn$1(
+        "bg-primary text-primary-foreground animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md px-3 py-1.5 text-xs text-balance",
+        className
+      ),
+      ...props,
+      children: [
+        children,
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "bg-primary fill-primary z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px]" })
+      ]
+    }
+  ) });
+}
+
 function PaymentsPage() {
   const [overview, setOverview] = reactExports.useState(null);
   const [loading, setLoading] = reactExports.useState(true);
@@ -101428,14 +102160,16 @@ function PaymentsPage() {
       setCourseOrdersLoading(false);
     }
   };
-  const formatCurrency = (amount, currency = "USD") => {
+  const formatCurrency = (amount, currency = null) => {
     const numAmount = typeof amount === "string" ? parseFloat(amount) : amount;
-    const currencyCode = currency || "USD";
+    const currencyCode = currency || "NGN";
     if (currencyCode && !isNaN(Number(currencyCode))) {
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD"
-      }).format(numAmount);
+      return `₦${numAmount.toLocaleString()}`;
+    }
+    if (currencyCode === "USD") {
+      return `$${numAmount.toLocaleString()}`;
+    } else if (currencyCode === "NGN") {
+      return `₦${numAmount.toLocaleString()}`;
     }
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -101479,6 +102213,15 @@ function PaymentsPage() {
     }
     return /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "outline", children: status });
   };
+  const handleCopyReference = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Copied successfully");
+    } catch (error) {
+      console.error("Failed to copy:", error);
+      toast.error("Failed to copy");
+    }
+  };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-3xl font-bold", children: "Payment Overview" }),
@@ -101501,7 +102244,7 @@ function PaymentsPage() {
           /* @__PURE__ */ jsxRuntimeExports.jsx(DollarSign, { className: "h-4 w-4 text-muted-foreground shrink-0" })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
-          loading ? /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-8 w-32" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xl font-bold truncate", title: summaryStats ? formatCurrency(summaryStats.grandTotal, "USD") : "$0.00", children: summaryStats ? formatCurrency(summaryStats.grandTotal, "USD") : "$0.00" }),
+          loading ? /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-8 w-32" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xl font-bold truncate", title: summaryStats ? formatCurrency(summaryStats.grandTotal, "NGN") : "₦0.00", children: summaryStats ? formatCurrency(summaryStats.grandTotal, "NGN") : "₦0.00" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground mt-1 truncate", children: "Total revenue" })
         ] })
       ] }),
@@ -101562,7 +102305,6 @@ function PaymentsPage() {
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 border-b", children: "Type" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-right p-2 border-b", children: "Amount" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-right p-2 border-b", children: "Balance" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 border-b", children: "Currency" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 border-b", children: "Semester" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 border-b", children: "Academic Year" })
           ] }) }),
@@ -101575,7 +102317,6 @@ function PaymentsPage() {
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-16" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-20 ml-auto" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-20 ml-auto" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-16" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-16" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-24" }) })
           ] }, index)) })
@@ -101590,7 +102331,6 @@ function PaymentsPage() {
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 font-medium", children: "Type" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-right p-2 font-medium", children: "Amount" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-right p-2 font-medium", children: "Balance" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 font-medium", children: "Currency" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 font-medium", children: "Semester" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 font-medium", children: "Academic Year" })
             ] }) }),
@@ -101603,14 +102343,23 @@ function PaymentsPage() {
                 funding.student.lname
               ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-muted-foreground", children: "N/A" }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: new Date(funding.date).toLocaleDateString() }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 truncate max-w-[150px]", title: funding.ref, children: funding.ref }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Tooltip$1, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipTrigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "button",
+                  {
+                    onClick: () => handleCopyReference(funding.ref),
+                    className: "truncate max-w-[150px] text-left hover:text-primary cursor-pointer",
+                    children: funding.ref
+                  }
+                ) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContent, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Click to copy" }) })
+              ] }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1", children: [
                 funding.type === "Debit" ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleArrowDown, { className: "h-3 w-3 text-red-500 shrink-0" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(CircleArrowUp, { className: "h-3 w-3 text-green-500 shrink-0" }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: funding.type === "Debit" ? "text-red-600" : "text-green-600", children: funding.type })
               ] }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 text-right font-medium", children: formatCurrency(funding.amount, funding.currency) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 text-right", children: formatCurrency(parseFloat(funding.balance), funding.currency) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: funding.currency || "N/A" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: funding.semester }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: funding.academic_year })
             ] }, funding.id)) })
@@ -101674,7 +102423,6 @@ function PaymentsPage() {
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 border-b", children: "Type" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 border-b", children: "Status" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-right p-2 border-b", children: "Amount" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 border-b", children: "Currency" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 border-b", children: "Level" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 border-b", children: "Semester" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 border-b", children: "Academic Year" })
@@ -101690,7 +102438,6 @@ function PaymentsPage() {
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-20 ml-auto" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-16" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-16" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-16" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-24" }) })
           ] }, index)) })
         ] }) }) : schoolFees.length > 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
@@ -101704,7 +102451,6 @@ function PaymentsPage() {
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 font-medium", children: "Type" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 font-medium", children: "Status" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-right p-2 font-medium", children: "Amount" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 font-medium", children: "Currency" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 font-medium", children: "Level" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 font-medium", children: "Semester" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 font-medium", children: "Academic Year" })
@@ -101718,11 +102464,20 @@ function PaymentsPage() {
                 fee.student.lname
               ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-muted-foreground", children: "N/A" }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: new Date(fee.date).toLocaleDateString() }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 truncate max-w-[150px]", title: fee.teller_no, children: fee.teller_no }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Tooltip$1, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipTrigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "button",
+                  {
+                    onClick: () => handleCopyReference(fee.teller_no),
+                    className: "truncate max-w-[150px] text-left hover:text-primary cursor-pointer",
+                    children: fee.teller_no
+                  }
+                ) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContent, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Click to copy" }) })
+              ] }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 truncate max-w-[200px]", title: fee.type, children: fee.type }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: getStatusBadge(fee.status) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 text-right font-medium", children: formatCurrency(fee.amount, fee.currency) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: fee.currency || "N/A" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: fee.student_level }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: fee.semester }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: fee.academic_year })
@@ -101783,7 +102538,6 @@ function PaymentsPage() {
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 border-b", children: "Student" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 border-b", children: "Date" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-right p-2 border-b", children: "Amount" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 border-b", children: "Currency" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 border-b", children: "Level" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 border-b", children: "Semester" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 border-b", children: "Academic Year" })
@@ -101795,7 +102549,6 @@ function PaymentsPage() {
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-20 ml-auto" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-16" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-16" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-16" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-24" }) })
           ] }, index)) })
         ] }) }) : courseOrders.length > 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
@@ -101805,7 +102558,6 @@ function PaymentsPage() {
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 font-medium", children: "Student" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 font-medium", children: "Date" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-right p-2 font-medium", children: "Amount" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 font-medium", children: "Currency" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 font-medium", children: "Level" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 font-medium", children: "Semester" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "text-left p-2 font-medium", children: "Academic Year" })
@@ -101819,7 +102571,6 @@ function PaymentsPage() {
               ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-muted-foreground", children: "N/A" }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: new Date(order.date).toLocaleDateString() }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 text-right font-medium", children: order.amount ? formatCurrency(parseFloat(order.amount), order.currency) : "N/A" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: order.currency || "N/A" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: order.level || "N/A" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: order.semester }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2", children: order.academic_year })
@@ -104452,17 +105203,17 @@ function TutorsStatistics({
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { className: "flex flex-row items-center justify-between space-y-0 pb-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { className: "text-sm font-medium truncate", children: "Total Tutors" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { className: "text-sm font-medium truncate", children: "Total Creators" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(User, { className: "h-4 w-4 text-muted-foreground shrink-0" })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
         loading ? /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-8 w-24" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xl font-bold truncate", children: (statistics?.soleTutors.total || 0) + (statistics?.organizations.total || 0) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground mt-1 truncate", children: "All tutor types" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground mt-1 truncate", children: "All creator types" })
       ] })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { className: "flex flex-row items-center justify-between space-y-0 pb-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { className: "text-sm font-medium truncate", children: "Tutor Courses" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { className: "text-sm font-medium truncate", children: "Creator Courses" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(BookOpen, { className: "h-4 w-4 text-muted-foreground shrink-0" })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
@@ -104745,14 +105496,14 @@ function TutorsPage() {
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-3xl font-bold", children: "Tutor Management" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-muted-foreground", children: "Manage sole tutors and organizations" })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-3xl font-bold", children: "Creators" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-muted-foreground", children: "Manage creators and organizations" })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(TutorsStatistics, { loading: statisticsLoading, statistics }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { children: "Tutors" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(CardDescription, { children: "View and manage tutors by type" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { children: "Creators" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardDescription, { children: "View and manage creators by type" })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Tabs, { value: activeTab, onValueChange: setActiveTab, className: "w-full", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsList, { className: "grid w-full grid-cols-2", children: [
@@ -105973,7 +106724,7 @@ function AddModuleDialog({
 "use client";
 var PROGRESS_NAME = "Progress";
 var DEFAULT_MAX = 100;
-var [createProgressContext, createProgressScope] = createContextScope$9(PROGRESS_NAME);
+var [createProgressContext, createProgressScope] = createContextScope$a(PROGRESS_NAME);
 var [ProgressProvider, useProgressContext] = createProgressContext(PROGRESS_NAME);
 var Progress$1 = reactExports.forwardRef(
   (props, forwardedRef) => {
@@ -105994,7 +106745,7 @@ var Progress$1 = reactExports.forwardRef(
     const value = isValidValueNumber(valueProp, max) ? valueProp : null;
     const valueLabel = isNumber$1(value) ? getValueLabel(value, max) : void 0;
     return /* @__PURE__ */ jsxRuntimeExports.jsx(ProgressProvider, { scope: __scopeProgress, value, max, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$e.div,
+      Primitive$f.div,
       {
         "aria-valuemax": max,
         "aria-valuemin": 0,
@@ -106017,7 +106768,7 @@ var ProgressIndicator = reactExports.forwardRef(
     const { __scopeProgress, ...indicatorProps } = props;
     const context = useProgressContext(INDICATOR_NAME, __scopeProgress);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$e.div,
+      Primitive$f.div,
       {
         "data-state": getProgressState(context.value, context.max),
         "data-value": context.value ?? void 0,
