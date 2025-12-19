@@ -162,7 +162,7 @@ function App() {
     <AuthProvider>
       <ThemeProvider defaultTheme="light">
         <AppRouter />
-        <Toaster />
+        <Toaster position="top-right" />
       </ThemeProvider>
     </AuthProvider>
   );
