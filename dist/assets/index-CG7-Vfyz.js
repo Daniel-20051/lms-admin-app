@@ -75890,6 +75890,11 @@ const navigationCategories = [
         title: "Creators",
         href: "/super-admin/tutors",
         icon: School
+      },
+      {
+        title: "Applications",
+        href: "/super-admin/applications",
+        icon: FileText
       }
     ]
   },
@@ -83527,6 +83532,61 @@ const getDashboardStats = async () => {
     return response.data;
   } catch (err) {
     handleApiError(err, "getting dashboard statistics");
+    throw err;
+  }
+};
+const getPendingKYCDocuments = async (params = {}) => {
+  try {
+    const headers = getAuthHeaders();
+    const queryParams = new URLSearchParams();
+    if (params.page) queryParams.append("page", params.page.toString());
+    if (params.limit) queryParams.append("limit", params.limit.toString());
+    const url = `${BASE_URL}/api/admin/students/kyc/pending${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+    const response = await axios.get(url, { headers });
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "getting pending KYC documents");
+    throw err;
+  }
+};
+const getStudentKYC = async (studentId) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.get(
+      `${BASE_URL}/api/admin/students/${studentId}/kyc`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "getting student KYC documents");
+    throw err;
+  }
+};
+const approveKYCDocument = async (studentId, documentType) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.put(
+      `${BASE_URL}/api/admin/students/${studentId}/kyc/documents/${documentType}/approve`,
+      {},
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "approving KYC document");
+    throw err;
+  }
+};
+const rejectKYCDocument = async (studentId, documentType, data) => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.put(
+      `${BASE_URL}/api/admin/students/${studentId}/kyc/documents/${documentType}/reject`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, "rejecting KYC document");
     throw err;
   }
 };
@@ -105727,6 +105787,444 @@ function TutorsPage() {
         onConfirmApprove: handleApproveOrganization,
         onConfirmReject: handleRejectOrganization,
         onConfirmStatusUpdate: handleUpdateOrganizationStatus
+      }
+    )
+  ] });
+}
+
+function ViewKYCDocumentDialog({
+  open,
+  onOpenChange,
+  document,
+  studentKYCData,
+  onApprove,
+  onReject
+}) {
+  if (!document || !studentKYCData) return null;
+  const getDocumentTypeLabel = (type) => {
+    return type.split("_").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+  };
+  const currentDocument = document.document_type === "profile_image" ? studentKYCData.profile_image : studentKYCData.documents[document.document_type];
+  const isImage = (url) => {
+    return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "max-w-4xl max-h-[90vh] overflow-y-auto", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogHeader, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { children: "View KYC Document" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DialogDescription, { children: "Review student document before approval or rejection" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "px-6 pt-6 space-y-6", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-4 p-4 bg-muted rounded-lg", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Student Name" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium", children: studentKYCData.student.name })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Email" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium", children: studentKYCData.student.email })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Matric Number" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium", children: studentKYCData.student.matric_number })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Document Type" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "outline", children: getDocumentTypeLabel(document.document_type) })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium", children: "Document Preview" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border rounded-lg p-4 bg-muted/50", children: currentDocument?.url ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
+          isImage(currentDocument.url) ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "img",
+            {
+              src: currentDocument.url,
+              alt: getDocumentTypeLabel(document.document_type),
+              className: "max-w-full h-auto rounded-lg border"
+            }
+          ) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center p-8 border rounded-lg", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-muted-foreground mb-2", children: "Document file" }) }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            Button,
+            {
+              variant: "outline",
+              onClick: () => window.open(currentDocument.url, "_blank"),
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(ExternalLink, { className: "h-4 w-4 mr-2" }),
+                "Open in New Tab"
+              ]
+            }
+          ) })
+        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-muted-foreground text-center py-8", children: "No document available" }) })
+      ] }),
+      currentDocument && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium", children: "Status" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Badge,
+            {
+              variant: currentDocument.status === "approved" ? "default" : currentDocument.status === "rejected" ? "destructive" : "secondary",
+              children: currentDocument.status.toUpperCase()
+            }
+          ),
+          currentDocument.reviewed_at && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-sm text-muted-foreground", children: [
+            "Reviewed on ",
+            new Date(currentDocument.reviewed_at).toLocaleDateString()
+          ] })
+        ] }),
+        currentDocument.rejection_reason && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-3 bg-destructive/10 border border-destructive/20 rounded-lg", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-destructive mb-1", children: "Rejection Reason:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", children: currentDocument.rejection_reason })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end gap-2 pt-6 mt-6 border-t pb-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "outline", onClick: () => onOpenChange(false), children: "Close" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          Button,
+          {
+            variant: "destructive",
+            onClick: onReject,
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(X, { className: "h-4 w-4 mr-2" }),
+              "Reject"
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          Button,
+          {
+            variant: "default",
+            className: "bg-green-600 hover:bg-green-700",
+            onClick: onApprove,
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { className: "h-4 w-4 mr-2" }),
+              "Approve"
+            ]
+          }
+        )
+      ] })
+    ] })
+  ] }) });
+}
+
+function ApproveRejectDialog({
+  open,
+  onOpenChange,
+  actionType,
+  document,
+  loading,
+  onConfirm
+}) {
+  const [rejectionReason, setRejectionReason] = reactExports.useState("");
+  const handleConfirm = () => {
+    if (actionType === "reject" && !rejectionReason.trim()) {
+      return;
+    }
+    onConfirm(actionType === "reject" ? rejectionReason : void 0);
+    if (actionType === "approve") {
+      setRejectionReason("");
+    }
+  };
+  const handleClose = () => {
+    setRejectionReason("");
+    onOpenChange(false);
+  };
+  const getDocumentTypeLabel = (type) => {
+    return type.split("_").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Dialog, { open, onOpenChange: handleClose, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogHeader, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { children: actionType === "approve" ? "Approve Document" : "Reject Document" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DialogDescription, { children: actionType === "approve" ? "Are you sure you want to approve this document? The student will be able to see the approved status." : "Please provide a reason for rejecting this document. The student will see this reason." })
+    ] }),
+    document && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "px-6 pt-6 space-y-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-3 bg-muted rounded-lg", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Student" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium", children: document.student_name }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground mt-1", children: document.student_email })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-3 bg-muted rounded-lg", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Document Type" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium", children: getDocumentTypeLabel(document.document_type) })
+      ] }),
+      actionType === "reject" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(Label$2, { htmlFor: "rejection-reason", children: [
+          "Rejection Reason ",
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-destructive", children: "*" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Textarea,
+          {
+            id: "rejection-reason",
+            placeholder: "Enter the reason for rejecting this document. The student will see this message.",
+            value: rejectionReason,
+            onChange: (e) => setRejectionReason(e.target.value),
+            rows: 4,
+            required: true
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground", children: "This reason will be visible to the student." })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { className: "px-6 pb-6 pt-6", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "outline", onClick: handleClose, disabled: loading, children: "Cancel" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Button,
+        {
+          variant: actionType === "approve" ? "default" : "destructive",
+          onClick: handleConfirm,
+          disabled: loading || actionType === "reject" && !rejectionReason.trim(),
+          className: actionType === "approve" ? "bg-green-600 hover:bg-green-700" : "",
+          children: loading ? "Processing..." : /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: actionType === "approve" ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { className: "h-4 w-4 mr-2" }),
+            "Approve"
+          ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(X, { className: "h-4 w-4 mr-2" }),
+            "Reject"
+          ] }) })
+        }
+      )
+    ] })
+  ] }) });
+}
+
+function ApplicationsPage() {
+  const [pendingDocuments, setPendingDocuments] = reactExports.useState([]);
+  const [loading, setLoading] = reactExports.useState(false);
+  const [page, setPage] = reactExports.useState(1);
+  const [pagination, setPagination] = reactExports.useState({
+    total: 0,
+    page: 1,
+    limit: 20,
+    totalPages: 0
+  });
+  const [selectedDocument, setSelectedDocument] = reactExports.useState(null);
+  const [studentKYCData, setStudentKYCData] = reactExports.useState(null);
+  const [showViewDialog, setShowViewDialog] = reactExports.useState(false);
+  const [showApproveRejectDialog, setShowApproveRejectDialog] = reactExports.useState(false);
+  const [actionType, setActionType] = reactExports.useState(null);
+  const [actionLoading, setActionLoading] = reactExports.useState(false);
+  reactExports.useEffect(() => {
+    fetchPendingDocuments();
+  }, [page]);
+  const fetchPendingDocuments = async () => {
+    try {
+      setLoading(true);
+      const response = await getPendingKYCDocuments({ page, limit: 20 });
+      if (response.success) {
+        setPendingDocuments(response.data.documents);
+        setPagination(response.data.pagination);
+      }
+    } catch (error) {
+      console.error("Error fetching pending documents:", error);
+      toast.error(error.response?.data?.message || "Failed to load pending documents");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleViewDocument = async (document) => {
+    try {
+      const response = await getStudentKYC(document.student_id);
+      if (response.success) {
+        setStudentKYCData(response.data);
+        setSelectedDocument(document);
+        setShowViewDialog(true);
+      }
+    } catch (error) {
+      console.error("Error fetching student KYC:", error);
+      toast.error(error.response?.data?.message || "Failed to load document details");
+    }
+  };
+  const handleApprove = (document) => {
+    setSelectedDocument(document);
+    setActionType("approve");
+    setShowApproveRejectDialog(true);
+  };
+  const handleReject = (document) => {
+    setSelectedDocument(document);
+    setActionType("reject");
+    setShowApproveRejectDialog(true);
+  };
+  const handleConfirmAction = async (rejectionReason) => {
+    if (!selectedDocument) return;
+    try {
+      setActionLoading(true);
+      if (actionType === "approve") {
+        const response = await approveKYCDocument(
+          selectedDocument.student_id,
+          selectedDocument.document_type
+        );
+        if (response.success) {
+          toast.success(response.message || "Document approved successfully");
+          setShowApproveRejectDialog(false);
+          setSelectedDocument(null);
+          fetchPendingDocuments();
+        }
+      } else if (actionType === "reject" && rejectionReason) {
+        const response = await rejectKYCDocument(
+          selectedDocument.student_id,
+          selectedDocument.document_type,
+          { rejection_reason: rejectionReason }
+        );
+        if (response.success) {
+          toast.success(response.message || "Document rejected successfully");
+          setShowApproveRejectDialog(false);
+          setSelectedDocument(null);
+          fetchPendingDocuments();
+        }
+      }
+    } catch (error) {
+      console.error(`Error ${actionType}ing document:`, error);
+      toast.error(error.response?.data?.message || `Failed to ${actionType} document`);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+  const getDocumentTypeLabel = (type) => {
+    return type.split("_").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-3xl font-bold", children: "KYC Applications" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-muted-foreground", children: "Review and manage student KYC document applications" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "pt-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(CardHeader, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardTitle, { children: "Pending Documents" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardDescription, { children: "Documents awaiting admin review and approval" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { children: loading ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: Array.from({ length: 5 }).map((_, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-12 w-full" }, i)) }) : pendingDocuments.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-8 text-muted-foreground", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No pending documents to review." }) }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-md border", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table$1, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "S/N" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Student" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Matric Number" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Document Type" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Uploaded At" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Actions" })
+          ] }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody$1, { children: pendingDocuments.map((doc, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow$1, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: (page - 1) * pagination.limit + index + 1 }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium", children: doc.student_name }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-muted-foreground", children: doc.student_email })
+            ] }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: doc.matric_number }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "outline", children: getDocumentTypeLabel(doc.document_type) }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: new Date(doc.uploaded_at).toLocaleDateString() }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                Button,
+                {
+                  variant: "outline",
+                  size: "sm",
+                  onClick: () => handleViewDocument(doc),
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(Eye, { className: "h-4 w-4 mr-1" }),
+                    "View"
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                Button,
+                {
+                  variant: "default",
+                  size: "sm",
+                  className: "bg-green-600 hover:bg-green-700",
+                  onClick: () => handleApprove(doc),
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { className: "h-4 w-4 mr-1" }),
+                    "Approve"
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                Button,
+                {
+                  variant: "destructive",
+                  size: "sm",
+                  onClick: () => handleReject(doc),
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(X, { className: "h-4 w-4 mr-1" }),
+                    "Reject"
+                  ]
+                }
+              )
+            ] }) })
+          ] }, doc.id)) })
+        ] }) }),
+        pagination.totalPages > 1 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mt-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm text-muted-foreground", children: [
+            "Showing ",
+            (page - 1) * pagination.limit + 1,
+            " to ",
+            Math.min(page * pagination.limit, pagination.total),
+            " of ",
+            pagination.total,
+            " results"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              Button,
+              {
+                variant: "outline",
+                size: "sm",
+                onClick: () => setPage((p) => Math.max(1, p - 1)),
+                disabled: page === 1 || loading,
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronLeft, { className: "h-4 w-4" }),
+                  "Previous"
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm", children: [
+              "Page ",
+              page,
+              " of ",
+              pagination.totalPages
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              Button,
+              {
+                variant: "outline",
+                size: "sm",
+                onClick: () => setPage((p) => Math.min(pagination.totalPages, p + 1)),
+                disabled: page === pagination.totalPages || loading,
+                children: [
+                  "Next",
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { className: "h-4 w-4" })
+                ]
+              }
+            )
+          ] })
+        ] })
+      ] }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      ViewKYCDocumentDialog,
+      {
+        open: showViewDialog,
+        onOpenChange: setShowViewDialog,
+        document: selectedDocument,
+        studentKYCData,
+        onApprove: () => {
+          setShowViewDialog(false);
+          if (selectedDocument) handleApprove(selectedDocument);
+        },
+        onReject: () => {
+          setShowViewDialog(false);
+          if (selectedDocument) handleReject(selectedDocument);
+        }
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      ApproveRejectDialog,
+      {
+        open: showApproveRejectDialog,
+        onOpenChange: setShowApproveRejectDialog,
+        actionType,
+        document: selectedDocument,
+        loading: actionLoading,
+        onConfirm: handleConfirmAction
       }
     )
   ] });
@@ -147632,6 +148130,7 @@ function AppRouter() {
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "payments", element: /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentsPage, {}) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "school-fees", element: /* @__PURE__ */ jsxRuntimeExports.jsx(SchoolFeesPage, {}) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "tutors", element: /* @__PURE__ */ jsxRuntimeExports.jsx(TutorsPage, {}) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "applications", element: /* @__PURE__ */ jsxRuntimeExports.jsx(ApplicationsPage, {}) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "revenue", element: /* @__PURE__ */ jsxRuntimeExports.jsx(RevenuePage, {}) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "revenue/tutor/:ownerType/:ownerId", element: /* @__PURE__ */ jsxRuntimeExports.jsx(TutorRevenuePage, {}) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "activity-logs", element: /* @__PURE__ */ jsxRuntimeExports.jsx(ActivityLogsPage, {}) }),
@@ -147652,7 +148151,7 @@ function AppRouter() {
 function App() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(AuthProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(ThemeProvider, { defaultTheme: "light", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(AppRouter, {}),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Toaster, {})
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Toaster, { position: "top-right" })
   ] }) });
 }
 

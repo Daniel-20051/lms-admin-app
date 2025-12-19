@@ -20,6 +20,7 @@ import NoticesPage from "@/pages/super-admin/notices/NoticesPage";
 import PaymentsPage from "@/pages/super-admin/payments/PaymentsPage";
 import SchoolFeesPage from "@/pages/super-admin/school-fees/SchoolFeesPage";
 import TutorsPage from "@/pages/super-admin/tutors/TutorsPage";
+import ApplicationsPage from "@/pages/super-admin/applications/ApplicationsPage";
 import RevenuePage from "@/pages/super-admin/revenue/RevenuePage";
 import TutorRevenuePage from "@/pages/super-admin/revenue/TutorRevenuePage";
 
@@ -131,6 +132,7 @@ function AppRouter() {
             <Route path="payments" element={<PaymentsPage />} />
             <Route path="school-fees" element={<SchoolFeesPage />} />
             <Route path="tutors" element={<TutorsPage />} />
+            <Route path="applications" element={<ApplicationsPage />} />
             <Route path="revenue" element={<RevenuePage />} />
             <Route path="revenue/tutor/:ownerType/:ownerId" element={<TutorRevenuePage />} />
             <Route path="activity-logs" element={<ActivityLogsPage />} />

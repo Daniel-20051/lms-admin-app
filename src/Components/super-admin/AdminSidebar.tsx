@@ -25,6 +25,7 @@ import {
   BookMarked,
   ListChecks,
   Receipt,
+  FileText,
 } from "lucide-react";
 import { Button } from "@/Components/ui/button";
 import { cn } from "@/lib/utils";
@@ -70,6 +71,11 @@ const navigationCategories: NavigationCategory[] = [
         title: "Creators",
         href: "/super-admin/tutors",
         icon: School,
+      },
+      {
+        title: "Applications",
+        href: "/super-admin/applications",
+        icon: FileText,
       },
     ],
   },

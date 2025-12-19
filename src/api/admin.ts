@@ -2999,3 +2999,145 @@ export const getDashboardStats = async (): Promise<GetDashboardStatsResponse> =>
   }
 };
 
+// ==================== KYC DOCUMENT MANAGEMENT ====================
+
+export interface PendingKYCDocument {
+  id: number;
+  student_id: number;
+  student_name: string;
+  student_email: string;
+  matric_number: string;
+  document_type: string;
+  file_url: string;
+  uploaded_at: string;
+}
+
+export interface GetPendingKYCDocumentsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    documents: PendingKYCDocument[];
+    pagination: PaginationData;
+  };
+}
+
+export const getPendingKYCDocuments = async (params: { page?: number; limit?: number } = {}): Promise<GetPendingKYCDocumentsResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const queryParams = new URLSearchParams();
+    
+    if (params.page) queryParams.append('page', params.page.toString());
+    if (params.limit) queryParams.append('limit', params.limit.toString());
+
+    const url = `${BASE_URL}/api/admin/students/kyc/pending${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    const response = await axios.get<GetPendingKYCDocumentsResponse>(url, { headers });
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'getting pending KYC documents');
+    throw err;
+  }
+};
+
+export interface StudentKYCDocument {
+  url: string;
+  status: 'pending' | 'approved' | 'rejected';
+  rejection_reason: string | null;
+  reviewed_at: string | null;
+  reviewed_by: number | null;
+}
+
+export interface StudentKYCData {
+  student: {
+    id: number;
+    name: string;
+    email: string;
+    matric_number: string;
+  };
+  profile_image: StudentKYCDocument;
+  documents: {
+    [key: string]: StudentKYCDocument;
+  };
+}
+
+export interface GetStudentKYCResponse {
+  success: boolean;
+  data: StudentKYCData;
+}
+
+export const getStudentKYC = async (studentId: number): Promise<GetStudentKYCResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.get<GetStudentKYCResponse>(
+      `${BASE_URL}/api/admin/students/${studentId}/kyc`,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'getting student KYC documents');
+    throw err;
+  }
+};
+
+export interface ApproveKYCDocumentResponse {
+  success: boolean;
+  message: string;
+  data: {
+    student_id: number;
+    document_type: string;
+    status: 'approved';
+    reviewed_by: number;
+    reviewed_at: string;
+  };
+}
+
+export const approveKYCDocument = async (studentId: number, documentType: string): Promise<ApproveKYCDocumentResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.put<ApproveKYCDocumentResponse>(
+      `${BASE_URL}/api/admin/students/${studentId}/kyc/documents/${documentType}/approve`,
+      {},
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'approving KYC document');
+    throw err;
+  }
+};
+
+export interface RejectKYCDocumentData {
+  rejection_reason: string;
+}
+
+export interface RejectKYCDocumentResponse {
+  success: boolean;
+  message: string;
+  data: {
+    student_id: number;
+    document_type: string;
+    status: 'rejected';
+    rejection_reason: string;
+    reviewed_by: number;
+    reviewed_at: string;
+  };
+}
+
+export const rejectKYCDocument = async (
+  studentId: number,
+  documentType: string,
+  data: RejectKYCDocumentData
+): Promise<RejectKYCDocumentResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.put<RejectKYCDocumentResponse>(
+      `${BASE_URL}/api/admin/students/${studentId}/kyc/documents/${documentType}/reject`,
+      data,
+      { headers }
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'rejecting KYC document');
+    throw err;
+  }
+};
+
