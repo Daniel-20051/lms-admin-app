@@ -4,6 +4,7 @@ import { Skeleton } from "@/Components/ui/skeleton";
 import { Badge } from "@/Components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/Components/ui/tabs";
 import { Button } from "@/Components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/Components/ui/tooltip";
 import { 
   CreditCard, 
   DollarSign, 
@@ -207,6 +208,16 @@ export default function PaymentsPage() {
     return <Badge variant="outline">{status}</Badge>;
   };
 
+  const handleCopyReference = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Copied successfully");
+    } catch (error) {
+      console.error("Failed to copy:", error);
+      toast.error("Failed to copy");
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -247,10 +258,10 @@ export default function PaymentsPage() {
             {loading ? (
               <Skeleton className="h-8 w-32" />
             ) : (
-              <div className="text-xl font-bold truncate" title={summaryStats ? formatCurrency(summaryStats.grandTotal, "USD") : "$0.00"}>
+              <div className="text-xl font-bold truncate" title={summaryStats ? formatCurrency(summaryStats.grandTotal, "NGN") : "₦0.00"}>
                 {summaryStats 
-                  ? formatCurrency(summaryStats.grandTotal, "USD")
-                  : "$0.00"}
+                  ? formatCurrency(summaryStats.grandTotal, "NGN")
+                  : "₦0.00"}
               </div>
             )}
             <p className="text-xs text-muted-foreground mt-1 truncate">
@@ -401,8 +412,20 @@ export default function PaymentsPage() {
                               )}
                             </td>
                             <td className="p-2">{new Date(funding.date).toLocaleDateString()}</td>
-                            <td className="p-2 truncate max-w-[150px]" title={funding.ref}>
-                              {funding.ref}
+                            <td className="p-2">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <button
+                                    onClick={() => handleCopyReference(funding.ref)}
+                                    className="truncate max-w-[150px] text-left hover:text-primary cursor-pointer"
+                                  >
+                                    {funding.ref}
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Click to copy</p>
+                                </TooltipContent>
+                              </Tooltip>
                             </td>
                             <td className="p-2">
                               <div className="flex items-center gap-1">
@@ -543,8 +566,20 @@ export default function PaymentsPage() {
                               )}
                             </td>
                             <td className="p-2">{new Date(fee.date).toLocaleDateString()}</td>
-                            <td className="p-2 truncate max-w-[150px]" title={fee.teller_no}>
-                              {fee.teller_no}
+                            <td className="p-2">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <button
+                                    onClick={() => handleCopyReference(fee.teller_no)}
+                                    className="truncate max-w-[150px] text-left hover:text-primary cursor-pointer"
+                                  >
+                                    {fee.teller_no}
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Click to copy</p>
+                                </TooltipContent>
+                              </Tooltip>
                             </td>
                             <td className="p-2 truncate max-w-[200px]" title={fee.type}>
                               {fee.type}
