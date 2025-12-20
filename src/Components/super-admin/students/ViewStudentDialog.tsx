@@ -535,6 +535,8 @@ export default function ViewStudentDialog({
                       <tr className="border-b">
                         <th className="text-left p-2 font-medium">Exam Title</th>
                         <th className="text-left p-2 font-medium">Course</th>
+                        <th className="text-left p-2 font-medium">Academic Year</th>
+                        <th className="text-left p-2 font-medium">Semester</th>
                         <th className="text-center p-2 font-medium">Attempt</th>
                         <th className="text-center p-2 font-medium">Status</th>
                         <th className="text-center p-2 font-medium">Score</th>
@@ -553,6 +555,12 @@ export default function ViewStudentDialog({
                             <div className="text-xs">
                               {exam.exam.course.title} ({exam.exam.course.course_code})
                             </div>
+                          </td>
+                          <td className="p-2">
+                            {exam.exam.academic_year || "-"}
+                          </td>
+                          <td className="p-2">
+                            {exam.exam.semester || "-"}
                           </td>
                           <td className="p-2 text-center">#{exam.attempt_no}</td>
                           <td className="p-2 text-center">

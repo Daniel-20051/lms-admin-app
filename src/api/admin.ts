@@ -3012,11 +3012,27 @@ export interface PendingKYCDocument {
   uploaded_at: string;
 }
 
+export interface PendingKYCStudent {
+  student_id: number;
+  name: string;
+  email: string;
+  matric_number: string;
+  admin_status: string;
+  program?: {
+    id: number;
+    title: string;
+    description: string;
+  };
+  documents: {
+    [key: string]: StudentKYCDocument;
+  };
+}
+
 export interface GetPendingKYCDocumentsResponse {
   success: boolean;
   message: string;
   data: {
-    documents: PendingKYCDocument[];
+    students: PendingKYCStudent[];
     pagination: PaginationData;
   };
 }
@@ -3137,6 +3153,50 @@ export const rejectKYCDocument = async (
     return response.data;
   } catch (err) {
     handleApiError(err, 'rejecting KYC document');
+    throw err;
+  }
+};
+
+export interface ApprovedKYCStudent {
+  student_id: number;
+  name: string;
+  email: string;
+  matric_number: string;
+  admin_status: string;
+  program?: {
+    id: number;
+    title: string;
+    description: string;
+  };
+  approved_at: string;
+  documents_count: number;
+  approved_documents?: {
+    [key: string]: string;
+  };
+}
+
+export interface GetApprovedKYCStudentsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    students: ApprovedKYCStudent[];
+    pagination: PaginationData;
+  };
+}
+
+export const getApprovedKYCStudents = async (params: { page?: number; limit?: number } = {}): Promise<GetApprovedKYCStudentsResponse> => {
+  try {
+    const headers = getAuthHeaders();
+    const queryParams = new URLSearchParams();
+    
+    if (params.page) queryParams.append('page', params.page.toString());
+    if (params.limit) queryParams.append('limit', params.limit.toString());
+
+    const url = `${BASE_URL}/api/admin/students/kyc/approved${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    const response = await axios.get<GetApprovedKYCStudentsResponse>(url, { headers });
+    return response.data;
+  } catch (err) {
+    handleApiError(err, 'getting approved KYC students');
     throw err;
   }
 };
