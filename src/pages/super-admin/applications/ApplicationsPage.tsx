@@ -6,10 +6,9 @@ import { Skeleton } from "@/Components/ui/skeleton";
 import { Input } from "@/Components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/Components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
-import { ChevronLeft, ChevronRight, Eye, Check, X, CheckCircle2, Search, Settings, UserCheck, Loader2, FileText } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, CheckCircle2, Search, Settings, UserCheck, Loader2, FileText } from "lucide-react";
 import {
   getPendingKYCDocuments,
-  getStudentKYC,
   approveKYCDocument,
   rejectKYCDocument,
   getApprovedKYCStudents,
@@ -46,7 +45,7 @@ export default function ApplicationsPage() {
   });
 
   const [selectedDocument, setSelectedDocument] = useState<PendingKYCDocument | null>(null);
-  const [studentKYCData, setStudentKYCData] = useState<StudentKYCData | null>(null);
+  const [studentKYCData] = useState<StudentKYCData | null>(null);
   const [showViewDialog, setShowViewDialog] = useState(false);
   const [showApproveRejectDialog, setShowApproveRejectDialog] = useState(false);
   const [showApproveStudentDialog, setShowApproveStudentDialog] = useState(false);
@@ -117,19 +116,6 @@ export default function ApplicationsPage() {
     }
   };
 
-  const handleViewDocument = async (document: PendingKYCDocument) => {
-    try {
-      const response = await getStudentKYC(document.student_id);
-      if (response.success) {
-        setStudentKYCData(response.data);
-        setSelectedDocument(document);
-        setShowViewDialog(true);
-      }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to load document details");
-    }
-  };
-
   const handleApproveStudent = (student: {
     student_id: number;
     student_name: string;
@@ -143,12 +129,6 @@ export default function ApplicationsPage() {
       matric_number: student.matric_number,
     });
     setShowApproveStudentDialog(true);
-  };
-
-  const handleReject = (document: PendingKYCDocument) => {
-    setSelectedDocument(document);
-    setActionType("reject");
-    setShowApproveRejectDialog(true);
   };
 
   const handleConfirmAction = async (rejectionReason?: string) => {
@@ -188,11 +168,16 @@ export default function ApplicationsPage() {
     }
   };
 
-  const getDocumentTypeLabel = (type: string) => {
-    return type
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
+  const handleApprove = (document: PendingKYCDocument) => {
+    setSelectedDocument(document);
+    setActionType("approve");
+    setShowApproveRejectDialog(true);
+  };
+
+  const handleReject = (document: PendingKYCDocument) => {
+    setSelectedDocument(document);
+    setActionType("reject");
+    setShowApproveRejectDialog(true);
   };
 
   const formatDate = (dateString: string) => {
