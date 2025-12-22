@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
@@ -27,15 +27,17 @@ import {
 import { GetStaffCoursesbyId, GetCourseModules, DeleteModule, DeleteUnit } from "@/api/courses";
 import { GetQuiz, DeleteQuiz } from "@/api/quiz";
 import { toast } from "sonner";
-import AddModuleDialog from "@/Components/super-admin/content/AddModuleDialog";
-import AddUnitDialog from "@/Components/super-admin/content/AddUnitDialog";
-import EditUnitDialog from "@/Components/super-admin/content/EditUnitDialog";
-import UnitPreviewDialog from "@/Components/super-admin/content/UnitPreviewDialog";
-import CreateQuizDialog from "@/Components/super-admin/content/CreateQuizDialog";
-import EditQuizDialog from "@/Components/super-admin/content/EditQuizDialog";
-import QuizDetailsDialog from "@/Components/super-admin/content/QuizDetailsDialog";
-import QuizStatsDialog from "@/Components/super-admin/content/QuizStatsDialog";
-import ConfirmDialog from "@/Components/ConfirmDialog";
+
+// Lazy load dialog components
+const AddModuleDialog = lazy(() => import("@/Components/super-admin/content/AddModuleDialog"));
+const AddUnitDialog = lazy(() => import("@/Components/super-admin/content/AddUnitDialog"));
+const EditUnitDialog = lazy(() => import("@/Components/super-admin/content/EditUnitDialog"));
+const UnitPreviewDialog = lazy(() => import("@/Components/super-admin/content/UnitPreviewDialog"));
+const CreateQuizDialog = lazy(() => import("@/Components/super-admin/content/CreateQuizDialog"));
+const EditQuizDialog = lazy(() => import("@/Components/super-admin/content/EditQuizDialog"));
+const QuizDetailsDialog = lazy(() => import("@/Components/super-admin/content/QuizDetailsDialog"));
+const QuizStatsDialog = lazy(() => import("@/Components/super-admin/content/QuizStatsDialog"));
+const ConfirmDialog = lazy(() => import("@/Components/ConfirmDialog"));
 
 interface Module {
   id: number;
@@ -552,103 +554,133 @@ export default function CourseDetailPage() {
       </Tabs>
 
       {/* Dialogs */}
-      <AddModuleDialog
-        open={showAddModuleDialog}
-        onOpenChange={setShowAddModuleDialog}
-        courseId={courseId!}
-        onSuccess={loadModules}
-      />
-
-      {selectedModule && (
-        <AddUnitDialog
-          open={showAddUnitDialog}
-          onOpenChange={setShowAddUnitDialog}
-          moduleId={String(selectedModule.id)}
-          moduleTitle={selectedModule.title}
-          onSuccess={loadModules}
-        />
-      )}
-
-      {selectedUnit && (
-        <>
-          <EditUnitDialog
-            open={showEditUnitDialog}
-            onOpenChange={setShowEditUnitDialog}
-            unit={selectedUnit}
+      {showAddModuleDialog ? (
+        <Suspense fallback={null}>
+          <AddModuleDialog
+            open={showAddModuleDialog}
+            onOpenChange={setShowAddModuleDialog}
+            courseId={courseId!}
             onSuccess={loadModules}
           />
-          <UnitPreviewDialog
-            open={showUnitPreviewDialog}
-            onOpenChange={setShowUnitPreviewDialog}
-            unit={selectedUnit}
+        </Suspense>
+      ) : null}
+
+      {selectedModule && showAddUnitDialog ? (
+        <Suspense fallback={null}>
+          <AddUnitDialog
+            open={showAddUnitDialog}
+            onOpenChange={setShowAddUnitDialog}
+            moduleId={String(selectedModule.id)}
+            moduleTitle={selectedModule.title}
+            onSuccess={loadModules}
           />
-        </>
-      )}
+        </Suspense>
+      ) : null}
 
-      {courseId && modules.length > 0 && (
-        <CreateQuizDialog
-          open={showCreateQuizDialog}
-          onOpenChange={setShowCreateQuizDialog}
-          courseId={Number(courseId)}
-          modules={modules}
-          onSuccess={loadQuizzes}
-        />
-      )}
+      {selectedUnit && (showEditUnitDialog || showUnitPreviewDialog) ? (
+        <Suspense fallback={null}>
+          {showEditUnitDialog ? (
+            <EditUnitDialog
+              open={showEditUnitDialog}
+              onOpenChange={setShowEditUnitDialog}
+              unit={selectedUnit}
+              onSuccess={loadModules}
+            />
+          ) : null}
+          {showUnitPreviewDialog ? (
+            <UnitPreviewDialog
+              open={showUnitPreviewDialog}
+              onOpenChange={setShowUnitPreviewDialog}
+              unit={selectedUnit}
+            />
+          ) : null}
+        </Suspense>
+      ) : null}
 
-      {selectedQuiz && (
-        <>
-          <EditQuizDialog
-            open={showEditQuizDialog}
-            onOpenChange={setShowEditQuizDialog}
-            quiz={selectedQuiz}
+      {courseId && modules.length > 0 && showCreateQuizDialog ? (
+        <Suspense fallback={null}>
+          <CreateQuizDialog
+            open={showCreateQuizDialog}
+            onOpenChange={setShowCreateQuizDialog}
+            courseId={Number(courseId)}
+            modules={modules}
             onSuccess={loadQuizzes}
           />
-          <QuizDetailsDialog
-            open={showQuizDetailsDialog}
-            onOpenChange={setShowQuizDetailsDialog}
-            quizId={selectedQuiz.id}
-            quiz={selectedQuiz}
+        </Suspense>
+      ) : null}
+
+      {selectedQuiz && (showEditQuizDialog || showQuizDetailsDialog || showQuizStatsDialog) ? (
+        <Suspense fallback={null}>
+          {showEditQuizDialog ? (
+            <EditQuizDialog
+              open={showEditQuizDialog}
+              onOpenChange={setShowEditQuizDialog}
+              quiz={selectedQuiz}
+              onSuccess={loadQuizzes}
+            />
+          ) : null}
+          {showQuizDetailsDialog ? (
+            <QuizDetailsDialog
+              open={showQuizDetailsDialog}
+              onOpenChange={setShowQuizDetailsDialog}
+              quizId={selectedQuiz.id}
+              quiz={selectedQuiz}
+            />
+          ) : null}
+          {showQuizStatsDialog ? (
+            <QuizStatsDialog
+              open={showQuizStatsDialog}
+              onOpenChange={setShowQuizStatsDialog}
+              quizId={selectedQuiz.id}
+              quizTitle={selectedQuiz.title}
+            />
+          ) : null}
+        </Suspense>
+      ) : null}
+
+      {showDeleteModuleDialog ? (
+        <Suspense fallback={null}>
+          <ConfirmDialog
+            open={showDeleteModuleDialog}
+            onOpenChange={setShowDeleteModuleDialog}
+            onConfirm={handleDeleteModule}
+            title="Delete Module"
+            description="Are you sure you want to delete this module? This will also delete all units within it. This action cannot be undone."
+            confirmText="Delete"
+            variant="destructive"
           />
-           <QuizStatsDialog
-             open={showQuizStatsDialog}
-             onOpenChange={setShowQuizStatsDialog}
-             quizId={selectedQuiz.id}
-             quizTitle={selectedQuiz.title}
-           />
-        </>
-      )}
+        </Suspense>
+      ) : null}
 
-      <ConfirmDialog
-        open={showDeleteModuleDialog}
-        onOpenChange={setShowDeleteModuleDialog}
-        onConfirm={handleDeleteModule}
-        title="Delete Module"
-        description="Are you sure you want to delete this module? This will also delete all units within it. This action cannot be undone."
-        confirmText="Delete"
-        variant="destructive"
-      />
+      {showDeleteUnitDialog ? (
+        <Suspense fallback={null}>
+          <ConfirmDialog
+            open={showDeleteUnitDialog}
+            onOpenChange={setShowDeleteUnitDialog}
+            onConfirm={handleDeleteUnit}
+            title="Delete Unit"
+            description="Are you sure you want to delete this unit? This action cannot be undone."
+            confirmText="Delete"
+            variant="destructive"
+            isProcessing={deleteUnitLoading}
+          />
+        </Suspense>
+      ) : null}
 
-      <ConfirmDialog
-        open={showDeleteUnitDialog}
-        onOpenChange={setShowDeleteUnitDialog}
-        onConfirm={handleDeleteUnit}
-        title="Delete Unit"
-        description="Are you sure you want to delete this unit? This action cannot be undone."
-        confirmText="Delete"
-        variant="destructive"
-        isProcessing={deleteUnitLoading}
-      />
-
-      <ConfirmDialog
-        open={showDeleteQuizDialog}
-        onOpenChange={setShowDeleteQuizDialog}
-        onConfirm={handleDeleteQuiz}
-        title="Delete Quiz"
-        description="Are you sure you want to delete this quiz? This will also delete all questions and student attempts. This action cannot be undone."
-        confirmText="Delete"
-        variant="destructive"
-        isProcessing={deleteQuizLoading}
-      />
+      {showDeleteQuizDialog ? (
+        <Suspense fallback={null}>
+          <ConfirmDialog
+            open={showDeleteQuizDialog}
+            onOpenChange={setShowDeleteQuizDialog}
+            onConfirm={handleDeleteQuiz}
+            title="Delete Quiz"
+            description="Are you sure you want to delete this quiz? This will also delete all questions and student attempts. This action cannot be undone."
+            confirmText="Delete"
+            variant="destructive"
+            isProcessing={deleteQuizLoading}
+          />
+        </Suspense>
+      ) : null}
     </div>
   );
 }

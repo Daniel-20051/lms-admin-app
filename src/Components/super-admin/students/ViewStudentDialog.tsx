@@ -306,12 +306,12 @@ export default function ViewStudentDialog({
                       <label className="text-sm font-medium text-muted-foreground">Faculty</label>
                       <div className="flex items-center gap-2 mt-1">
                         <Building2 className="h-4 w-4 text-muted-foreground" />
-                        <p className="text-sm">{studentData.faculty.name}</p>
+                        <p className="text-sm">{studentData.faculty?.name || "N/A"}</p>
                       </div>
                     </div>
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">Program</label>
-                      <p className="text-sm mt-1">{studentData.program.title}</p>
+                      <p className="text-sm mt-1">{studentData.program?.title || "N/A"}</p>
                     </div>
                     {studentData.personalInformation.date && (
                       <div>
@@ -549,18 +549,18 @@ export default function ViewStudentDialog({
                       {studentData.exams.map((exam) => (
                         <tr key={exam.id} className="border-b hover:bg-muted/50">
                           <td className="p-2">
-                            <div className="font-medium">{exam.exam.title}</div>
+                            <div className="font-medium">{exam.exam?.title || "N/A"}</div>
                           </td>
                           <td className="p-2">
                             <div className="text-xs">
-                              {exam.exam.course.title} ({exam.exam.course.course_code})
+                              {exam.exam?.course?.title || "N/A"} ({exam.exam?.course?.course_code || "N/A"})
                             </div>
                           </td>
                           <td className="p-2">
-                            {exam.exam.academic_year || "-"}
+                            {exam.exam?.academic_year || "-"}
                           </td>
                           <td className="p-2">
-                            {exam.exam.semester || "-"}
+                            {exam.exam?.semester || "-"}
                           </td>
                           <td className="p-2 text-center">#{exam.attempt_no}</td>
                           <td className="p-2 text-center">

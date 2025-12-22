@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Suspense, lazy } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
 import { Plus } from "lucide-react";
@@ -8,11 +8,13 @@ import ProgramsStatistics from "@/Components/super-admin/programs/ProgramsStatis
 import ProgramsFilters from "@/Components/super-admin/programs/ProgramsFilters";
 import ProgramsTable from "@/Components/super-admin/programs/ProgramsTable";
 import ProgramsPagination from "@/Components/super-admin/programs/ProgramsPagination";
-import ProgramActionDialogs from "@/Components/super-admin/programs/ProgramActionDialogs";
-import ViewProgramDialog from "@/Components/super-admin/programs/ViewProgramDialog";
-import CreateProgramDialog from "@/Components/super-admin/programs/CreateProgramDialog";
-import EditProgramDialog from "@/Components/super-admin/programs/EditProgramDialog";
-import CreateCourseDialog from "@/Components/super-admin/courses/CreateCourseDialog";
+
+// Lazy load dialog components
+const ProgramActionDialogs = lazy(() => import("@/Components/super-admin/programs/ProgramActionDialogs"));
+const ViewProgramDialog = lazy(() => import("@/Components/super-admin/programs/ViewProgramDialog"));
+const CreateProgramDialog = lazy(() => import("@/Components/super-admin/programs/CreateProgramDialog"));
+const EditProgramDialog = lazy(() => import("@/Components/super-admin/programs/EditProgramDialog"));
+const CreateCourseDialog = lazy(() => import("@/Components/super-admin/courses/CreateCourseDialog"));
 
 export default function ProgramsPage() {
     const {
@@ -128,68 +130,88 @@ export default function ProgramsPage() {
             </Card>
 
             {/* Action Dialogs */}
-            <ProgramActionDialogs
-                selectedProgram={selectedProgram}
-                actionLoading={actionLoading}
-                showDeleteDialog={showDeleteDialog}
-                onDeleteDialogChange={(open) => {
-                    setShowDeleteDialog(open);
-                    if (!open) {
-                        setSelectedProgram(null);
-                    }
-                }}
-                onConfirmDelete={handleDeleteProgram}
-            />
+            {showDeleteDialog ? (
+                <Suspense fallback={null}>
+                    <ProgramActionDialogs
+                        selectedProgram={selectedProgram}
+                        actionLoading={actionLoading}
+                        showDeleteDialog={showDeleteDialog}
+                        onDeleteDialogChange={(open) => {
+                            setShowDeleteDialog(open);
+                            if (!open) {
+                                setSelectedProgram(null);
+                            }
+                        }}
+                        onConfirmDelete={handleDeleteProgram}
+                    />
+                </Suspense>
+            ) : null}
 
             {/* View Program Dialog */}
-            <ViewProgramDialog
-                key={`view-${selectedProgramId}-${showViewDialog ? 'open' : 'closed'}`}
-                open={showViewDialog}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setShowViewDialog(false);
-                        setSelectedProgramId(null);
-                    }
-                }}
-                programId={selectedProgramId}
-            />
+            {showViewDialog ? (
+                <Suspense fallback={null}>
+                    <ViewProgramDialog
+                        key={`view-${selectedProgramId}-${showViewDialog ? 'open' : 'closed'}`}
+                        open={showViewDialog}
+                        onOpenChange={(open) => {
+                            if (!open) {
+                                setShowViewDialog(false);
+                                setSelectedProgramId(null);
+                            }
+                        }}
+                        programId={selectedProgramId}
+                    />
+                </Suspense>
+            ) : null}
 
             {/* Create Program Dialog */}
-            <CreateProgramDialog
-                open={showCreateDialog}
-                onOpenChange={setShowCreateDialog}
-                onProgramCreated={refetchPrograms}
-            />
+            {showCreateDialog ? (
+                <Suspense fallback={null}>
+                    <CreateProgramDialog
+                        open={showCreateDialog}
+                        onOpenChange={setShowCreateDialog}
+                        onProgramCreated={refetchPrograms}
+                    />
+                </Suspense>
+            ) : null}
 
             {/* Edit Program Dialog */}
-            <EditProgramDialog
-                open={showEditDialog}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setShowEditDialog(false);
-                        setSelectedProgramId(null);
-                    }
-                }}
-                programId={selectedProgramId}
-                onProgramUpdated={handleProgramUpdated}
-            />
+            {showEditDialog ? (
+                <Suspense fallback={null}>
+                    <EditProgramDialog
+                        open={showEditDialog}
+                        onOpenChange={(open) => {
+                            if (!open) {
+                                setShowEditDialog(false);
+                                setSelectedProgramId(null);
+                            }
+                        }}
+                        programId={selectedProgramId}
+                        onProgramUpdated={handleProgramUpdated}
+                    />
+                </Suspense>
+            ) : null}
 
             {/* Create Course Dialog */}
-            <CreateCourseDialog
-                open={showCourseDialog}
-                onOpenChange={(open) => {
-                    setShowCourseDialog(open);
-                    if (!open) {
-                        setSelectedProgramForCourse(null);
-                    }
-                }}
-                onCourseCreated={() => {
-                    setShowCourseDialog(false);
-                    setSelectedProgramForCourse(null);
-                }}
-                initialProgramId={selectedProgramForCourse?.id}
-                initialFacultyId={selectedProgramForCourse?.faculty_id}
-            />
+            {showCourseDialog ? (
+                <Suspense fallback={null}>
+                    <CreateCourseDialog
+                        open={showCourseDialog}
+                        onOpenChange={(open) => {
+                            setShowCourseDialog(open);
+                            if (!open) {
+                                setSelectedProgramForCourse(null);
+                            }
+                        }}
+                        onCourseCreated={() => {
+                            setShowCourseDialog(false);
+                            setSelectedProgramForCourse(null);
+                        }}
+                        initialProgramId={selectedProgramForCourse?.id}
+                        initialFacultyId={selectedProgramForCourse?.faculty_id}
+                    />
+                </Suspense>
+            ) : null}
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/Components/ui/tabs";
 import { Button } from "@/Components/ui/button";
@@ -20,13 +20,15 @@ import {
 } from "@/api/admin";
 import { toast } from "sonner";
 import TutorsTable from "@/Components/super-admin/tutors/TutorsTable";
-import ViewTutorDialog from "@/Components/super-admin/tutors/ViewTutorDialog";
-import TutorActionDialogs from "@/Components/super-admin/tutors/TutorActionDialogs";
 import OrganizationsTable from "@/Components/super-admin/tutors/OrganizationsTable";
-import ViewOrganizationDialog from "@/Components/super-admin/tutors/ViewOrganizationDialog";
-import OrganizationActionDialogs from "@/Components/super-admin/tutors/OrganizationActionDialogs";
 import TutorsStatistics from "@/Components/super-admin/tutors/TutorsStatistics";
 import OrganizationsFilters from "@/Components/super-admin/tutors/OrganizationsFilters";
+
+// Lazy load dialog components
+const ViewTutorDialog = lazy(() => import("@/Components/super-admin/tutors/ViewTutorDialog"));
+const TutorActionDialogs = lazy(() => import("@/Components/super-admin/tutors/TutorActionDialogs"));
+const ViewOrganizationDialog = lazy(() => import("@/Components/super-admin/tutors/ViewOrganizationDialog"));
+const OrganizationActionDialogs = lazy(() => import("@/Components/super-admin/tutors/OrganizationActionDialogs"));
 
 export default function TutorsPage() {
   // Statistics
@@ -438,60 +440,76 @@ export default function TutorsPage() {
       </Card>
 
       {/* View Tutor Dialog */}
-      <ViewTutorDialog
-        key={`view-${selectedTutorId}-${showViewDialog ? 'open' : 'closed'}`}
-        open={showViewDialog}
-        onOpenChange={(open) => {
-          if (!open) {
-            setShowViewDialog(false);
-            setSelectedTutorId(null);
-          }
-        }}
-        tutorId={selectedTutorId}
-      />
+      {showViewDialog ? (
+        <Suspense fallback={null}>
+          <ViewTutorDialog
+            key={`view-${selectedTutorId}-${showViewDialog ? 'open' : 'closed'}`}
+            open={showViewDialog}
+            onOpenChange={(open) => {
+              if (!open) {
+                setShowViewDialog(false);
+                setSelectedTutorId(null);
+              }
+            }}
+            tutorId={selectedTutorId}
+          />
+        </Suspense>
+      ) : null}
 
       {/* Sole Tutor Action Dialogs */}
-      <TutorActionDialogs
-        selectedTutor={selectedTutor}
-        actionLoading={actionLoading}
-        showApproveDialog={showApproveDialog}
-        showRejectDialog={showRejectDialog}
-        showStatusDialog={showStatusDialog}
-        onApproveDialogChange={setShowApproveDialog}
-        onRejectDialogChange={setShowRejectDialog}
-        onStatusDialogChange={setShowStatusDialog}
-        onConfirmApprove={handleApproveTutor}
-        onConfirmReject={handleRejectTutor}
-        onConfirmStatusUpdate={handleUpdateStatus}
-      />
+      {(showApproveDialog || showRejectDialog || showStatusDialog) ? (
+        <Suspense fallback={null}>
+          <TutorActionDialogs
+            selectedTutor={selectedTutor}
+            actionLoading={actionLoading}
+            showApproveDialog={showApproveDialog}
+            showRejectDialog={showRejectDialog}
+            showStatusDialog={showStatusDialog}
+            onApproveDialogChange={setShowApproveDialog}
+            onRejectDialogChange={setShowRejectDialog}
+            onStatusDialogChange={setShowStatusDialog}
+            onConfirmApprove={handleApproveTutor}
+            onConfirmReject={handleRejectTutor}
+            onConfirmStatusUpdate={handleUpdateStatus}
+          />
+        </Suspense>
+      ) : null}
 
       {/* View Organization Dialog */}
-      <ViewOrganizationDialog
-        key={`view-org-${selectedOrganizationId}-${showOrgViewDialog ? 'open' : 'closed'}`}
-        open={showOrgViewDialog}
-        onOpenChange={(open) => {
-          if (!open) {
-            setShowOrgViewDialog(false);
-            setSelectedOrganizationId(null);
-          }
-        }}
-        organizationId={selectedOrganizationId}
-      />
+      {showOrgViewDialog ? (
+        <Suspense fallback={null}>
+          <ViewOrganizationDialog
+            key={`view-org-${selectedOrganizationId}-${showOrgViewDialog ? 'open' : 'closed'}`}
+            open={showOrgViewDialog}
+            onOpenChange={(open) => {
+              if (!open) {
+                setShowOrgViewDialog(false);
+                setSelectedOrganizationId(null);
+              }
+            }}
+            organizationId={selectedOrganizationId}
+          />
+        </Suspense>
+      ) : null}
 
       {/* Organization Action Dialogs */}
-      <OrganizationActionDialogs
-        selectedOrganization={selectedOrganization}
-        actionLoading={orgActionLoading}
-        showApproveDialog={showOrgApproveDialog}
-        showRejectDialog={showOrgRejectDialog}
-        showStatusDialog={showOrgStatusDialog}
-        onApproveDialogChange={setShowOrgApproveDialog}
-        onRejectDialogChange={setShowOrgRejectDialog}
-        onStatusDialogChange={setShowOrgStatusDialog}
-        onConfirmApprove={handleApproveOrganization}
-        onConfirmReject={handleRejectOrganization}
-        onConfirmStatusUpdate={handleUpdateOrganizationStatus}
-      />
+      {(showOrgApproveDialog || showOrgRejectDialog || showOrgStatusDialog) ? (
+        <Suspense fallback={null}>
+          <OrganizationActionDialogs
+            selectedOrganization={selectedOrganization}
+            actionLoading={orgActionLoading}
+            showApproveDialog={showOrgApproveDialog}
+            showRejectDialog={showOrgRejectDialog}
+            showStatusDialog={showOrgStatusDialog}
+            onApproveDialogChange={setShowOrgApproveDialog}
+            onRejectDialogChange={setShowOrgRejectDialog}
+            onStatusDialogChange={setShowOrgStatusDialog}
+            onConfirmApprove={handleApproveOrganization}
+            onConfirmReject={handleRejectOrganization}
+            onConfirmStatusUpdate={handleUpdateOrganizationStatus}
+          />
+        </Suspense>
+      ) : null}
     </div>
   );
 }

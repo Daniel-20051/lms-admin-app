@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, Suspense, lazy } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
 import { Badge } from "@/Components/ui/badge";
@@ -19,10 +19,12 @@ import {
   type ApprovedKYCStudent,
 } from "@/api/admin";
 import { toast } from "sonner";
-import ViewKYCDocumentDialog from "@/Components/super-admin/applications/ViewKYCDocumentDialog";
-import ApproveRejectDialog from "@/Components/super-admin/applications/ApproveRejectDialog";
-import ApproveStudentDocumentsDialog from "@/Components/super-admin/applications/ApproveStudentDocumentsDialog";
-import ViewApprovedDocumentsDialog from "@/Components/super-admin/applications/ViewApprovedDocumentsDialog";
+
+// Lazy load dialog components
+const ViewKYCDocumentDialog = lazy(() => import("@/Components/super-admin/applications/ViewKYCDocumentDialog"));
+const ApproveRejectDialog = lazy(() => import("@/Components/super-admin/applications/ApproveRejectDialog"));
+const ApproveStudentDocumentsDialog = lazy(() => import("@/Components/super-admin/applications/ApproveStudentDocumentsDialog"));
+const ViewApprovedDocumentsDialog = lazy(() => import("@/Components/super-admin/applications/ViewApprovedDocumentsDialog"));
 
 export default function ApplicationsPage() {
   const [pendingStudents, setPendingStudents] = useState<PendingKYCStudent[]>([]);
@@ -555,53 +557,67 @@ export default function ApplicationsPage() {
       </Tabs>
 
       {/* Approve Student Documents Dialog */}
-      {selectedStudent && (
-        <ApproveStudentDocumentsDialog
-          open={showApproveStudentDialog}
-          onOpenChange={setShowApproveStudentDialog}
-          studentId={selectedStudent.id}
-          studentName={selectedStudent.name}
-          studentEmail={selectedStudent.email}
-          matricNumber={selectedStudent.matric_number}
-          onSuccess={() => {
-            fetchPendingDocuments();
-            setSelectedStudent(null);
-          }}
-        />
-      )}
+      {selectedStudent && showApproveStudentDialog ? (
+        <Suspense fallback={null}>
+          <ApproveStudentDocumentsDialog
+            open={showApproveStudentDialog}
+            onOpenChange={setShowApproveStudentDialog}
+            studentId={selectedStudent.id}
+            studentName={selectedStudent.name}
+            studentEmail={selectedStudent.email}
+            matricNumber={selectedStudent.matric_number}
+            onSuccess={() => {
+              fetchPendingDocuments();
+              setSelectedStudent(null);
+            }}
+          />
+        </Suspense>
+      ) : null}
 
       {/* View Approved Documents Dialog */}
-      <ViewApprovedDocumentsDialog
-        open={showViewApprovedDialog}
-        onOpenChange={setShowViewApprovedDialog}
-        student={selectedApprovedStudent}
-      />
+      {showViewApprovedDialog ? (
+        <Suspense fallback={null}>
+          <ViewApprovedDocumentsDialog
+            open={showViewApprovedDialog}
+            onOpenChange={setShowViewApprovedDialog}
+            student={selectedApprovedStudent}
+          />
+        </Suspense>
+      ) : null}
 
       {/* View Document Dialog */}
-      <ViewKYCDocumentDialog
-        open={showViewDialog}
-        onOpenChange={setShowViewDialog}
-        document={selectedDocument}
-        studentKYCData={studentKYCData}
-        onApprove={() => {
-          setShowViewDialog(false);
-          if (selectedDocument) handleApprove(selectedDocument);
-        }}
-        onReject={() => {
-          setShowViewDialog(false);
-          if (selectedDocument) handleReject(selectedDocument);
-        }}
-      />
+      {showViewDialog ? (
+        <Suspense fallback={null}>
+          <ViewKYCDocumentDialog
+            open={showViewDialog}
+            onOpenChange={setShowViewDialog}
+            document={selectedDocument}
+            studentKYCData={studentKYCData}
+            onApprove={() => {
+              setShowViewDialog(false);
+              if (selectedDocument) handleApprove(selectedDocument);
+            }}
+            onReject={() => {
+              setShowViewDialog(false);
+              if (selectedDocument) handleReject(selectedDocument);
+            }}
+          />
+        </Suspense>
+      ) : null}
 
       {/* Approve/Reject Dialog */}
-      <ApproveRejectDialog
-        open={showApproveRejectDialog}
-        onOpenChange={setShowApproveRejectDialog}
-        actionType={actionType}
-        document={selectedDocument}
-        loading={actionLoading}
-        onConfirm={handleConfirmAction}
-      />
+      {showApproveRejectDialog ? (
+        <Suspense fallback={null}>
+          <ApproveRejectDialog
+            open={showApproveRejectDialog}
+            onOpenChange={setShowApproveRejectDialog}
+            actionType={actionType}
+            document={selectedDocument}
+            loading={actionLoading}
+            onConfirm={handleConfirmAction}
+          />
+        </Suspense>
+      ) : null}
     </div>
   );
 }

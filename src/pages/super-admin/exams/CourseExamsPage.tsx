@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
@@ -15,11 +15,13 @@ import {
 import { ArrowLeft, Plus, Eye, Pencil, Trash2 } from "lucide-react";
 import { GetExams, DeleteExam } from "@/api/exams";
 import { GetStaffCoursesbyId } from "@/api/courses";
-import CreateExamDialog from "@/Components/super-admin/exams/CreateExamDialog";
-import EditExamDialog from "@/Components/super-admin/exams/EditExamDialog";
-import ViewExamDialog from "@/Components/super-admin/exams/ViewExamDialog";
-import ConfirmDialog from "@/Components/ConfirmDialog";
 import { toast } from "sonner";
+
+// Lazy load dialog components
+const CreateExamDialog = lazy(() => import("@/Components/super-admin/exams/CreateExamDialog"));
+const EditExamDialog = lazy(() => import("@/Components/super-admin/exams/EditExamDialog"));
+const ViewExamDialog = lazy(() => import("@/Components/super-admin/exams/ViewExamDialog"));
+const ConfirmDialog = lazy(() => import("@/Components/ConfirmDialog"));
 
 interface Exam {
   id: number;
@@ -370,62 +372,76 @@ export default function CourseExamsPage() {
       </Card>
 
       {/* Create Exam Dialog */}
-      {courseId && (
-        <CreateExamDialog
-          open={showCreateDialog}
-          onOpenChange={setShowCreateDialog}
-          courseId={Number(courseId)}
-          onExamCreated={() => {
-            loadExams(currentPage);
-            setShowCreateDialog(false);
-          }}
-        />
-      )}
+      {courseId && showCreateDialog ? (
+        <Suspense fallback={null}>
+          <CreateExamDialog
+            open={showCreateDialog}
+            onOpenChange={setShowCreateDialog}
+            courseId={Number(courseId)}
+            onExamCreated={() => {
+              loadExams(currentPage);
+              setShowCreateDialog(false);
+            }}
+          />
+        </Suspense>
+      ) : null}
 
       {/* View Exam Dialog */}
-      <ViewExamDialog
-        open={showViewDialog}
-        onOpenChange={(open) => {
-          setShowViewDialog(open);
-          if (!open) {
-            setSelectedExamId(null);
-          }
-        }}
-        examId={selectedExamId}
-      />
+      {showViewDialog ? (
+        <Suspense fallback={null}>
+          <ViewExamDialog
+            open={showViewDialog}
+            onOpenChange={(open) => {
+              setShowViewDialog(open);
+              if (!open) {
+                setSelectedExamId(null);
+              }
+            }}
+            examId={selectedExamId}
+          />
+        </Suspense>
+      ) : null}
 
       {/* Edit Exam Dialog */}
-      <EditExamDialog
-        open={showEditDialog}
-        onOpenChange={(open) => {
-          setShowEditDialog(open);
-          if (!open) {
-            setSelectedExamId(null);
-          }
-        }}
-        examId={selectedExamId}
-        onExamUpdated={() => {
-          loadExams(currentPage);
-          setShowEditDialog(false);
-        }}
-      />
+      {showEditDialog ? (
+        <Suspense fallback={null}>
+          <EditExamDialog
+            open={showEditDialog}
+            onOpenChange={(open) => {
+              setShowEditDialog(open);
+              if (!open) {
+                setSelectedExamId(null);
+              }
+            }}
+            examId={selectedExamId}
+            onExamUpdated={() => {
+              loadExams(currentPage);
+              setShowEditDialog(false);
+            }}
+          />
+        </Suspense>
+      ) : null}
 
       {/* Delete Confirmation Dialog */}
-      <ConfirmDialog
-        open={showDeleteDialog}
-        onOpenChange={setShowDeleteDialog}
-        title="Delete Exam"
-        description={
-          selectedExam
-            ? `Are you sure you want to delete the exam "${selectedExam.title}"? This action cannot be undone and will permanently remove the exam from the system.`
-            : "Are you sure you want to delete this exam? This action cannot be undone."
-        }
-        confirmText="Delete"
-        cancelText="Cancel"
-        onConfirm={confirmDeleteExam}
-        isProcessing={deleting}
-        variant="destructive"
-      />
+      {showDeleteDialog ? (
+        <Suspense fallback={null}>
+          <ConfirmDialog
+            open={showDeleteDialog}
+            onOpenChange={setShowDeleteDialog}
+            title="Delete Exam"
+            description={
+              selectedExam
+                ? `Are you sure you want to delete the exam "${selectedExam.title}"? This action cannot be undone and will permanently remove the exam from the system.`
+                : "Are you sure you want to delete this exam? This action cannot be undone."
+            }
+            confirmText="Delete"
+            cancelText="Cancel"
+            onConfirm={confirmDeleteExam}
+            isProcessing={deleting}
+            variant="destructive"
+          />
+        </Suspense>
+      ) : null}
     </div>
   );
 }

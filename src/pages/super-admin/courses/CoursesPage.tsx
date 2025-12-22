@@ -2,20 +2,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Com
 import { Button } from "@/Components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import { Plus, DollarSign, Users, List } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useCoursesManagement } from "@/hooks/useCoursesManagement";
 import CoursesFilters from "@/Components/super-admin/courses/CoursesFilters";
 import CoursesTable from "@/Components/super-admin/courses/CoursesTable";
 import CoursesPagination from "@/Components/super-admin/courses/CoursesPagination";
-import ViewCourseDialog from "@/Components/super-admin/courses/ViewCourseDialog";
-import CreateCourseDialog from "@/Components/super-admin/courses/CreateCourseDialog";
-import EditCourseDialog from "@/Components/super-admin/courses/EditCourseDialog";
-import CourseActionDialogs from "@/Components/super-admin/courses/CourseActionDialogs";
-import PricingManagementDialog from "@/Components/super-admin/courses/PricingManagementDialog";
-import CourseAllocationDialog from "@/Components/super-admin/courses/CourseAllocationDialog";
 import AllocationsView from "@/Components/super-admin/courses/AllocationsView";
-import UpdateCoursePriceDialog from "@/Components/super-admin/courses/UpdateCoursePriceDialog";
+
+// Lazy load dialog components
+const ViewCourseDialog = lazy(() => import("@/Components/super-admin/courses/ViewCourseDialog"));
+const CreateCourseDialog = lazy(() => import("@/Components/super-admin/courses/CreateCourseDialog"));
+const EditCourseDialog = lazy(() => import("@/Components/super-admin/courses/EditCourseDialog"));
+const CourseActionDialogs = lazy(() => import("@/Components/super-admin/courses/CourseActionDialogs"));
+const PricingManagementDialog = lazy(() => import("@/Components/super-admin/courses/PricingManagementDialog"));
+const CourseAllocationDialog = lazy(() => import("@/Components/super-admin/courses/CourseAllocationDialog"));
+const UpdateCoursePriceDialog = lazy(() => import("@/Components/super-admin/courses/UpdateCoursePriceDialog"));
 
 export default function CoursesPage() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -215,82 +217,110 @@ export default function CoursesPage() {
             </Tabs>
 
             {/* View Course Dialog */}
-            <ViewCourseDialog
-                key={`view-${selectedCourseId}-${showViewDialog ? 'open' : 'closed'}`}
-                open={showViewDialog}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setShowViewDialog(false);
-                        setSelectedCourseId(null);
-                    }
-                }}
-                courseId={selectedCourseId}
-            />
+            {showViewDialog ? (
+                <Suspense fallback={null}>
+                    <ViewCourseDialog
+                        key={`view-${selectedCourseId}-${showViewDialog ? 'open' : 'closed'}`}
+                        open={showViewDialog}
+                        onOpenChange={(open) => {
+                            if (!open) {
+                                setShowViewDialog(false);
+                                setSelectedCourseId(null);
+                            }
+                        }}
+                        courseId={selectedCourseId}
+                    />
+                </Suspense>
+            ) : null}
 
             {/* Create Course Dialog */}
-            <CreateCourseDialog
-                open={showCreateDialog}
-                onOpenChange={setShowCreateDialog}
-                onCourseCreated={refetchCourses}
-            />
+            {showCreateDialog ? (
+                <Suspense fallback={null}>
+                    <CreateCourseDialog
+                        open={showCreateDialog}
+                        onOpenChange={setShowCreateDialog}
+                        onCourseCreated={refetchCourses}
+                    />
+                </Suspense>
+            ) : null}
 
             {/* Edit Course Dialog */}
-            <EditCourseDialog
-                open={showEditDialog}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setShowEditDialog(false);
-                        setSelectedCourseId(null);
-                    }
-                }}
-                courseId={selectedCourseId}
-                onCourseUpdated={handleCourseUpdated}
-            />
+            {showEditDialog ? (
+                <Suspense fallback={null}>
+                    <EditCourseDialog
+                        open={showEditDialog}
+                        onOpenChange={(open) => {
+                            if (!open) {
+                                setShowEditDialog(false);
+                                setSelectedCourseId(null);
+                            }
+                        }}
+                        courseId={selectedCourseId}
+                        onCourseUpdated={handleCourseUpdated}
+                    />
+                </Suspense>
+            ) : null}
 
             {/* Action Dialogs */}
-            <CourseActionDialogs
-                selectedCourse={selectedCourse}
-                actionLoading={actionLoading}
-                showDeleteDialog={showDeleteDialog}
-                onDeleteDialogChange={(open) => {
-                    setShowDeleteDialog(open);
-                    if (!open) {
-                        setSelectedCourse(null);
-                    }
-                }}
-                onConfirmDelete={handleDeleteCourse}
-            />
+            {showDeleteDialog ? (
+                <Suspense fallback={null}>
+                    <CourseActionDialogs
+                        selectedCourse={selectedCourse}
+                        actionLoading={actionLoading}
+                        showDeleteDialog={showDeleteDialog}
+                        onDeleteDialogChange={(open) => {
+                            setShowDeleteDialog(open);
+                            if (!open) {
+                                setSelectedCourse(null);
+                            }
+                        }}
+                        onConfirmDelete={handleDeleteCourse}
+                    />
+                </Suspense>
+            ) : null}
 
             {/* Pricing Management Dialog */}
-            <PricingManagementDialog
-                open={showPricingDialog}
-                onOpenChange={setShowPricingDialog}
-            />
+            {showPricingDialog ? (
+                <Suspense fallback={null}>
+                    <PricingManagementDialog
+                        open={showPricingDialog}
+                        onOpenChange={setShowPricingDialog}
+                    />
+                </Suspense>
+            ) : null}
 
             {/* Course Allocation Dialog */}
-            <CourseAllocationDialog
-                open={showAllocationDialog}
-                onOpenChange={setShowAllocationDialog}
-                onAllocationSuccess={() => {
-                    // Refresh allocations list
-                    setAllocationsRefreshKey(prev => prev + 1);
-                }}
-            />
+            {showAllocationDialog ? (
+                <Suspense fallback={null}>
+                    <CourseAllocationDialog
+                        open={showAllocationDialog}
+                        onOpenChange={setShowAllocationDialog}
+                        onAllocationSuccess={() => {
+                            // Refresh allocations list
+                            setAllocationsRefreshKey(prev => prev + 1);
+                        }}
+                    />
+                </Suspense>
+            ) : null}
 
             {/* Update Course Price Dialog */}
-            <UpdateCoursePriceDialog
-                open={showUpdatePriceDialog}
-                onOpenChange={(open) => {
-                    setShowUpdatePriceDialog(open);
-                    if (!open) {
-                        setSelectedPriceUpdateCourseId(null);
-                    }
-                }}
-                courseId={selectedPriceUpdateCourseId}
-                onPriceUpdated={() => {
-                    handleCourseUpdated();
-                }}
-            />
+            {showUpdatePriceDialog ? (
+                <Suspense fallback={null}>
+                    <UpdateCoursePriceDialog
+                        open={showUpdatePriceDialog}
+                        onOpenChange={(open) => {
+                            setShowUpdatePriceDialog(open);
+                            if (!open) {
+                                setSelectedPriceUpdateCourseId(null);
+                            }
+                        }}
+                        courseId={selectedPriceUpdateCourseId}
+                        onPriceUpdated={() => {
+                            handleCourseUpdated();
+                        }}
+                    />
+                </Suspense>
+            ) : null}
         </div>
     );
 }

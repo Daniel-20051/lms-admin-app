@@ -2,13 +2,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Com
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Plus, Search } from "lucide-react";
+import { Suspense, lazy } from "react";
 import { useStaffManagement } from "@/hooks/useStaffManagement";
 import StaffStatistics from "@/Components/super-admin/staff/StaffStatistics";
 import StaffTable from "@/Components/super-admin/staff/StaffTable";
 import StaffPagination from "@/Components/super-admin/staff/StaffPagination";
-import StaffActionDialogs from "@/Components/super-admin/staff/StaffActionDialogs";
-import EditStaffDialog from "@/Components/super-admin/staff/EditStaffDialog";
-import CreateStaffDialog from "@/Components/super-admin/dialogs/CreateStaffDialog";
+
+// Lazy load dialog components
+const StaffActionDialogs = lazy(() => import("@/Components/super-admin/staff/StaffActionDialogs"));
+const EditStaffDialog = lazy(() => import("@/Components/super-admin/staff/EditStaffDialog"));
+const CreateStaffDialog = lazy(() => import("@/Components/super-admin/dialogs/CreateStaffDialog"));
 
 export default function StaffPage() {
   const {
@@ -106,36 +109,48 @@ export default function StaffPage() {
       </Card>
 
       {/* Action Dialogs */}
-      <StaffActionDialogs
-        selectedStaff={selectedStaff}
-        actionLoading={actionLoading}
-        showDeactivateDialog={showDeactivateDialog}
-        showResetPasswordDialog={showResetPasswordDialog}
-        onDeactivateDialogChange={setShowDeactivateDialog}
-        onResetPasswordDialogChange={setShowResetPasswordDialog}
-        onConfirmDeactivate={handleDeactivateStaff}
-        onConfirmResetPassword={handleResetPassword}
-      />
+      {(showDeactivateDialog || showResetPasswordDialog) ? (
+        <Suspense fallback={null}>
+          <StaffActionDialogs
+            selectedStaff={selectedStaff}
+            actionLoading={actionLoading}
+            showDeactivateDialog={showDeactivateDialog}
+            showResetPasswordDialog={showResetPasswordDialog}
+            onDeactivateDialogChange={setShowDeactivateDialog}
+            onResetPasswordDialogChange={setShowResetPasswordDialog}
+            onConfirmDeactivate={handleDeactivateStaff}
+            onConfirmResetPassword={handleResetPassword}
+          />
+        </Suspense>
+      ) : null}
 
       {/* Edit Staff Dialog */}
-      <EditStaffDialog
-        open={showEditDialog}
-        onOpenChange={(open) => {
-          if (!open) {
-            setShowEditDialog(false);
-            setSelectedStaff(null);
-          }
-        }}
-        staff={selectedStaff}
-        onStaffUpdated={handleStaffUpdated}
-      />
+      {showEditDialog ? (
+        <Suspense fallback={null}>
+          <EditStaffDialog
+            open={showEditDialog}
+            onOpenChange={(open) => {
+              if (!open) {
+                setShowEditDialog(false);
+                setSelectedStaff(null);
+              }
+            }}
+            staff={selectedStaff}
+            onStaffUpdated={handleStaffUpdated}
+          />
+        </Suspense>
+      ) : null}
 
       {/* Create Staff Dialog */}
-      <CreateStaffDialog
-        open={showCreateDialog}
-        onOpenChange={setShowCreateDialog}
-        onStaffCreated={handleStaffCreated}
-      />
+      {showCreateDialog ? (
+        <Suspense fallback={null}>
+          <CreateStaffDialog
+            open={showCreateDialog}
+            onOpenChange={setShowCreateDialog}
+            onStaffCreated={handleStaffCreated}
+          />
+        </Suspense>
+      ) : null}
     </div>
   );
 }

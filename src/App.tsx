@@ -1,45 +1,53 @@
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { Suspense, lazy, useEffect } from "react";
 import { ThemeProvider } from "@/Components/theme-provider";
 import { useAuth, AuthProvider } from "@/context/AuthContext";
-import AdminLoginPage from "@/pages/AdminLogin";
-import ForgotPasswordPage from "@/pages/ForgotPassword";
-import ResetPasswordPage from "@/pages/ResetPassword";
+import { Toaster } from "sonner";
+import socketService from "@/services/Socketservice";
 import SuperAdminLayout from "@/Components/super-admin/AdminLayout";
-import SuperAdminDashboard from "@/pages/super-admin/dashboard/DashboardPage";
-import SuperAdminProfile from "@/pages/super-admin/profile/ProfilePage";
-import StudentsPage from "@/pages/super-admin/students/StudentsPage";
-import StaffPage from "@/pages/super-admin/staff/StaffPage";
-import AdminsPage from "@/pages/super-admin/admins/AdminsPage";
-import ActivityLogsPage from "@/pages/super-admin/activity-logs/ActivityLogsPage";
-import ProgramsPage from "@/pages/super-admin/programs/ProgramsPage";
-import CoursesPage from "@/pages/super-admin/courses/CoursesPage";
-import SemestersPage from "@/pages/super-admin/semesters/SemestersPage";
-import FacultiesPage from "@/pages/super-admin/faculties/FacultiesPage";
-import SettingsPage from "@/pages/super-admin/settings/SettingsPage";
-import NoticesPage from "@/pages/super-admin/notices/NoticesPage";
-import PaymentsPage from "@/pages/super-admin/payments/PaymentsPage";
-import SchoolFeesPage from "@/pages/super-admin/school-fees/SchoolFeesPage";
-import TutorsPage from "@/pages/super-admin/tutors/TutorsPage";
-import ApplicationsPage from "@/pages/super-admin/applications/ApplicationsPage";
-import RevenuePage from "@/pages/super-admin/revenue/RevenuePage";
-import TutorRevenuePage from "@/pages/super-admin/revenue/TutorRevenuePage";
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+  </div>
+);
+
+// Lazy load all page components
+const AdminLoginPage = lazy(() => import("@/pages/AdminLogin"));
+const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPassword"));
+const ResetPasswordPage = lazy(() => import("@/pages/ResetPassword"));
+const SuperAdminDashboard = lazy(() => import("@/pages/super-admin/dashboard/DashboardPage"));
+const SuperAdminProfile = lazy(() => import("@/pages/super-admin/profile/ProfilePage"));
+const StudentsPage = lazy(() => import("@/pages/super-admin/students/StudentsPage"));
+const StaffPage = lazy(() => import("@/pages/super-admin/staff/StaffPage"));
+const AdminsPage = lazy(() => import("@/pages/super-admin/admins/AdminsPage"));
+const ActivityLogsPage = lazy(() => import("@/pages/super-admin/activity-logs/ActivityLogsPage"));
+const ProgramsPage = lazy(() => import("@/pages/super-admin/programs/ProgramsPage"));
+const CoursesPage = lazy(() => import("@/pages/super-admin/courses/CoursesPage"));
+const SemestersPage = lazy(() => import("@/pages/super-admin/semesters/SemestersPage"));
+const FacultiesPage = lazy(() => import("@/pages/super-admin/faculties/FacultiesPage"));
+const SettingsPage = lazy(() => import("@/pages/super-admin/settings/SettingsPage"));
+const NoticesPage = lazy(() => import("@/pages/super-admin/notices/NoticesPage"));
+const PaymentsPage = lazy(() => import("@/pages/super-admin/payments/PaymentsPage"));
+const SchoolFeesPage = lazy(() => import("@/pages/super-admin/school-fees/SchoolFeesPage"));
+const TutorsPage = lazy(() => import("@/pages/super-admin/tutors/TutorsPage"));
+const ApplicationsPage = lazy(() => import("@/pages/super-admin/applications/ApplicationsPage"));
+const RevenuePage = lazy(() => import("@/pages/super-admin/revenue/RevenuePage"));
+const TutorRevenuePage = lazy(() => import("@/pages/super-admin/revenue/TutorRevenuePage"));
 
 // Content Management Pages
-import CourseContentPage from "@/pages/super-admin/content/CourseContentPage";
-import CourseDetailPage from "@/pages/super-admin/content/CourseDetailPage";
-import QuizzesPage from "@/pages/super-admin/content/QuizzesPage";
-import ExamsPage from "@/pages/super-admin/content/ExamsPage";
-import ResultsPage from "@/pages/super-admin/content/ResultsPage";
-import CourseQuizzesPage from "@/pages/super-admin/content/CourseQuizzesPage";
+const CourseContentPage = lazy(() => import("@/pages/super-admin/content/CourseContentPage"));
+const CourseDetailPage = lazy(() => import("@/pages/super-admin/content/CourseDetailPage"));
+const QuizzesPage = lazy(() => import("@/pages/super-admin/content/QuizzesPage"));
+const ExamsPage = lazy(() => import("@/pages/super-admin/content/ExamsPage"));
+const ResultsPage = lazy(() => import("@/pages/super-admin/content/ResultsPage"));
+const CourseQuizzesPage = lazy(() => import("@/pages/super-admin/content/CourseQuizzesPage"));
 
 // Exam Management Pages
-import ExamsListPage from "@/pages/super-admin/exams/ExamsListPage";
-import CourseExamsPage from "@/pages/super-admin/exams/CourseExamsPage";
-import QuestionBankPage from "@/pages/super-admin/exams/QuestionBankPage";
-
-import { Toaster } from "sonner";
-import { useEffect } from "react";
-import socketService from "@/services/Socketservice";
+const ExamsListPage = lazy(() => import("@/pages/super-admin/exams/ExamsListPage"));
+const CourseExamsPage = lazy(() => import("@/pages/super-admin/exams/CourseExamsPage"));
+const QuestionBankPage = lazy(() => import("@/pages/super-admin/exams/QuestionBankPage"));
 
 function RequireSuperAdmin() {
   const { isLoggedIn, isInitializing, user } = useAuth();
@@ -89,7 +97,9 @@ function AppRouter() {
             hasSuperAdminAccess ? (
               <Navigate to="/super-admin/dashboard" replace />
             ) : (
-              <AdminLoginPage />
+              <Suspense fallback={<PageLoader />}>
+                <AdminLoginPage />
+              </Suspense>
             )
           }
         />
@@ -99,7 +109,9 @@ function AppRouter() {
             hasSuperAdminAccess ? (
               <Navigate to="/super-admin/dashboard" replace />
             ) : (
-              <ForgotPasswordPage />
+              <Suspense fallback={<PageLoader />}>
+                <ForgotPasswordPage />
+              </Suspense>
             )
           }
         />
@@ -109,7 +121,9 @@ function AppRouter() {
             hasSuperAdminAccess ? (
               <Navigate to="/super-admin/dashboard" replace />
             ) : (
-              <ResetPasswordPage />
+              <Suspense fallback={<PageLoader />}>
+                <ResetPasswordPage />
+              </Suspense>
             )
           }
         />
@@ -119,37 +133,37 @@ function AppRouter() {
               index
               element={<Navigate to="/super-admin/dashboard" replace />}
             />
-            <Route path="dashboard" element={<SuperAdminDashboard />} />
-            <Route path="profile" element={<SuperAdminProfile />} />
-            <Route path="students" element={<StudentsPage />} />
-            <Route path="staff" element={<StaffPage />} />
-            <Route path="admins" element={<AdminsPage />} />
-            <Route path="programs" element={<ProgramsPage />} />
-            <Route path="courses" element={<CoursesPage />} />
-            <Route path="semesters" element={<SemestersPage />} />
-            <Route path="faculties" element={<FacultiesPage />} />
-            <Route path="notices" element={<NoticesPage />} />
-            <Route path="payments" element={<PaymentsPage />} />
-            <Route path="school-fees" element={<SchoolFeesPage />} />
-            <Route path="tutors" element={<TutorsPage />} />
-            <Route path="applications" element={<ApplicationsPage />} />
-            <Route path="revenue" element={<RevenuePage />} />
-            <Route path="revenue/tutor/:ownerType/:ownerId" element={<TutorRevenuePage />} />
-            <Route path="activity-logs" element={<ActivityLogsPage />} />
-            <Route path="settings" element={<SettingsPage />} />
+            <Route path="dashboard" element={<Suspense fallback={<PageLoader />}><SuperAdminDashboard /></Suspense>} />
+            <Route path="profile" element={<Suspense fallback={<PageLoader />}><SuperAdminProfile /></Suspense>} />
+            <Route path="students" element={<Suspense fallback={<PageLoader />}><StudentsPage /></Suspense>} />
+            <Route path="staff" element={<Suspense fallback={<PageLoader />}><StaffPage /></Suspense>} />
+            <Route path="admins" element={<Suspense fallback={<PageLoader />}><AdminsPage /></Suspense>} />
+            <Route path="programs" element={<Suspense fallback={<PageLoader />}><ProgramsPage /></Suspense>} />
+            <Route path="courses" element={<Suspense fallback={<PageLoader />}><CoursesPage /></Suspense>} />
+            <Route path="semesters" element={<Suspense fallback={<PageLoader />}><SemestersPage /></Suspense>} />
+            <Route path="faculties" element={<Suspense fallback={<PageLoader />}><FacultiesPage /></Suspense>} />
+            <Route path="notices" element={<Suspense fallback={<PageLoader />}><NoticesPage /></Suspense>} />
+            <Route path="payments" element={<Suspense fallback={<PageLoader />}><PaymentsPage /></Suspense>} />
+            <Route path="school-fees" element={<Suspense fallback={<PageLoader />}><SchoolFeesPage /></Suspense>} />
+            <Route path="tutors" element={<Suspense fallback={<PageLoader />}><TutorsPage /></Suspense>} />
+            <Route path="applications" element={<Suspense fallback={<PageLoader />}><ApplicationsPage /></Suspense>} />
+            <Route path="revenue" element={<Suspense fallback={<PageLoader />}><RevenuePage /></Suspense>} />
+            <Route path="revenue/tutor/:ownerType/:ownerId" element={<Suspense fallback={<PageLoader />}><TutorRevenuePage /></Suspense>} />
+            <Route path="activity-logs" element={<Suspense fallback={<PageLoader />}><ActivityLogsPage /></Suspense>} />
+            <Route path="settings" element={<Suspense fallback={<PageLoader />}><SettingsPage /></Suspense>} />
             
             {/* Content Management Routes */}
-            <Route path="content/course-content" element={<CourseContentPage />} />
-            <Route path="content/course-content/:courseId" element={<CourseDetailPage />} />
-            <Route path="content/quizzes" element={<QuizzesPage />} />
-            <Route path="content/exams" element={<ExamsPage />} />
-            <Route path="content/results" element={<ResultsPage />} />
-            <Route path="content/results/:courseId" element={<CourseQuizzesPage />} />
+            <Route path="content/course-content" element={<Suspense fallback={<PageLoader />}><CourseContentPage /></Suspense>} />
+            <Route path="content/course-content/:courseId" element={<Suspense fallback={<PageLoader />}><CourseDetailPage /></Suspense>} />
+            <Route path="content/quizzes" element={<Suspense fallback={<PageLoader />}><QuizzesPage /></Suspense>} />
+            <Route path="content/exams" element={<Suspense fallback={<PageLoader />}><ExamsPage /></Suspense>} />
+            <Route path="content/results" element={<Suspense fallback={<PageLoader />}><ResultsPage /></Suspense>} />
+            <Route path="content/results/:courseId" element={<Suspense fallback={<PageLoader />}><CourseQuizzesPage /></Suspense>} />
             
             {/* Exam Management Routes */}
-            <Route path="exams" element={<ExamsListPage />} />
-            <Route path="exams/question-bank" element={<QuestionBankPage />} />
-            <Route path="exams/course/:courseId" element={<CourseExamsPage />} />
+            <Route path="exams" element={<Suspense fallback={<PageLoader />}><ExamsListPage /></Suspense>} />
+            <Route path="exams/question-bank" element={<Suspense fallback={<PageLoader />}><QuestionBankPage /></Suspense>} />
+            <Route path="exams/course/:courseId" element={<Suspense fallback={<PageLoader />}><CourseExamsPage /></Suspense>} />
 
           </Route>
         </Route>

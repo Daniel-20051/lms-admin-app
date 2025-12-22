@@ -16,16 +16,18 @@ import {
   SelectValue 
 } from "@/Components/ui/select";
 import { useAdminsManagement } from "@/hooks/useAdminsManagement";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import ViewPermissionsDialog from "@/Components/super-admin/admins/ViewPermissionsDialog";
 import AdminsTable from "@/Components/super-admin/admins/AdminsTable";
-import CreateAdminDialog from "@/Components/super-admin/dialogs/CreateAdminDialog";
-import EditAdminDialog from "@/Components/super-admin/admins/EditAdminDialog";
-import AdminActionDialogs from "@/Components/super-admin/admins/AdminActionDialogs";
 import { deactivateAdmin, getAdminProfile } from "@/api/admin";
 import type { AdminListItem } from "@/api/admin";
+
+// Lazy load dialog components
+const ViewPermissionsDialog = lazy(() => import("@/Components/super-admin/admins/ViewPermissionsDialog"));
+const CreateAdminDialog = lazy(() => import("@/Components/super-admin/dialogs/CreateAdminDialog"));
+const EditAdminDialog = lazy(() => import("@/Components/super-admin/admins/EditAdminDialog"));
+const AdminActionDialogs = lazy(() => import("@/Components/super-admin/admins/AdminActionDialogs"));
 
 export default function AdminsPage() {
   const navigate = useNavigate();
@@ -207,51 +209,67 @@ export default function AdminsPage() {
 
 
       {/* Create Admin Dialog */}
-      <CreateAdminDialog
-        open={showCreateDialog}
-        onOpenChange={setShowCreateDialog}
-        onAdminCreated={handleCreateAdmin}
-      />
+      {showCreateDialog ? (
+        <Suspense fallback={null}>
+          <CreateAdminDialog
+            open={showCreateDialog}
+            onOpenChange={setShowCreateDialog}
+            onAdminCreated={handleCreateAdmin}
+          />
+        </Suspense>
+      ) : null}
 
       {/* Edit Admin Dialog */}
-      <EditAdminDialog
-        open={showEditDialog}
-        onOpenChange={(open) => {
-          setShowEditDialog(open);
-          if (!open) {
-            setSelectedAdmin(null);
-          }
-        }}
-        admin={selectedAdmin}
-        onAdminUpdated={handleEditAdmin}
-      />
+      {showEditDialog ? (
+        <Suspense fallback={null}>
+          <EditAdminDialog
+            open={showEditDialog}
+            onOpenChange={(open) => {
+              setShowEditDialog(open);
+              if (!open) {
+                setSelectedAdmin(null);
+              }
+            }}
+            admin={selectedAdmin}
+            onAdminUpdated={handleEditAdmin}
+          />
+        </Suspense>
+      ) : null}
 
       {/* Deactivate Admin Dialog */}
-      <AdminActionDialogs
-        selectedAdmin={selectedAdmin}
-        actionLoading={actionLoading}
-        showDeactivateDialog={showDeactivateDialog}
-        onDeactivateDialogChange={(open) => {
-          setShowDeactivateDialog(open);
-          if (!open) {
-            setSelectedAdmin(null);
-          }
-        }}
-        onConfirmDeactivate={handleDeactivateAdmin}
-        currentAdminId={currentAdminId}
-      />
+      {showDeactivateDialog ? (
+        <Suspense fallback={null}>
+          <AdminActionDialogs
+            selectedAdmin={selectedAdmin}
+            actionLoading={actionLoading}
+            showDeactivateDialog={showDeactivateDialog}
+            onDeactivateDialogChange={(open) => {
+              setShowDeactivateDialog(open);
+              if (!open) {
+                setSelectedAdmin(null);
+              }
+            }}
+            onConfirmDeactivate={handleDeactivateAdmin}
+            currentAdminId={currentAdminId}
+          />
+        </Suspense>
+      ) : null}
 
       {/* Permissions Dialog */}
-      <ViewPermissionsDialog
-        open={showPermissionsDialog}
-        onOpenChange={(open) => {
-          setShowPermissionsDialog(open);
-          if (!open) {
-            setSelectedAdmin(null);
-          }
-        }}
-        admin={selectedAdmin}
-      />
+      {showPermissionsDialog ? (
+        <Suspense fallback={null}>
+          <ViewPermissionsDialog
+            open={showPermissionsDialog}
+            onOpenChange={(open) => {
+              setShowPermissionsDialog(open);
+              if (!open) {
+                setSelectedAdmin(null);
+              }
+            }}
+            admin={selectedAdmin}
+          />
+        </Suspense>
+      ) : null}
     </div>
   );
 }

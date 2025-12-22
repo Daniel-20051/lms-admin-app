@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, Suspense, lazy } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
@@ -23,7 +23,9 @@ import {
   SelectValue,
 } from "@/Components/ui/select";
 import { toast } from "sonner";
-import AddQuestionDialog from "@/Components/super-admin/exams/AddQuestionDialog";
+
+// Lazy load dialog component
+const AddQuestionDialog = lazy(() => import("@/Components/super-admin/exams/AddQuestionDialog"));
 
 interface BankQuestion {
   id: number;
@@ -440,18 +442,20 @@ export default function QuestionBankPage() {
       </Card>
 
       {/* Add Question Dialog */}
-      {courseId && (
-        <AddQuestionDialog
-          open={showAddDialog}
-          onOpenChange={setShowAddDialog}
-          courseId={Number(courseId)}
-          onQuestionAdded={() => {
-            // Reset to first page when a new question is added
-            setCurrentPage(1);
-            loadQuestions();
-          }}
-        />
-      )}
+      {courseId && showAddDialog ? (
+        <Suspense fallback={null}>
+          <AddQuestionDialog
+            open={showAddDialog}
+            onOpenChange={setShowAddDialog}
+            courseId={Number(courseId)}
+            onQuestionAdded={() => {
+              // Reset to first page when a new question is added
+              setCurrentPage(1);
+              loadQuestions();
+            }}
+          />
+        </Suspense>
+      ) : null}
     </div>
   );
 }

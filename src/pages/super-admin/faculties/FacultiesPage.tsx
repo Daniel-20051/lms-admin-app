@@ -1,18 +1,20 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
-import { useState } from "react";
+import { useState, Suspense, lazy } from "react";
 import { useFacultiesManagement } from "@/hooks/useFacultiesManagement";
 import FacultiesFilters from "@/Components/super-admin/faculties/FacultiesFilters";
 import FacultiesTable from "@/Components/super-admin/faculties/FacultiesTable";
 import FacultiesPagination from "@/Components/super-admin/faculties/FacultiesPagination";
-import ViewFacultyDialog from "@/Components/super-admin/faculties/ViewFacultyDialog";
-import EditFacultyDialog from "@/Components/super-admin/faculties/EditFacultyDialog";
-import CreateFacultyDialog from "@/Components/super-admin/faculties/CreateFacultyDialog";
-import FacultyActionDialogs from "@/Components/super-admin/faculties/FacultyActionDialogs";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { Plus } from "lucide-react";
 import { deleteFaculty, type Faculty } from "@/api/admin";
 import { toast } from "sonner";
+
+// Lazy load dialog components
+const ViewFacultyDialog = lazy(() => import("@/Components/super-admin/faculties/ViewFacultyDialog"));
+const EditFacultyDialog = lazy(() => import("@/Components/super-admin/faculties/EditFacultyDialog"));
+const CreateFacultyDialog = lazy(() => import("@/Components/super-admin/faculties/CreateFacultyDialog"));
+const FacultyActionDialogs = lazy(() => import("@/Components/super-admin/faculties/FacultyActionDialogs"));
 
 export default function FacultiesPage() {
   const {
@@ -133,74 +135,90 @@ export default function FacultiesPage() {
       </Card>
 
       {/* Create Faculty Dialog */}
-      <CreateFacultyDialog
-        open={showCreateDialog}
-        onOpenChange={setShowCreateDialog}
-        onFacultyCreated={() => {
-          refetchFaculties();
-        }}
-      />
+      {showCreateDialog ? (
+        <Suspense fallback={null}>
+          <CreateFacultyDialog
+            open={showCreateDialog}
+            onOpenChange={setShowCreateDialog}
+            onFacultyCreated={() => {
+              refetchFaculties();
+            }}
+          />
+        </Suspense>
+      ) : null}
 
       {/* View Faculty Dialog */}
-      <ViewFacultyDialog
-        key={`view-${selectedFacultyId}-${showViewDialog ? 'open' : 'closed'}`}
-        open={showViewDialog}
-        onOpenChange={(open) => {
-          if (!open) {
-            setShowViewDialog(false);
-            setSelectedFacultyId(null);
-          }
-        }}
-        facultyId={selectedFacultyId}
-      />
+      {showViewDialog ? (
+        <Suspense fallback={null}>
+          <ViewFacultyDialog
+            key={`view-${selectedFacultyId}-${showViewDialog ? 'open' : 'closed'}`}
+            open={showViewDialog}
+            onOpenChange={(open) => {
+              if (!open) {
+                setShowViewDialog(false);
+                setSelectedFacultyId(null);
+              }
+            }}
+            facultyId={selectedFacultyId}
+          />
+        </Suspense>
+      ) : null}
 
       {/* Edit Faculty Dialog */}
-      <EditFacultyDialog
-        open={showEditDialog}
-        onOpenChange={(open) => {
-          setShowEditDialog(open);
-          if (!open) {
-            setSelectedFaculty(null);
-          }
-        }}
-        faculty={selectedFaculty}
-        onFacultyUpdated={() => {
-          refetchFaculties();
-          setSelectedFaculty(null);
-        }}
-      />
+      {showEditDialog ? (
+        <Suspense fallback={null}>
+          <EditFacultyDialog
+            open={showEditDialog}
+            onOpenChange={(open) => {
+              setShowEditDialog(open);
+              if (!open) {
+                setSelectedFaculty(null);
+              }
+            }}
+            faculty={selectedFaculty}
+            onFacultyUpdated={() => {
+              refetchFaculties();
+              setSelectedFaculty(null);
+            }}
+          />
+        </Suspense>
+      ) : null}
 
       {/* Delete Faculty Dialog */}
-      <FacultyActionDialogs
-        selectedFaculty={selectedFaculty}
-        actionLoading={actionLoading}
-        showDeleteDialog={showDeleteDialog}
-        onDeleteDialogChange={(open) => {
-          setShowDeleteDialog(open);
-          if (!open) {
-            setSelectedFaculty(null);
-          }
-        }}
-        onConfirmDelete={async () => {
-          if (!selectedFaculty) return;
+      {showDeleteDialog ? (
+        <Suspense fallback={null}>
+          <FacultyActionDialogs
+            selectedFaculty={selectedFaculty}
+            actionLoading={actionLoading}
+            showDeleteDialog={showDeleteDialog}
+            onDeleteDialogChange={(open) => {
+              setShowDeleteDialog(open);
+              if (!open) {
+                setSelectedFaculty(null);
+              }
+            }}
+            onConfirmDelete={async () => {
+              if (!selectedFaculty) return;
 
-          try {
-            setActionLoading(true);
-            const response = await deleteFaculty(selectedFaculty.id);
-            if (response.success) {
-              toast.success(response.message || "Faculty deleted successfully");
-              refetchFaculties();
-              setShowDeleteDialog(false);
-              setSelectedFaculty(null);
-            }
-          } catch (error: any) {
-            console.error("Error deleting faculty:", error);
-            toast.error(error.response?.data?.message || "Failed to delete faculty");
-          } finally {
-            setActionLoading(false);
-          }
-        }}
-      />
+              try {
+                setActionLoading(true);
+                const response = await deleteFaculty(selectedFaculty.id);
+                if (response.success) {
+                  toast.success(response.message || "Faculty deleted successfully");
+                  refetchFaculties();
+                  setShowDeleteDialog(false);
+                  setSelectedFaculty(null);
+                }
+              } catch (error: any) {
+                console.error("Error deleting faculty:", error);
+                toast.error(error.response?.data?.message || "Failed to delete faculty");
+              } finally {
+                setActionLoading(false);
+              }
+            }}
+          />
+        </Suspense>
+      ) : null}
     </div>
   );
 }

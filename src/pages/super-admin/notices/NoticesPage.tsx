@@ -1,18 +1,20 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
-import { useState } from "react";
+import { useState, Suspense, lazy } from "react";
 import { useNoticesManagement } from "@/hooks/useNoticesManagement";
 import NoticesFilters from "@/Components/super-admin/notices/NoticesFilters";
 import NoticesTable from "@/Components/super-admin/notices/NoticesTable";
 import NoticesPagination from "@/Components/super-admin/notices/NoticesPagination";
-import ViewNoticeDialog from "@/Components/super-admin/notices/ViewNoticeDialog";
-import EditNoticeDialog from "@/Components/super-admin/notices/EditNoticeDialog";
-import CreateNoticeDialog from "@/Components/super-admin/notices/CreateNoticeDialog";
-import NoticeActionDialogs from "@/Components/super-admin/notices/NoticeActionDialogs";
 import { Skeleton } from "@/Components/ui/skeleton";
 import { Plus } from "lucide-react";
 import { deleteNotice, type Notice } from "@/api/admin";
 import { toast } from "sonner";
+
+// Lazy load dialog components
+const ViewNoticeDialog = lazy(() => import("@/Components/super-admin/notices/ViewNoticeDialog"));
+const EditNoticeDialog = lazy(() => import("@/Components/super-admin/notices/EditNoticeDialog"));
+const CreateNoticeDialog = lazy(() => import("@/Components/super-admin/notices/CreateNoticeDialog"));
+const NoticeActionDialogs = lazy(() => import("@/Components/super-admin/notices/NoticeActionDialogs"));
 
 export default function NoticesPage() {
   const {
@@ -137,74 +139,90 @@ export default function NoticesPage() {
       </Card>
 
       {/* Create Notice Dialog */}
-      <CreateNoticeDialog
-        open={showCreateDialog}
-        onOpenChange={setShowCreateDialog}
-        onNoticeCreated={() => {
-          refetchNotices();
-        }}
-      />
+      {showCreateDialog ? (
+        <Suspense fallback={null}>
+          <CreateNoticeDialog
+            open={showCreateDialog}
+            onOpenChange={setShowCreateDialog}
+            onNoticeCreated={() => {
+              refetchNotices();
+            }}
+          />
+        </Suspense>
+      ) : null}
 
       {/* View Notice Dialog */}
-      <ViewNoticeDialog
-        key={`view-${selectedNoticeId}-${showViewDialog ? 'open' : 'closed'}`}
-        open={showViewDialog}
-        onOpenChange={(open) => {
-          if (!open) {
-            setShowViewDialog(false);
-            setSelectedNoticeId(null);
-          }
-        }}
-        noticeId={selectedNoticeId}
-      />
+      {showViewDialog ? (
+        <Suspense fallback={null}>
+          <ViewNoticeDialog
+            key={`view-${selectedNoticeId}-${showViewDialog ? 'open' : 'closed'}`}
+            open={showViewDialog}
+            onOpenChange={(open) => {
+              if (!open) {
+                setShowViewDialog(false);
+                setSelectedNoticeId(null);
+              }
+            }}
+            noticeId={selectedNoticeId}
+          />
+        </Suspense>
+      ) : null}
 
       {/* Edit Notice Dialog */}
-      <EditNoticeDialog
-        open={showEditDialog}
-        onOpenChange={(open) => {
-          setShowEditDialog(open);
-          if (!open) {
-            setSelectedNotice(null);
-          }
-        }}
-        notice={selectedNotice}
-        onNoticeUpdated={() => {
-          refetchNotices();
-          setSelectedNotice(null);
-        }}
-      />
+      {showEditDialog ? (
+        <Suspense fallback={null}>
+          <EditNoticeDialog
+            open={showEditDialog}
+            onOpenChange={(open) => {
+              setShowEditDialog(open);
+              if (!open) {
+                setSelectedNotice(null);
+              }
+            }}
+            notice={selectedNotice}
+            onNoticeUpdated={() => {
+              refetchNotices();
+              setSelectedNotice(null);
+            }}
+          />
+        </Suspense>
+      ) : null}
 
       {/* Delete Notice Dialog */}
-      <NoticeActionDialogs
-        selectedNotice={selectedNotice}
-        actionLoading={actionLoading}
-        showDeleteDialog={showDeleteDialog}
-        onDeleteDialogChange={(open) => {
-          setShowDeleteDialog(open);
-          if (!open) {
-            setSelectedNotice(null);
-          }
-        }}
-        onConfirmDelete={async () => {
-          if (!selectedNotice) return;
+      {showDeleteDialog ? (
+        <Suspense fallback={null}>
+          <NoticeActionDialogs
+            selectedNotice={selectedNotice}
+            actionLoading={actionLoading}
+            showDeleteDialog={showDeleteDialog}
+            onDeleteDialogChange={(open) => {
+              setShowDeleteDialog(open);
+              if (!open) {
+                setSelectedNotice(null);
+              }
+            }}
+            onConfirmDelete={async () => {
+              if (!selectedNotice) return;
 
-          try {
-            setActionLoading(true);
-            const response = await deleteNotice(selectedNotice.id);
-            if (response.success) {
-              toast.success(response.message || "Notice deleted successfully");
-              refetchNotices();
-              setShowDeleteDialog(false);
-              setSelectedNotice(null);
-            }
-          } catch (error: any) {
-            console.error("Error deleting notice:", error);
-            toast.error(error.response?.data?.message || "Failed to delete notice");
-          } finally {
-            setActionLoading(false);
-          }
-        }}
-      />
+              try {
+                setActionLoading(true);
+                const response = await deleteNotice(selectedNotice.id);
+                if (response.success) {
+                  toast.success(response.message || "Notice deleted successfully");
+                  refetchNotices();
+                  setShowDeleteDialog(false);
+                  setSelectedNotice(null);
+                }
+              } catch (error: any) {
+                console.error("Error deleting notice:", error);
+                toast.error(error.response?.data?.message || "Failed to delete notice");
+              } finally {
+                setActionLoading(false);
+              }
+            }}
+          />
+        </Suspense>
+      ) : null}
     </div>
   );
 }

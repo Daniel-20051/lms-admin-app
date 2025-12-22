@@ -5,14 +5,16 @@ import { useSemestersManagement } from "@/hooks/useSemestersManagement";
 import SemestersFilters from "@/Components/super-admin/semesters/SemestersFilters";
 import SemestersTable from "@/Components/super-admin/semesters/SemestersTable";
 import SemestersPagination from "@/Components/super-admin/semesters/SemestersPagination";
-import ViewSemesterDialog from "@/Components/super-admin/semesters/ViewSemesterDialog";
-import CreateSemesterDialog from "@/Components/super-admin/semesters/CreateSemesterDialog";
-import EditSemesterDialog from "@/Components/super-admin/semesters/EditSemesterDialog";
-import CloseSemesterDialog from "@/Components/super-admin/semesters/CloseSemesterDialog";
-import ExtendSemesterDialog from "@/Components/super-admin/semesters/ExtendSemesterDialog";
-import ActivateSemesterDialog from "@/Components/super-admin/semesters/ActivateSemesterDialog";
-import SemesterActionDialogs from "@/Components/super-admin/semesters/SemesterActionDialogs";
-import { useMemo } from "react";
+import { useMemo, Suspense, lazy } from "react";
+
+// Lazy load dialog components
+const ViewSemesterDialog = lazy(() => import("@/Components/super-admin/semesters/ViewSemesterDialog"));
+const CreateSemesterDialog = lazy(() => import("@/Components/super-admin/semesters/CreateSemesterDialog"));
+const EditSemesterDialog = lazy(() => import("@/Components/super-admin/semesters/EditSemesterDialog"));
+const CloseSemesterDialog = lazy(() => import("@/Components/super-admin/semesters/CloseSemesterDialog"));
+const ExtendSemesterDialog = lazy(() => import("@/Components/super-admin/semesters/ExtendSemesterDialog"));
+const ActivateSemesterDialog = lazy(() => import("@/Components/super-admin/semesters/ActivateSemesterDialog"));
+const SemesterActionDialogs = lazy(() => import("@/Components/super-admin/semesters/SemesterActionDialogs"));
 
 export default function SemestersPage() {
     const {
@@ -143,96 +145,124 @@ export default function SemestersPage() {
             </Card>
 
             {/* View Semester Dialog */}
-            <ViewSemesterDialog
-                key={`view-${selectedSemesterId}-${showViewDialog ? 'open' : 'closed'}`}
-                open={showViewDialog}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setShowViewDialog(false);
-                        setSelectedSemesterId(null);
-                    }
-                }}
-                semesterId={selectedSemesterId}
-            />
+            {showViewDialog ? (
+                <Suspense fallback={null}>
+                    <ViewSemesterDialog
+                        key={`view-${selectedSemesterId}-${showViewDialog ? 'open' : 'closed'}`}
+                        open={showViewDialog}
+                        onOpenChange={(open) => {
+                            if (!open) {
+                                setShowViewDialog(false);
+                                setSelectedSemesterId(null);
+                            }
+                        }}
+                        semesterId={selectedSemesterId}
+                    />
+                </Suspense>
+            ) : null}
 
             {/* Create Semester Dialog */}
-            <CreateSemesterDialog
-                open={showCreateDialog}
-                onOpenChange={setShowCreateDialog}
-                onSemesterCreated={refetchSemesters}
-            />
+            {showCreateDialog ? (
+                <Suspense fallback={null}>
+                    <CreateSemesterDialog
+                        open={showCreateDialog}
+                        onOpenChange={setShowCreateDialog}
+                        onSemesterCreated={refetchSemesters}
+                    />
+                </Suspense>
+            ) : null}
 
             {/* Edit Semester Dialog */}
-            <EditSemesterDialog
-                open={showEditDialog}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setShowEditDialog(false);
-                        setSelectedSemesterId(null);
-                    }
-                }}
-                semesterId={selectedSemesterId}
-                onSemesterUpdated={handleSemesterUpdated}
-            />
+            {showEditDialog ? (
+                <Suspense fallback={null}>
+                    <EditSemesterDialog
+                        open={showEditDialog}
+                        onOpenChange={(open) => {
+                            if (!open) {
+                                setShowEditDialog(false);
+                                setSelectedSemesterId(null);
+                            }
+                        }}
+                        semesterId={selectedSemesterId}
+                        onSemesterUpdated={handleSemesterUpdated}
+                    />
+                </Suspense>
+            ) : null}
 
             {/* Close Semester Dialog */}
-            <CloseSemesterDialog
-                open={showCloseDialog}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setShowCloseDialog(false);
-                        setSelectedSemester(null);
-                    }
-                }}
-                selectedSemester={selectedSemester}
-                onSemesterClosed={handleSemesterClosed}
-                actionLoading={actionLoading}
-                setActionLoading={setActionLoading}
-            />
+            {showCloseDialog ? (
+                <Suspense fallback={null}>
+                    <CloseSemesterDialog
+                        open={showCloseDialog}
+                        onOpenChange={(open) => {
+                            if (!open) {
+                                setShowCloseDialog(false);
+                                setSelectedSemester(null);
+                            }
+                        }}
+                        selectedSemester={selectedSemester}
+                        onSemesterClosed={handleSemesterClosed}
+                        actionLoading={actionLoading}
+                        setActionLoading={setActionLoading}
+                    />
+                </Suspense>
+            ) : null}
 
             {/* Extend Semester Dialog */}
-            <ExtendSemesterDialog
-                open={showExtendDialog}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setShowExtendDialog(false);
-                        setSelectedSemester(null);
-                    }
-                }}
-                selectedSemester={selectedSemester}
-                onSemesterExtended={handleSemesterExtended}
-                actionLoading={actionLoading}
-                setActionLoading={setActionLoading}
-            />
+            {showExtendDialog ? (
+                <Suspense fallback={null}>
+                    <ExtendSemesterDialog
+                        open={showExtendDialog}
+                        onOpenChange={(open) => {
+                            if (!open) {
+                                setShowExtendDialog(false);
+                                setSelectedSemester(null);
+                            }
+                        }}
+                        selectedSemester={selectedSemester}
+                        onSemesterExtended={handleSemesterExtended}
+                        actionLoading={actionLoading}
+                        setActionLoading={setActionLoading}
+                    />
+                </Suspense>
+            ) : null}
 
             {/* Activate Semester Dialog */}
-            <ActivateSemesterDialog
-                open={showActivateDialog}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setShowActivateDialog(false);
-                        setSelectedSemester(null);
-                    }
-                }}
-                selectedSemester={selectedSemester}
-                onSemesterActivated={handleSemesterActivated}
-                actionLoading={actionLoading}
-                setActionLoading={setActionLoading}
-            />
+            {showActivateDialog ? (
+                <Suspense fallback={null}>
+                    <ActivateSemesterDialog
+                        open={showActivateDialog}
+                        onOpenChange={(open) => {
+                            if (!open) {
+                                setShowActivateDialog(false);
+                                setSelectedSemester(null);
+                            }
+                        }}
+                        selectedSemester={selectedSemester}
+                        onSemesterActivated={handleSemesterActivated}
+                        actionLoading={actionLoading}
+                        setActionLoading={setActionLoading}
+                    />
+                </Suspense>
+            ) : null}
 
             {/* Action Dialogs */}
-            <SemesterActionDialogs
-                selectedSemester={selectedSemester}
-                actionLoading={actionLoading}
-                showDeleteDialog={showDeleteDialog}
-                onDeleteDialogChange={(open) => {
-                    setShowDeleteDialog(open);
-                    if (!open) {
-                        setSelectedSemester(null);
-                    }
-                }}
-                onConfirmDelete={handleDeleteSemester}
-            />
+            {showDeleteDialog ? (
+                <Suspense fallback={null}>
+                    <SemesterActionDialogs
+                        selectedSemester={selectedSemester}
+                        actionLoading={actionLoading}
+                        showDeleteDialog={showDeleteDialog}
+                        onDeleteDialogChange={(open) => {
+                            setShowDeleteDialog(open);
+                            if (!open) {
+                                setSelectedSemester(null);
+                            }
+                        }}
+                        onConfirmDelete={handleDeleteSemester}
+                    />
+                </Suspense>
+            ) : null}
         </div>
     );
 }

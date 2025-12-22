@@ -1,15 +1,18 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Button } from "@/Components/ui/button";
 import { Plus } from "lucide-react";
+import { Suspense, lazy } from "react";
 import { useStudentsManagement } from "@/hooks/useStudentsManagement";
 import StudentsStatistics from "@/Components/super-admin/students/StudentsStatistics";
 import StudentsFilters from "@/Components/super-admin/students/StudentsFilters";
 import StudentsTable from "@/Components/super-admin/students/StudentsTable";
 import StudentsPagination from "@/Components/super-admin/students/StudentsPagination";
-import StudentActionDialogs from "@/Components/super-admin/students/StudentActionDialogs";
-import ViewStudentDialog from "@/Components/super-admin/students/ViewStudentDialog";
-import EditStudentDialog from "@/Components/super-admin/students/EditStudentDialog";
-import CreateStudentDialog from "@/Components/super-admin/students/CreateStudentDialog";
+
+// Lazy load dialog components
+const StudentActionDialogs = lazy(() => import("@/Components/super-admin/students/StudentActionDialogs"));
+const ViewStudentDialog = lazy(() => import("@/Components/super-admin/students/ViewStudentDialog"));
+const EditStudentDialog = lazy(() => import("@/Components/super-admin/students/EditStudentDialog"));
+const CreateStudentDialog = lazy(() => import("@/Components/super-admin/students/CreateStudentDialog"));
 
 export default function StudentsPage() {
   const {
@@ -129,53 +132,69 @@ export default function StudentsPage() {
       </Card>
 
       {/* Action Dialogs */}
-      <StudentActionDialogs
-        selectedStudent={selectedStudent}
-        actionLoading={actionLoading}
-        showDeactivateDialog={showDeactivateDialog}
-        showActivateDialog={showActivateDialog}
-        showResetPasswordDialog={showResetPasswordDialog}
-        onDeactivateDialogChange={setShowDeactivateDialog}
-        onActivateDialogChange={setShowActivateDialog}
-        onResetPasswordDialogChange={setShowResetPasswordDialog}
-        onConfirmDeactivate={handleDeactivateStudent}
-        onConfirmActivate={handleActivateStudent}
-        onConfirmResetPassword={handleResetPassword}
-      />
+      {showDeactivateDialog || showActivateDialog || showResetPasswordDialog ? (
+        <Suspense fallback={null}>
+          <StudentActionDialogs
+            selectedStudent={selectedStudent}
+            actionLoading={actionLoading}
+            showDeactivateDialog={showDeactivateDialog}
+            showActivateDialog={showActivateDialog}
+            showResetPasswordDialog={showResetPasswordDialog}
+            onDeactivateDialogChange={setShowDeactivateDialog}
+            onActivateDialogChange={setShowActivateDialog}
+            onResetPasswordDialogChange={setShowResetPasswordDialog}
+            onConfirmDeactivate={handleDeactivateStudent}
+            onConfirmActivate={handleActivateStudent}
+            onConfirmResetPassword={handleResetPassword}
+          />
+        </Suspense>
+      ) : null}
 
       {/* View Student Dialog */}
-      <ViewStudentDialog
-        key={`view-${selectedStudentId}-${showViewDialog ? 'open' : 'closed'}`}
-        open={showViewDialog}
-        onOpenChange={(open) => {
-          if (!open) {
-            setShowViewDialog(false);
-            setSelectedStudentId(null);
-          }
-        }}
-        studentId={selectedStudentId}
-      />
+      {showViewDialog ? (
+        <Suspense fallback={null}>
+          <ViewStudentDialog
+            key={`view-${selectedStudentId}-${showViewDialog ? 'open' : 'closed'}`}
+            open={showViewDialog}
+            onOpenChange={(open) => {
+              if (!open) {
+                setShowViewDialog(false);
+                setSelectedStudentId(null);
+              }
+            }}
+            studentId={selectedStudentId}
+          />
+        </Suspense>
+      ) : null}
 
       {/* Edit Student Dialog */}
-      <EditStudentDialog
-        key={`edit-${selectedStudentId}-${showEditDialog ? 'open' : 'closed'}`}
-        open={showEditDialog}
-        onOpenChange={(open) => {
-          if (!open) {
-            setShowEditDialog(false);
-            setSelectedStudentId(null);
-          }
-        }}
-        studentId={selectedStudentId}
-        onStudentUpdated={handleStudentUpdated}
-      />
+      {showEditDialog ? (
+        <Suspense fallback={null}>
+          <EditStudentDialog
+            key={`edit-${selectedStudentId}-${showEditDialog ? 'open' : 'closed'}`}
+            open={showEditDialog}
+            onOpenChange={(open) => {
+              if (!open) {
+                setShowEditDialog(false);
+                setSelectedStudentId(null);
+              }
+            }}
+            studentId={selectedStudentId}
+            onStudentUpdated={handleStudentUpdated}
+          />
+        </Suspense>
+      ) : null}
 
       {/* Create Student Dialog */}
-      <CreateStudentDialog
-        open={showCreateDialog}
-        onOpenChange={setShowCreateDialog}
-        onStudentCreated={handleStudentCreated}
-      />
+      {showCreateDialog ? (
+        <Suspense fallback={null}>
+          <CreateStudentDialog
+            open={showCreateDialog}
+            onOpenChange={setShowCreateDialog}
+            onStudentCreated={handleStudentCreated}
+          />
+        </Suspense>
+      ) : null}
     </div>
   );
 }
